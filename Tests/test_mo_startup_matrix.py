@@ -4,9 +4,12 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+import sys
 import xml.etree.ElementTree as ET
 
 SCRIPT = Path(__file__).resolve().parents[1] / "Scripts/diagnose_mo_startup.py"
+if str(SCRIPT.parent) not in sys.path:
+    sys.path.insert(0, str(SCRIPT.parent))
 SPEC = importlib.util.spec_from_file_location("amji_mo_startup", SCRIPT)
 diag = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(diag)
@@ -30,22 +33,32 @@ class MOStartupDifferentialFixtures(unittest.TestCase):
         with self.assertRaises(ValueError):
             diag.active_mods("Vanilla")
 
-    def test_only_new_save_data_is_written(self):
+    def test_only_new_save_data_is_written_and_context_preserved(self):
         prefs = self.root / "Prefs.xml"
-        initial = "<Prefs><devMode>False</devMode></Prefs>"
+        mods_config = self.root / "ModsConfig.xml"
+        initial = "<Prefs><devMode>False</devMode><resetModsConfigOnCrash>True</resetModsConfigOnCrash></Prefs>"
+        mods_initial = ("<ModsConfigData><version>1.6.4871</version>"
+                        "<activeMods><li>old</li></activeMods>"
+                        "<knownExpansions><li>ludeon.rimworld.royalty</li></knownExpansions>"
+                        "</ModsConfigData>")
         prefs.write_text(initial, encoding="utf-8")
+        mods_config.write_text(mods_initial, encoding="utf-8")
         for profile in diag.PROFILES:
             directory = self.root / profile / "Config"
-            diag.config_for_observation(directory, prefs, "1.6.4871", profile)
+            diag.config_for_observation(directory, mods_config, prefs, profile)
             found = ET.parse(directory / "ModsConfig.xml").getroot()
             self.assertEqual(found.findtext("version"), "1.6.4871")
             mods = [x.text for x in found.findall("activeMods/li")]
-            self.assertEqual(mods, diag.active_mods(profile))
-            self.assertEqual(
-                ET.parse(directory / "Prefs.xml").getroot().findtext("devMode"), "True")
+            self.assertEqual(mods, [v.lower() for v in diag.active_mods(profile)])
+            self.assertEqual([x.text for x in found.findall("knownExpansions/li")],
+                             ["ludeon.rimworld.royalty"])
+            copied = ET.parse(directory / "Prefs.xml").getroot()
+            self.assertEqual(copied.findtext("devMode"), "True")
+            self.assertEqual(copied.findtext("resetModsConfigOnCrash"), "False")
             with self.assertRaises(FileExistsError):
-                diag.config_for_observation(directory, prefs, "1.6.4871", profile)
+                diag.config_for_observation(directory, mods_config, prefs, profile)
         self.assertEqual(prefs.read_text(encoding="utf-8"), initial)
+        self.assertEqual(mods_config.read_text(encoding="utf-8"), mods_initial)
 
     def test_observation_recognizes_cpu_window_snapshot_and_timeout(self):
         report = self.root / "Reports"
