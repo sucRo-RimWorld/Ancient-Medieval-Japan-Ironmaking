@@ -1,12 +1,12 @@
 # AMJ Ironmaking — minimal implementation checklist (candidate)
 
-**Status:** 2026-10-10 first sand/deposit MapGen static source added; other MVP modules not implemented, loaded-game results unverified and numeric balancing unapproved.  
+**Status:** finite sand, charcoal and small-furnace XML exists; 2026-10-10 Vanilla loaded Pickle E2E 5/5 PASS (author-run, run `b5a5596f84`). MO profile, worktable Bill execution, exact resource balance and release graphics are unverified.  
 **Authoritative concept:** [Ironmaking design](../Design.md).  
 **Owner:** `sucRo-RimWorld/Ancient-Medieval-Japan-Ironmaking`.
 
 ## Thin vertical slice
 
-1. **Static source implemented, runtime unverified:** `AMJ_IronSand` + finite `AMJ_IronSandDeposit`, dedicated `AMJ_IronmakingMaterials` resource category, `AMJ_ScatterIronSand` GenStep and MapCommonBase attachment. No extraction/mining or generated-map runtime PASS yet; region weighting absent.
+1. **Vanilla runtime Pickle PASS, bounded:** `AMJ_IronSand` and finite `AMJ_IronSandDeposit` loaded; Quickstarts natural map generation, real pawn mining and save/reload succeeded in the five-scenario Vanilla run `b5a5596f84`. Regional sand-iron weighting and multi-seed/map-type robustness are still absent/unverified.
 2. **Static XML added, runtime unverified:** WoodLog → AMJ_Charcoal via worktable Bill without MO/PF hard dependency. With MO, MO Coal is optionally accepted as a Bill ingredient; duplicate AMJ charcoal manufacture is still visible pending compatibility testing.
 3. **Static XML added, runtime unverified:** small furnace uses Stony material and requires no Steel/component; buildability and workbench visuals must be checked in loaded Vanilla.
 4. **Static XML added, runtime unverified:** sand + charcoal (or MO Coal) Bill → IronBloom; no Refuelable on AMJ kilns/furnaces. Confirm actual input/yield, work and interrupts in RimWorld.
@@ -52,4 +52,4 @@ The XML-only finite deposit probe passed five isolated syntax/structure tests. I
 
 ## RimWorld 1.6 / Pickle automated E2E harness status (2026-10-10)
 
-Owner `Tests/E2E` includes a test-only Pickle Steps assembly, two deterministic Quickstarts maps and a five-scenario feature. Run `run-pickle-e2e.bat --profile All` on an actual Windows 1.6 game installation to check Vanilla/MO startup Defs, natural sand deposits, real pawn mining and Pickle's actual disk save reload. The runner uses a separate SaveData and refuses to call a missing/stale summary success. The result gate is fixture-tested, but **the C# test assemblies have not been built against the actual RimWorld/Quickstarts/Pickle DLLs in this environment and no gameplay PASS exists**. Actual Bill execution, trader stock availability, old-save installation and multiclimatic map balance are follow-up gates; see `Docs/GoldenPaths/IronmakingPickleE2E.md`.
+Owner `Tests/E2E` contains a test-only Pickle Steps assembly, deterministic Quickstarts maps and a five-scenario feature. **Author-run Vanilla passed 5/5 on 2026-10-10** (`b5a5596f84`, zero skipped/flaky/error logs). This validates that the harness ran in the author's actual installed RimWorld and returned complete structured success, not that this agent independently inspected the report files. **Next: `run-pickle-e2e.bat --profile MO`**, with isolated SaveData; do not repeat already successful Vanilla without a source change. Bill execution, trade stock, MO `metalChain` setting variants, old-save installation, balance and graphics remain separate follow-up gates. See `Docs/Testing/IronmakingPickleEvidence.md` and `Docs/GoldenPaths/IronmakingPickleE2E.md`.

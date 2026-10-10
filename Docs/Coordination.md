@@ -3,16 +3,16 @@
 **Authoritative branch:** `main` only. This is an inter-workstream task/status log; specifications belong in `Docs/Design.md`. Do not maintain other copies.
 
 ## IRON-OWNER-20261010 — Design ownership migration
-**State:** MIGRATED DESIGN / NOT IMPLEMENTED.  
+**State:** DESIGN MIGRATED (historical 2026-10-10 stage); later MVP source and Vanilla E2E PASS are recorded below.  
 Project's pre-split design, MVP checklist and prior-art review are moved to Ironmaking's formal sources. The initial root README commit was `6f8d8cb8e2b5298c170762d1b8ec56dfcfffcd5a`. Project copies are historical link stubs after its subsequent PR.
 
 ## IRON-ENTRY-20261010 — Prior-art gate
-**State:** ENTRY DECISION RECORDED; implementation proceeds only by bounded PRs and remains unverified in game.  
+**State:** ENTRY DECISION RECORDED; implementation proceeds only by bounded PRs; subsequent Vanilla 5-scenario loaded E2E passed but unrelated game/release gates remain open.  
 Vanilla Iron and Steel Continued 1.6 overlaps bloomery/ore-to-Steel. VE, non-VE, Vanilla/MO and AMJ alternatives were compared for minimal dependency and non-destructive finite sand supply. Owner `Docs/Research/IronmakingEntryDecision.json` is `ready`, with a matching SHA-256 evidence file and an independently executed equivalent schema/hash check. The Project validator Python file itself was not executed in this chat; this is not a game-load PASS. Source: `Docs/Research/IronmakingExistingModEntryAudit-20261010.md`.
 
 ## IRON-MVP-20261010 — Upcoming owner work
-**State:** SAND-DEPOSIT STATIC SOURCE ADDED; FURTHER MVP MODULES PENDING.  
-First finite iron-sand deposit ThingDef + GenStep XML developer slice was added after the entry decision, plus twelve static tests (local PASS after limited trader addition). Charcoal kiln, small furnace, bloom, and common-metal finish now have developer XML definitions plus a guarded MO IronIngot Patch. Limited sand-iron seller/buyer stock XML has been added to two optional Vanilla caravan TraderKinds; research, improved/medieval furnaces, region weighting and accepted textures are not implemented; none of the new Recipes/WorkGivers have passed a real RimWorld loaded-game test. The old 5-test research probe is not the loaded-game validation. Verify mining reachability, save behavior, no refuel/bill double consumption and optional MO entry. Runtime/test design: `Docs/Research/IronmakingMVPImplementationChecklist.md`.
+**State:** BASIC DEV XML SOURCE EXISTS; VANILLA NATURAL MAPGEN / MINING / SAVE PICKLE PASS; PRODUCTION BILLS AND MO OPEN.  
+First finite iron-sand deposit ThingDef + GenStep XML developer slice was added after the entry decision, plus twelve static tests (local PASS after limited trader addition). Charcoal kiln, small furnace, bloom, and common-metal finish now have developer XML definitions plus a guarded MO IronIngot Patch. Limited sand-iron seller/buyer stock XML has been added to two optional Vanilla caravan TraderKinds; research, improved/medieval furnaces, region weighting and accepted textures are not implemented; Vanilla Pickle 5/5 later confirmed natural map deposits, loaded Recipes and real mining WorkGiver; actual recipe Bill execution remains untested. The old 5-test research probe is not the loaded-game validation. Future validation must cover actual crafting Bills/fuel once, MO profile, trading, research and terrain distribution; the five Vanilla scenarios already passed mining and save/reload. Runtime/test design: `Docs/Research/IronmakingMVPImplementationChecklist.md`.
 
 ## MOJ-IRON-INTERFACE-20261010
 **State:** INTERFACE CONTRACT DELIVERED; Japanization runtime adapter pending.  
@@ -25,18 +25,18 @@ Optional `AMJ_MO_ARCHIVE` test reads the author's actual MO 1.6 ZIP. All 15 test
 
 ## IRON-CORE-CATEGORY-20261010 — Vanilla source reference repair
 
-**State:** STATIC DEF PARENT CORRECTED; actual loaded RimWorld 1.6/Core and gameplay still unverified.
+**State:** STATIC DEF PARENT CORRECTED; reported Vanilla 5-scenario game E2E now PASS, actual Core XML audit independently remains open.
 
 The first Ironmaking `ThingCategoryDef AMJ_IronmakingMaterials` used a `Resources` parent not found in the checked Vanilla category tree. Changed to known `Root`, without joining `ResourcesRaw` or changing iron-sand trade/vanilla stock. Added a nested `Patches/**/*.xml` parsing regression in the owner's structural test. The rationale/procedure lives in `Docs/Design.md` and `Docs/GoldenPaths/IronSandStaticAudit.md`; this entry is only the status handoff.
 
 ## IRON-PICKLE-20261010 — Isolated live-game automated test harness
 
-**State:** E2E HARNESS AUTHORED; RimWorld/Pickle game execution and .NET test build OPEN.
+**State:** VANILLA GAME E2E 5/5 PASS (author-run 2026-10-10); MO PROFILE OPEN.
 
-Five test-only Pickle scenarios now target loaded Defs and Vanilla/MO result, a naturally spawned map deposit, a pawn mining job and real save/reload. The runner stages owner-marked temporary Mods and isolated SaveData, requiring complete Pickle summary/ERROR-free Player.log; normal ModsConfig/Prefs and Steam installs must remain unchanged. Four fixture checks of the exact result validator passed; no real game or MO profile E2E was run in this environment. Owner procedure: `Docs/GoldenPaths/IronmakingPickleE2E.md`.
+Five test-only Pickle scenarios now target loaded Defs and Vanilla/MO result, a naturally spawned map deposit, a pawn mining job and real save/reload. The runner stages owner-marked temporary Mods and isolated SaveData, requiring complete Pickle summary/ERROR-free Player.log; normal ModsConfig/Prefs and Steam installs must remain unchanged. Author reports real Vanilla Pickle 5/5 PASS (run `b5a5596f84`, 0 skipped/flaky/error logs). Full log files are local to the author's PC and not independently re-opened in this chat. MO profile has not been reported; worktable Bill execution is not among the five steps. Owner procedure: `Docs/GoldenPaths/IronmakingPickleE2E.md`.
 
 ## IRON-PICKLE-HIDDEN-TEX-20261010 — Isolated display and charcoal texture fix
 
-**State:** SOURCE FIX / LOCAL STRUCTURAL CHECKS; fresh loaded-game retest still required.
+**State:** CHARCOAL TEXTURE FIX VERIFIED BY AUTHOR'S VANILLA PICKLE 5/5 RUN; MO STILL OPEN.
 
-Author-run Vanilla Pickle aborted on a real `[ERROR]`: `AMJ_Charcoal` borrowed Vanilla Chemfuel's texture but used `Graphic_StackCount`, causing the nonexistent `Things/Item/Resource/Chemfuel/Chemfuel` lookup and a null material. The owner ThingDef switches to Chemfuel-compatible `Graphic_Single` and an explicit regression checks the pair. The default Pickle launcher now requires a private Windows `WinSta0` desktop and fails closed if native launcher building/desktop creation fails; rendering is not disabled and no visible fallback is allowed. Historical failed run is not a PASS. Next required evidence is fresh actual Vanilla then MO Pickle reports and ERROR-free player logs. Procedure/specification is in `Docs/GoldenPaths/IronmakingPickleE2E.md`, code in `Defs/ThingDefs/IronmakingMaterials.xml` and `Scripts/`.
+Author-run Vanilla Pickle aborted on a real `[ERROR]`: `AMJ_Charcoal` borrowed Vanilla Chemfuel's texture but used `Graphic_StackCount`, causing the nonexistent `Things/Item/Resource/Chemfuel/Chemfuel` lookup and a null material. The owner ThingDef switches to Chemfuel-compatible `Graphic_Single` and an explicit regression checks the pair. The default Pickle launcher now requires a private Windows `WinSta0` desktop and fails closed if native launcher building/desktop creation fails; rendering is not disabled and no visible fallback is allowed. Historical failed run is not a PASS. After the charcoal texture correction, author's Vanilla run `b5a5596f84` completed 5/5 with no logged errors; the remaining baseline evidence is MO profile 5/5. Procedure/specification is in `Docs/GoldenPaths/IronmakingPickleE2E.md`, code in `Defs/ThingDefs/IronmakingMaterials.xml` and `Scripts/`.

@@ -10,8 +10,8 @@ A Vanilla-compatible, finite iron-sand → iron bloom → usable iron path, grow
 - [Existing-Mod research and entry gate](Docs/Research/IronmakingExistingModEntryAudit-20261010.md)
 - [MVP checklist](Docs/Research/IronmakingMVPImplementationChecklist.md)
 - [Finite sand static audit](Docs/GoldenPaths/IronSandStaticAudit.md)
-- [RimWorld/Pickle E2E runner (real-game validation, pending)](Docs/GoldenPaths/IronmakingPickleE2E.md)
+- [RimWorld/Pickle E2E runner (Vanilla 5/5 PASS; MO pending)](Docs/GoldenPaths/IronmakingPickleE2E.md)
 - [Agent instructions](AGENTS.md)
 - [Coordination — main only](Docs/Coordination.md)
 
-**Implementation, loaded-game validation, assets and release are not complete.**
+**2026-10-10:** Author-run Vanilla Pickle E2E passed all five baseline scenarios. [Evidence and limits](Docs/Testing/IronmakingPickleEvidence.md). MO compatibility, actual charcoal/smelting Bills, balance, graphics and release validation remain incomplete.
