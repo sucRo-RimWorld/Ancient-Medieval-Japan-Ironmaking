@@ -4,7 +4,7 @@
 **Provenance:** Project `Docs/Research/IronmakingDesign.md` (2026-10-10); earlier Grains design.
 
 設計正本移管: 2026-10-10 JST  
-状態: 作者確定コンセプト + 詳細設計案。実装・実機バランス・互換動作は未検証。
+状態: 作者確定コンセプト + 詳細設計案。最小開発用XML実装済み。Vanillaの限定5項目Pickle実機E2EはPASSしたが、製錬Bill実行・実機バランス・MO互換・正式配布は未検証。
 
 ## 1. 確定コンセプト
 

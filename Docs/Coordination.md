@@ -3,16 +3,16 @@
 **Authoritative branch:** `main` only. This is an inter-workstream task/status log; specifications belong in `Docs/Design.md`. Do not maintain other copies.
 
 ## IRON-OWNER-20261010 — Design ownership migration
-**State:** MIGRATED DESIGN / NOT IMPLEMENTED.  
+**State:** DESIGN MIGRATED (historical 2026-10-10 stage); later MVP source and Vanilla E2E PASS are recorded below.  
 Project's pre-split design, MVP checklist and prior-art review are moved to Ironmaking's formal sources. The initial root README commit was `6f8d8cb8e2b5298c170762d1b8ec56dfcfffcd5a`. Project copies are historical link stubs after its subsequent PR.
 
 ## IRON-ENTRY-20261010 — Prior-art gate
-**State:** ENTRY DECISION RECORDED; implementation proceeds only by bounded PRs and remains unverified in game.  
+**State:** ENTRY DECISION RECORDED; implementation proceeds only by bounded PRs; subsequent Vanilla 5-scenario loaded E2E passed but unrelated game/release gates remain open.  
 Vanilla Iron and Steel Continued 1.6 overlaps bloomery/ore-to-Steel. VE, non-VE, Vanilla/MO and AMJ alternatives were compared for minimal dependency and non-destructive finite sand supply. Owner `Docs/Research/IronmakingEntryDecision.json` is `ready`, with a matching SHA-256 evidence file and an independently executed equivalent schema/hash check. The Project validator Python file itself was not executed in this chat; this is not a game-load PASS. Source: `Docs/Research/IronmakingExistingModEntryAudit-20261010.md`.
 
 ## IRON-MVP-20261010 — Upcoming owner work
-**State:** SAND-DEPOSIT STATIC SOURCE ADDED; FURTHER MVP MODULES PENDING.  
-First finite iron-sand deposit ThingDef + GenStep XML developer slice was added after the entry decision, plus twelve static tests (local PASS after limited trader addition). Charcoal kiln, small furnace, bloom, and common-metal finish now have developer XML definitions plus a guarded MO IronIngot Patch. Limited sand-iron seller/buyer stock XML has been added to two optional Vanilla caravan TraderKinds; research, improved/medieval furnaces, region weighting and accepted textures are not implemented; Vanilla Pickle 5/5 later confirmed natural map deposits, loaded Recipes and real mining WorkGiver; actual recipe Bill execution remains untested. The old 5-test research probe is not the loaded-game validation. Verify mining reachability, save behavior, no refuel/bill double consumption and optional MO entry. Runtime/test design: `Docs/Research/IronmakingMVPImplementationChecklist.md`.
+**State:** BASIC DEV XML SOURCE EXISTS; VANILLA NATURAL MAPGEN / MINING / SAVE PICKLE PASS; PRODUCTION BILLS AND MO OPEN.  
+First finite iron-sand deposit ThingDef + GenStep XML developer slice was added after the entry decision, plus twelve static tests (local PASS after limited trader addition). Charcoal kiln, small furnace, bloom, and common-metal finish now have developer XML definitions plus a guarded MO IronIngot Patch. Limited sand-iron seller/buyer stock XML has been added to two optional Vanilla caravan TraderKinds; research, improved/medieval furnaces, region weighting and accepted textures are not implemented; Vanilla Pickle 5/5 later confirmed natural map deposits, loaded Recipes and real mining WorkGiver; actual recipe Bill execution remains untested. The old 5-test research probe is not the loaded-game validation. Future validation must cover actual crafting Bills/fuel once, MO profile, trading, research and terrain distribution; the five Vanilla scenarios already passed mining and save/reload. Runtime/test design: `Docs/Research/IronmakingMVPImplementationChecklist.md`.
 
 ## MOJ-IRON-INTERFACE-20261010
 **State:** INTERFACE CONTRACT DELIVERED; Japanization runtime adapter pending.  
@@ -25,7 +25,7 @@ Optional `AMJ_MO_ARCHIVE` test reads the author's actual MO 1.6 ZIP. All 15 test
 
 ## IRON-CORE-CATEGORY-20261010 — Vanilla source reference repair
 
-**State:** STATIC DEF PARENT CORRECTED; actual loaded RimWorld 1.6/Core and gameplay still unverified.
+**State:** STATIC DEF PARENT CORRECTED; reported Vanilla 5-scenario game E2E now PASS, actual Core XML audit independently remains open.
 
 The first Ironmaking `ThingCategoryDef AMJ_IronmakingMaterials` used a `Resources` parent not found in the checked Vanilla category tree. Changed to known `Root`, without joining `ResourcesRaw` or changing iron-sand trade/vanilla stock. Added a nested `Patches/**/*.xml` parsing regression in the owner's structural test. The rationale/procedure lives in `Docs/Design.md` and `Docs/GoldenPaths/IronSandStaticAudit.md`; this entry is only the status handoff.
 
