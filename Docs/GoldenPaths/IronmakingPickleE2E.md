@@ -1,6 +1,6 @@
 # Ironmaking Pickle E2E — loaded RimWorld 1.6
 
-**State:** author-run Vanilla 1.6 Pickle E2E PASS (5/5, 2026-10-10, run `b5a5596f84`); MO profile remains **NOT RUN**. The user-provided command output was reviewed, not the private log files. This is a bounded gameplay PASS for the five scenarios, not general release readiness. The source tests are scoped to Ironmaking; they are never included in a Workshop payload.
+**State:** author-run Vanilla 1.6 Pickle E2E PASS (5/5, 2026-10-10, run `b5a5596f84`); MO profile **author-reported PASS 5/5** (run `5127792409`, 2026-10-10; raw local reports not independently inspected). The user-provided command output was reviewed, not the private log files. This is a bounded gameplay PASS for the five scenarios, not general release readiness. The source tests are scoped to Ironmaking; they are never included in a Workshop payload.
 
 ## Prerequisites
 
@@ -121,3 +121,7 @@ git pull --ff-only
 ```
 
 Vanilla is already PASS; avoid `--profile All` unless intentionally retesting both. Preserve the strict `summary.json` and complete `Player.log` ERROR gate. If MO again reports a constructor error, inspect that first error with unchanged isolated `activeMods` rather than extending timeout or creating another diagnostic matrix.
+
+## MO baseline completion — 2026-10-10
+
+After PR #20 corrected the isolated `Prefs.xml` root-tag assumption (main `93667960ca5901fb03634ec7cd52f5613dc53497`), the author ran `.\run-pickle-e2e.bat --profile MO --timeout 180`. Run `5127792409` reported 5/5 scenarios, zero skipped/flaky/error logs and exit code zero after 51 seconds; the runner cleaned temporary Mod folders and reported normal configuration untouched. Full report location: `TestResults/Pickle/Runs/5127792409/MO/Reports` on the author's Windows installation. Evidence currently comprises console output supplied by the author; original Player.log and summary.json have not been independently opened here. Vanilla's separately reported 5/5 remains valid. Do not infer actual production Bill execution/fuel, trade, research, or release readiness from these five checks. Earlier MO startup diagnostic failures are historical; no need to repeat baseline MO solely for the earlier timeout.
