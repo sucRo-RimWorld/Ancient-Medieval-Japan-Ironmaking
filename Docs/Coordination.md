@@ -28,3 +28,9 @@ Optional `AMJ_MO_ARCHIVE` test reads the author's actual MO 1.6 ZIP. All 15 test
 **State:** STATIC DEF PARENT CORRECTED; actual loaded RimWorld 1.6/Core and gameplay still unverified.
 
 The first Ironmaking `ThingCategoryDef AMJ_IronmakingMaterials` used a `Resources` parent not found in the checked Vanilla category tree. Changed to known `Root`, without joining `ResourcesRaw` or changing iron-sand trade/vanilla stock. Added a nested `Patches/**/*.xml` parsing regression in the owner's structural test. The rationale/procedure lives in `Docs/Design.md` and `Docs/GoldenPaths/IronSandStaticAudit.md`; this entry is only the status handoff.
+
+## IRON-PICKLE-20261010 — Isolated live-game automated test harness
+
+**State:** E2E HARNESS AUTHORED; RimWorld/Pickle game execution and .NET test build OPEN.
+
+Five test-only Pickle scenarios now target loaded Defs and Vanilla/MO result, a naturally spawned map deposit, a pawn mining job and real save/reload. The runner stages owner-marked temporary Mods and isolated SaveData, requiring complete Pickle summary/ERROR-free Player.log; normal ModsConfig/Prefs and Steam installs must remain unchanged. Four fixture checks of the exact result validator passed; no real game or MO profile E2E was run in this environment. Owner procedure: `Docs/GoldenPaths/IronmakingPickleE2E.md`.
