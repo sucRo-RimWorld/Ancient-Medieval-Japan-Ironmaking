@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "feature": "Finite Japanese iron-sand production and pre-Edo medieval furnaces",
+  "owner": "sucRo-RimWorld/Ancient-Medieval-Japan-Ironmaking",
+  "scope": "RimWorld 1.6 independent iron-sand deposit, charcoal, three smelting scales and Vanilla/MO output integration",
+  "status": "ready",
+  "search": {
+    "date": "2026-10-10",
+    "queries": [
+      "RimWorld 1.6 iron sand tatara 砂鉄 製鉄",
+      "RimWorld bloomery smelting ore to Steel 1.6",
+      "Vanilla Factions Expanded Medieval 2 forge bellows iron",
+      "Japanese tatara RimWorld Workshop old 1.0 newer 1.6 rice integrated",
+      "Expanded Materials Metals 1.6 source dependencies",
+      "Simple Chains Steel source 1.6 availability"
+    ],
+    "ecosystems": [
+      "vanilla_mo",
+      "amj",
+      "ve",
+      "non_ve"
+    ],
+    "limitations": "1.6 installed Vanilla Core/trader values and current Expanded Materials Metals and Rice/tatara executable Defs were not supplied; broad-scope mandatory alternatives are nevertheless ruled out on publicly documented dependency and ownership conflicts. 1.6 runtime outcome and interoperability not tested; later source changes require refresh."
+  },
+  "evidence": [
+    {
+      "id": "iron-entry-20261010",
+      "path": "Docs/Research/IronmakingEntryEvidence-20261010.md",
+      "sha256": "d974610ec7efb8192e1fb7df10ef246d31e28f11c6a03a73c652f7e693e9558d"
+    }
+  ],
+  "candidates": [
+    {
+      "name": "Vanilla RimWorld + Medieval Overhaul baseline",
+      "ecosystem": "vanilla_mo",
+      "version": "RimWorld 1.6 + author-provided MO 1.6",
+      "outcome": "optional_compatibility",
+      "comparison": {
+        "function": "Vanilla supplies smithing/final Steel; MO supplies IronOre, IronIngot, coal, smelter and Mine Shaft; neither reviewed chain is the requested finite sand path.",
+        "historical_fit": "Generic iron and ore not regionally Japanese; MO fantasy/high-yield routes require separate Japanization.",
+        "dependencies": "Vanilla mandatory; MO optional. MO mandatory conflicts with standalone.",
+        "retention": "Reuse Vanilla Bills/Steel and integrate MO resources when present; do not remove MO.",
+        "progression_balance": "Keep generic smithing and research distinct; Japanization handles MO-specific supply rebalancing.",
+        "reuse": "Vanilla worktable/Recipe patterns; MO-compatible final IronIngot.",
+        "maintenance_license": "No MO XML/assets copied; only observations and names referenced."
+      },
+      "evidence": [
+        "iron-entry-20261010"
+      ]
+    },
+    {
+      "name": "Existing AMJ ownership boundaries",
+      "ecosystem": "amj",
+      "version": "Project and owner design 2026-10-10",
+      "outcome": "independent",
+      "comparison": {
+        "function": "Environment owns terrain, Japanization owns conditional MO changes; no other AMJ owner implements standalone Japanese iron sand.",
+        "historical_fit": "A finite regional Japanese ore-and-smelting loop is Ironmaking's authored scope.",
+        "dependencies": "No AMJ sibling Mod required.",
+        "retention": "Preserve Environment/Grains/Waterworks ownership instead of absorbing features.",
+        "progression_balance": "Sand source to bloom to final general metal adds a distinct early domestic production path.",
+        "reuse": "Optional terrain and MO data integration only.",
+        "maintenance_license": "All new AMJ Defs are independently authored; no foreign art/code reuse."
+      },
+      "evidence": [
+        "iron-entry-20261010"
+      ]
+    },
+    {
+      "name": "VFE Medieval 2 1.6",
+      "ecosystem": "ve",
+      "version": "1.6 source (2026-10-10 audited)",
+      "outcome": "optional_compatibility",
+      "comparison": {
+        "function": "Adds smithing anvil/forge bellows production Linkables and broad medieval faction systems.",
+        "historical_fit": "Medieval forge support applies, but finite Japanese iron-sand production stages are not established in inspected source.",
+        "dependencies": "Requires VEF and much larger faction/technology content.",
+        "retention": "Retain it as optional equipment support; requiring entire feature package is disproportionate.",
+        "progression_balance": "Bellows discount could affect future furnace balance, so check fuel once.",
+        "reuse": "Optional efficiency/linkable compatibility; no shared required framework.",
+        "maintenance_license": "Official public XML inspected, no code or art imported."
+      },
+      "evidence": [
+        "iron-entry-20261010"
+      ]
+    },
+    {
+      "name": "Vanilla Iron and Steel Continued 1.6",
+      "ecosystem": "non_ve",
+      "version": "1.6 maintained XML 2026-10-10",
+      "outcome": "prior_art_only",
+      "comparison": {
+        "function": "NECIron, bloomery and coal-to-Steel; patches MineableSteel to ore globally.",
+        "historical_fit": "Generic smelting overlaps early iron, not the approved additive regional sand deposit plus medieval-specific progression.",
+        "dependencies": "Would require keeping the mod and patching global mineable changes back.",
+        "retention": "Large interference to suppress basic ore replacement while retaining bloomery.",
+        "progression_balance": "Generic ore chain does not give local sand-iron geography and selectable Japanese tier size.",
+        "reuse": "Use Vanilla production patterns, not this Mod's content as a dependency.",
+        "maintenance_license": "1.6 XML inspected; no code/assets copied."
+      },
+      "evidence": [
+        "iron-entry-20261010"
+      ]
+    },
+    {
+      "name": "Simple Chains: Steel",
+      "ecosystem": "non_ve",
+      "version": "Old upstream lists 1.2-1.4 only",
+      "outcome": "prior_art_only",
+      "comparison": {
+        "function": "Ore + coal to Steel in Owl_Bloomery, edits Vanilla MineableSteel.",
+        "historical_fit": "Generic bloomery is prior art, not a Japanese finite sand terrain resource.",
+        "dependencies": "Old upstream not verified for 1.6; would globally replace mining.",
+        "retention": "Keeping generic system would not meet local sand source without invasive patches.",
+        "progression_balance": "Single ore-to-Steel chain not the three historical production scales.",
+        "reuse": "Reference Bill/smelter pattern only, independently implement.",
+        "maintenance_license": "Old GitHub public XML inspected; no copying."
+      },
+      "evidence": [
+        "iron-entry-20261010"
+      ]
+    },
+    {
+      "name": "Expanded Materials - Metals",
+      "ecosystem": "non_ve",
+      "version": "1.6 Workshop, old 1.3/1.4 GitHub source",
+      "outcome": "prior_art_only",
+      "comparison": {
+        "function": "Multiple metallic ores, charcoal, refining and alloys; generic broad metals economy.",
+        "historical_fit": "General smelting overlap, not evidence of a narrow Japanese sand-to-medieval line.",
+        "dependencies": "Workshop requires Argonic Core + VEF; violates minimal standalone requirement.",
+        "retention": "Much unrelated content would need retention or hiding.",
+        "progression_balance": "Broad metal tiers and economy differ from small/improved/medieval scale alternatives.",
+        "reuse": "Only optional compatibility/prior art if final source and licensing permit.",
+        "maintenance_license": "Current 1.6 XML not reviewed; no negative assertions about hidden Recipes; no reuse."
+      },
+      "evidence": [
+        "iron-entry-20261010"
+      ]
+    },
+    {
+      "name": "Original Tatara and Rice Cultivating Civilization",
+      "ecosystem": "non_ve",
+      "version": "Original 1.0, rice-integrated 1.6 Workshop",
+      "outcome": "prior_art_only",
+      "comparison": {
+        "function": "Original Japanese smelting thematically overlaps; rice integrated successor includes tatara-related content.",
+        "historical_fit": "Historical motif fits, but rice/food/brewing package is not a standalone finite Japanese ore-chain implementation.",
+        "dependencies": "Modern pack requires Harmony plus broader crop/food systems; original 1.0 is not a verified 1.6 replacement.",
+        "retention": "Making broad rice pack required retains unrelated large agriculture chain.",
+        "progression_balance": "Unknown exact 1.6 recipes, no evidence of the desired scale choices and optional MO exit.",
+        "reuse": "No assets or XML imported; potential existing standalone usage is not established.",
+        "maintenance_license": "Original old, successor 1.6 Def uninspected and redistribution not permitted."
+      },
+      "evidence": [
+        "iron-entry-20261010"
+      ]
+    },
+    {
+      "name": "Progression Production 1.6",
+      "ecosystem": "non_ve",
+      "version": "1.6 public description 2026-09-15",
+      "outcome": "prior_art_only",
+      "comparison": {
+        "function": "Reorders MO/VE research and introduces production tier requirements.",
+        "historical_fit": "Research progression prior art, not new finite sand deposit and bloom smelting production.",
+        "dependencies": "Requires ReplaceLib and target MO/VE Mods; not Vanilla-only.",
+        "retention": "Retains foreign research tree changes unrelated to AMJ.",
+        "progression_balance": "Progression patch cannot supply finite resources or working furnaces by itself.",
+        "reuse": "No dependency; research compatibility concept only.",
+        "maintenance_license": "Description inspected, no Mod code/art reused."
+      },
+      "evidence": [
+        "iron-entry-20261010"
+      ]
+    }
+  ],
+  "decision": {
+    "kind": "independent",
+    "specification": "Docs/Design.md",
+    "rationale": "Preserve base Vanilla steel/smithing and other Mods while adding a finite Japanese iron-sand extraction path and historically differentiated smelting capacities without forcing MO, VEF or rice/metal economy packs. Each candidate's required scope/dependency or global ore change contradicts the accepted standalone owner contract.",
+    "independent_gap": "Local finite sand-iron deposits with terrain variation, early/improved/medieval Japanese furnace choices, independent Vanilla support and optional MO IronIngot output without global Vanilla/MO mineable/trader rewrites."
+  },
+  "unresolved": []
+}
