@@ -12,23 +12,22 @@ balance and accepted textures remain unimplemented/unaccepted. Static checks do
 not establish loaded gameplay. See MVP checklist and Design for scope.
 
 ## IRON-PICKLE-20261010
-**State:** VANILLA/MO CORE 5/5 AUTHOR-REPORTED PASS; PRODUCTION VANILLA WATCHDOG-TIMEOUT OBSERVED, RUNTIME PASS PENDING.
+**State:** CORE VANILLA/MO 5/5 AUTHOR-REPORTED PASS (PRIOR HARNESS); PRODUCTION VANILLA 4/4 AUTHOR-REPORTED PASS; PRODUCTION MO PENDING.
 Vanilla run `b5a5596f84` and MO run `5127792409` passed five baseline scenarios each;
 MO exit 0 in 51s with zero skipped/flaky/error logs after PR #20 (`93667960ca5901fb03634ec7cd52f5613dc53497`).
 Raw local reports were not independently inspected. Earlier hidden-startup/config
 failures are superseded, with diagnosis/provenance retained in Golden Path and Git history.
 Core covers loaded source/Defs, natural deposit, mining and save/reload only.
-Next suite: `run-pickle-e2e.bat --suite production --profile All`, four scenarios per
-profile via the same private-desktop runner. Native WorkGiver/Bill jobs, exact input
+Next profile: `run-pickle-e2e.bat --suite production --profile MO`, four
+scenarios via the same private-desktop runner. Native WorkGiver/Bill jobs, exact input
 and output counts and fueled Vanilla smithy consumption are asserted. Owner kiln/
 furnace Crafting WorkGiver connection added; production XML amounts unchanged.
-First Vanilla production run passed only source; subsequent run `cc232937e7`
-reached charcoal Job start and stalled before its first 240-tick wait returned.
-Confirmed harness cause: passive `ctx.WaitTicks` in Pickle Fast mode; upstream
-built-in tick step advances native DoSingleTick instead. Shared fast-mode tick
-helper now used by Bills and Core mining; new Windows runtime evidence required.
-Bounded/early-fail monitoring and milestones remain (Golden Path linked below).
-Fresh reports required; no production runtime PASS yet. Refuelling jobs, integrated
+After the PR #24 Fast-mode Tick fix, author-run Vanilla Production `240c258399`
+reported 4/4 PASS (16 seconds, exit code 0, zero skipped/flaky/error logs and
+isolated cleanup). Earlier stalled Vanilla Production attempts are superseded.
+Evidence is author console output, not independently inspected raw logs.
+Production MO still needs a fresh game run. The shared Core mining Tick helper
+also changed, so rerun Core Vanilla/MO for current-harness claims. Refuelling jobs, integrated
 chain logistics, trade, research and distribution remain OPEN.
 Canonical procedure/evidence: `Docs/GoldenPaths/IronmakingPickleE2E.md`,
 `Docs/Testing/IronmakingPickleEvidence.md`.
