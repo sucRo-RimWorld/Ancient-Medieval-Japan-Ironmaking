@@ -11,7 +11,7 @@
 3. **Static XML added, runtime unverified:** small furnace uses Stony material and requires no Steel/component; buildability and workbench visuals must be checked in loaded Vanilla.
 4. **Static XML added, runtime unverified:** sand + charcoal (or MO Coal) Bill → IronBloom; no Refuelable on AMJ kilns/furnaces. Confirm actual input/yield, work and interrupts in RimWorld.
 5. **Conditional XML implemented, runtime unverified:** Vanilla `FueledSmithy`/`ElectricSmithy` converts IronBloom → Steel; MO-Patch replaces both `recipeUsers` and output with `DankPyon_Anvil` → `DankPyon_IronIngot`. Confirm PatchOperationFindMod activation and metalChain ON/OFF; MO research must not be bypassed.
-6. Add limited explicitly targeted sand-iron **seller** supply and practical buyers, without changing Vanilla/MO current generic Steel/ingot merchant stock.
+6. **Static Patch added, runtime unverified:** two Vanilla bulk caravan TraderKinds get a limited `AMJ_IronSand` `StockGenerator_SingleDef` (seller) and `StockGenerator_BuySingleDef` (buyer), conditional on an existing TraderKind stock list. Vanilla/MO metal goods remain unchanged; visit stock and quantities require loaded-game testing.
 7. Keep higher furnaces, iron sand washing, iron slag/pig iron, special sword steel, full historical waterworks and late tatara out of first executable slice.
 
 ## Resource discovery / map generation prototype

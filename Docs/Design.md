@@ -265,6 +265,10 @@ Ironmaking独自の砂鉄 `ThingDef`、採取地点、研究とGenStepがWTLの�
 - https://github.com/m00nl1ght-dev/WorldTechLevel/blob/main/Sources/WorldTechLevel/Patches/Patch_MapGenerator.cs
 - https://rimworldhub.com/wiki/thing/DeepDrilling?type=ResearchProjectDef
 
+### 6.11 砂鉄交易の初期XML（未実機検証）
+
+砂鉄の交易補完用として、`Patches/TradeIronSand.xml`でVanillaの`Caravan_Neolithic_BulkGoods`と`Caravan_Outlander_BulkGoods`の存在を条件確認し、**砂鉄だけ**の`StockGenerator_SingleDef`（販売）および`StockGenerator_BuySingleDef`（買取）を追加する。鉄インゴット/Steel/鉄鉱石や他資源のStockGeneratorは削除・置換しない。Vanilla Core 1.6の当該TraderKindDef実体およびキャラバン出現率はまだ未監査で、**取引可能なキャラバンが必ず訪れる保証はない**。実機で存在/生成/売買方向を確認し、必要なら同じ責務の範囲で拠点商人等を追加する。数量と売価は暫定。MO商人の既存IronIngot在庫はJapanizationの条件付き調整担当であり、このModから削減しない。
+
 ## 7. 添付MO 1.6実装監査
 
 調査対象は添付のMO本体 `3219596926.zip`。以下はそのスナップショットのXML事実であり、最新Workshop全体やロード後の最終値を保証しない。
@@ -319,7 +323,7 @@ Vanilla Expanded系では **Vanilla Factions Expanded - Medieval 2** を機能�
 
 ## 9. 検証と次の実装単位
 
-2026-10-10時点で、**砂鉄堆積採掘の第一段XML（About / finite IronSand deposit / GenStep / MapGenerator Patch）と静的テスト**を追加した。炭焼き・小型炉・鉄塊→一般鉄材Billの**開発用XML定義**も追加した。交易・独立研究・中上位炉・承認済画像はまだ未実装。Vanilla+MO双方の実機Recipe動作は未検証。RimWorld実機の最終Def、採掘可否、描画、マップ生成、互換動作は未検証であり配布可否を主張しない。
+2026-10-10時点で、**砂鉄堆積採掘の第一段XML（About / finite IronSand deposit / GenStep / MapGenerator Patch）と静的テスト**を追加した。炭焼き・小型炉・鉄塊→一般鉄材Billの**開発用XML定義**も追加した。砂鉄の限定的なキャラバン販売/買取Patchは追加済み。独立研究・中上位炉・承認済画像はまだ未実装。Vanilla+MO双方の実機Recipe動作は未検証。RimWorld実機の最終Def、採掘可否、描画、マップ生成、互換動作は未検証であり配布可否を主張しない。
 
 実装の最小単位は **有限砂鉄堆積 + 炭化 + 小型炉 + 鉄塊 + 一般鉄材への合流** とする。独自「鉄器加工」研究、銑、鉄滓、良質鋼、鉄穴流し、専用送風設備はMVPへ入れない。改良製鉄炉・中世たたらは、この最小ループの採取量・燃料量・作業量を実測してから追加する。新リポジトリの作成・公開はこの文書で実施済みとはしない。
 
@@ -341,4 +345,4 @@ Vanilla Expanded系では **Vanilla Factions Expanded - Medieval 2** を機能�
 
 独立実装の必要性について、[比較証拠](Research/IronmakingEntryEvidence-20261010.md)と[判定JSON](Research/IronmakingEntryDecision.json)を作成し、現行1.6/旧版・VE/非VE・Vanilla/MO/AMJの違いを分けた。判定記録は`status: ready`、証拠SHA-256・必須比較8件/4系統の機械的な同等条件照合はPASS。**ProjectのPython検証器の実ファイルをローカル実行したという主張ではない。** 判定は独立Modを実装する合理性を認めるもので、実機動作・最終配布を承認したものではない。既存Mod比較の詳細は[IronmakingExistingModEntryAudit-20261010.md](Research/IronmakingExistingModEntryAudit-20261010.md)。
 
-最初の研究用プローブ（5件静的PASS）から、本リポジトリの砂鉄採取第一段へ限定的に進めた。**実装済DefName/PackageId**は`AMJ_IronSand`、`AMJ_IronSandDeposit`、`AMJ_IronmakingMaterials`、`AMJ_ScatterIronSand`、`sucro.ancientmedievaljapan.ironmaking`。これらは今後の互換参照点だが、数値・見た目・生成分布は未確定。現行XMLの`mineableYield=40`、`countPer10kCellsRange=0.8~1.6`、`MarketValue=1`は**試験用暫定値**で、史実・交易・実機バランスの採用値ではない。生成は単純な`GenStep_ScatterThings`で、河川/海岸/砂礫地の地域重みはまだ実装されていない。追加の開発用識別子は`AMJ_Charcoal`、`AMJ_IronBloom`、`AMJ_CharcoalKiln`、`AMJ_SmallIronFurnace`、`AMJ_BurnCharcoal`、`AMJ_SmeltIronSand`、`AMJ_ForgeIronBloom`。数量は`WoodLog 20→Charcoal 10`、`IronSand 40+Charcoal 60→IronBloom 10`、`IronBloom 10→Vanilla Steel 8`を**初期テスト値**として実装し、採用済み経済バランスとはしない。鍛錬にはVanillaの`FueledSmithy`/`ElectricSmithy`を使い、MOが存在する場合だけ`PatchOperationFindMod`で**`DankPyon_Anvil`＋`DankPyon_IronIngot 8`へ差し替える**。同じ条件で炉材料に`DankPyon_Coal`を追加する。MOのSteel研究短絡を避けるためVanilla Steelの出力をMOで残さない。製鉄炉・炭焼き設備はBill材料消費のみで`CompProperties_Refuelable`を持たず、二重燃料消費を避ける。MO時のAMJ木炭生産抑制は今後の検証対象で、現時点では残る。専用カテゴリは`ResourcesRaw`の直下へ入れず、交易大量流入を避ける。依存Modは指定しない。使用しているVanilla画像は開発用代用で承認済み最終画像ではない。再現・静的検証手順は[IronSandStaticAudit](GoldenPaths/IronSandStaticAudit.md)に記録。今後もtopic branch→PR→チェック確認→mergeを使用する。
+最初の研究用プローブ（5件静的PASS）から、本リポジトリの砂鉄採取第一段へ限定的に進めた。**実装済DefName/PackageId**は`AMJ_IronSand`、`AMJ_IronSandDeposit`、`AMJ_IronmakingMaterials`、`AMJ_ScatterIronSand`、`sucro.ancientmedievaljapan.ironmaking`。これらは今後の互換参照点だが、数値・見た目・生成分布は未確定。現行XMLの`mineableYield=40`、`countPer10kCellsRange=0.8~1.6`、`MarketValue=1`、商人在庫`countRange=10~30`は**試験用暫定値**で、史実・交易・実機バランスの採用値ではない。生成は単純な`GenStep_ScatterThings`で、河川/海岸/砂礫地の地域重みはまだ実装されていない。追加の開発用識別子は`AMJ_Charcoal`、`AMJ_IronBloom`、`AMJ_CharcoalKiln`、`AMJ_SmallIronFurnace`、`AMJ_BurnCharcoal`、`AMJ_SmeltIronSand`、`AMJ_ForgeIronBloom`。数量は`WoodLog 20→Charcoal 10`、`IronSand 40+Charcoal 60→IronBloom 10`、`IronBloom 10→Vanilla Steel 8`を**初期テスト値**として実装し、採用済み経済バランスとはしない。鍛錬にはVanillaの`FueledSmithy`/`ElectricSmithy`を使い、MOが存在する場合だけ`PatchOperationFindMod`で**`DankPyon_Anvil`＋`DankPyon_IronIngot 8`へ差し替える**。同じ条件で炉材料に`DankPyon_Coal`を追加する。MOのSteel研究短絡を避けるためVanilla Steelの出力をMOで残さない。製鉄炉・炭焼き設備はBill材料消費のみで`CompProperties_Refuelable`を持たず、二重燃料消費を避ける。MO時のAMJ木炭生産抑制は今後の検証対象で、現時点では残る。専用カテゴリは`ResourcesRaw`の直下へ入れず、交易大量流入を避ける。依存Modは指定しない。使用しているVanilla画像は開発用代用で承認済み最終画像ではない。再現・静的検証手順は[IronSandStaticAudit](GoldenPaths/IronSandStaticAudit.md)に記録。今後もtopic branch→PR→チェック確認→mergeを使用する。

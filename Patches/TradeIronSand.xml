@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <!-- Developer stock ranges; use targeted sellers, not generic ResourcesRaw stock. -->
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/TraderKindDef[defName="Caravan_Neolithic_BulkGoods" or defName="Caravan_Outlander_BulkGoods"]/stockGenerators</xpath>
+    <match Class="PatchOperationAdd">
+      <xpath>Defs/TraderKindDef[defName="Caravan_Neolithic_BulkGoods" or defName="Caravan_Outlander_BulkGoods"]/stockGenerators</xpath>
+      <value>
+        <li Class="StockGenerator_SingleDef">
+          <thingDef>AMJ_IronSand</thingDef>
+          <countRange>10~30</countRange>
+        </li>
+        <li Class="StockGenerator_BuySingleDef">
+          <thingDef>AMJ_IronSand</thingDef>
+        </li>
+      </value>
+    </match>
+  </Operation>
+</Patch>
