@@ -17,3 +17,8 @@ First finite iron-sand deposit ThingDef + GenStep XML developer slice was added 
 ## MOJ-IRON-INTERFACE-20261010
 **State:** INTERFACE CONTRACT DELIVERED; Japanization runtime adapter pending.  
 Ironmaking `About/About.xml` now has packageId `sucro.ancientmedievaljapan.ironmaking` and `Docs/Design.md` records its live developer DefNames. The owner MO compatibility Patch routes `AMJ_ForgeIronBloom` to `DankPyon_Anvil` → `DankPyon_IronIngot` and accepts `DankPyon_Coal`. Japanization [PR #4](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Medieval-Overhaul-Japanization/pull/4), merged commit `a019a43bf1d26abf906b16266262d134410a8425`, formally received the interface. Its additional MO mining/Mine Shaft/deep/trader/research rebalancing is not yet implemented or tested; keep source ownership separate and do not imply loaded-game PASS.
+
+## IRON-MO-SOURCE-CONTRACT-20261010
+
+**State:** STATIC UPSTREAM XML CHECK PASS; loaded-game behavior OPEN.  
+Optional `AMJ_MO_ARCHIVE` test reads the author's actual MO 1.6 ZIP. All 15 tests passed with it; normal suite has 12 passes + 3 explicit skips without the archive. Checked mod name/packageId, upstream Anvil/Coal/IronIngot Defs, and Ironmaking conditional output. Fixed the verifier's stale local About copy; GitHub About was already correct. This does **not** verify executed RimWorld patches or MO gameplay. Source contract and command in `Docs/GoldenPaths/IronSandStaticAudit.md`.
