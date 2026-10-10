@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <GenStepDef>
+    <defName>AMJ_ScatterIronSand</defName>
+    <order>1121</order>
+    <genStep Class="GenStep_ScatterThings">
+      <thingDef>AMJ_IronSandDeposit</thingDef>
+      <allowInWaterBiome>false</allowInWaterBiome>
+      <minSpacing>12</minSpacing>
+      <extraNoBuildEdgeDist>4</extraNoBuildEdgeDist>
+      <minDistToPlayerStart>12</minDistToPlayerStart>
+      <!-- Temporary sampling density, not finalized historical resource distribution. -->
+      <countPer10kCellsRange>0.8~1.6</countPer10kCellsRange>
+      <terrainValidationDisallowed><li>Road</li></terrainValidationDisallowed>
+      <validators>
+        <li Class="ScattererValidator_Buildable"><radius>1</radius><affordance>Light</affordance></li>
+        <li Class="ScattererValidator_NoNonNaturalEdifices"><radius>1</radius></li>
+      </validators>
+    </genStep>
+  </GenStepDef>
+</Defs>

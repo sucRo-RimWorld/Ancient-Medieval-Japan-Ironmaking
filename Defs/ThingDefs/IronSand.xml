@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThingDef ParentName="ResourceBase">
+    <defName>AMJ_IronSand</defName>
+    <label>iron sand (development)</label>
+    <description>Sand containing recoverable iron. A finite raw material for Japanese ironmaking.</description>
+    <graphicData>
+      <!-- Vanilla placeholder: not an accepted release texture. -->
+      <texPath>Things/Item/Resource/Steel</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <statBases><MarketValue>1</MarketValue><Mass>0.15</Mass></statBases>
+    <thingCategories><li>AMJ_IronmakingMaterials</li></thingCategories>
+    <stackLimit>75</stackLimit>
+  </ThingDef>
+  <ThingDef ParentName="RockBase">
+    <defName>AMJ_IronSandDeposit</defName>
+    <label>iron-sand deposit (development)</label>
+    <description>A finite iron-sand deposit. Its appearance is provisional.</description>
+    <graphicData>
+      <!-- Vanilla placeholder: verify actual 1.6 texPath before gameplay acceptance. -->
+      <texPath>Things/Building/Linked/RockFlecked_Atlas</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <statBases><MaxHitPoints>120</MaxHitPoints></statBases>
+    <building>
+      <isResourceRock>true</isResourceRock>
+      <mineableThing>AMJ_IronSand</mineableThing>
+      <mineableYield>40</mineableYield>
+      <mineableScatterCommonality>0</mineableScatterCommonality>
+      <veinMineable>false</veinMineable>
+    </building>
+  </ThingDef>
+</Defs>

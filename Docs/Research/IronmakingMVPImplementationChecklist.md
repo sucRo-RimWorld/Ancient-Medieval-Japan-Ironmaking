@@ -1,12 +1,12 @@
 # AMJ Ironmaking — minimal implementation checklist (candidate)
 
-**Status:** owner-local technical candidate, not runtime implementation or author-approved numeric balancing.  
+**Status:** 2026-10-10 first sand/deposit MapGen static source added; other MVP modules not implemented, loaded-game results unverified and numeric balancing unapproved.  
 **Authoritative concept:** [Ironmaking design](../Design.md).  
 **Owner:** `sucRo-RimWorld/Ancient-Medieval-Japan-Ironmaking`.
 
 ## Thin vertical slice
 
-1. Define `AMJ_IronSand` + finite `AMJ_IronSandDeposit` (working identifiers), an independent Base resource route and a minimal extraction loop.
+1. **Static source implemented, runtime unverified:** `AMJ_IronSand` + finite `AMJ_IronSandDeposit`, dedicated `AMJ_IronmakingMaterials` resource category, `AMJ_ScatterIronSand` GenStep and MapCommonBase attachment. No extraction/mining or generated-map runtime PASS yet; region weighting absent.
 2. Provide wood-to-charcoal fuel with no inherited MO/PF dependency. When MO is present, retain AMJ charcoal Def for old saves but prefer MO Coal in usual Bills.
 3. Define a small basic furnace buildable from pre-iron materials; crafting must not require its own future output.
 4. Consume iron sand + a Bill fuel material once to produce a bloom/intermediate; avoid simultaneous Refuelable double consumption.
