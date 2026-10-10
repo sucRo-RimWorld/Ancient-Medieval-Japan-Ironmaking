@@ -12,7 +12,7 @@
 - No Edo completed tatara, unrelated weapons/armor, fantasy sword upgrades or global metallurgy replacement.
 
 ## Gates and communication
-- Approved concept does **not** mean production code is approved. Existing-Mod review of VE and non-VE (including tatara variants) and mechanical Project [decision record](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/blob/main/Docs/Research/ExistingModAudit.md) remain production entry HOLD.
+- The VE/non-VE independent-implementation [decision JSON](Docs/Research/IronmakingEntryDecision.json) is currently `status: ready` and its evidence SHA-256 matches the owner research note; an equivalent structural/hash check was executed, **not the Project Python validator itself**. This permits bounded developer XML/tests under the accepted design; it does **not** imply loaded-game, graphics, numeric balance, save compatibility or release approval. Follow the Project [Existing-Mod gate](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/blob/main/Docs/Research/ExistingModAudit.md) again for substantial new scope.
 - Source/probe/static tests are not loaded-game proof, graphics acceptance, Steam publication or distribution.
 - Use **main:Docs/Coordination.md** for task status and inter-agent handoffs, never the user as messenger. Confirmed specification goes in design/code/XML, not the coordination log.
 - Preserve previous approvals; check design/implementation/related features together before changing policy. Report "updated" only for actual GitHub changes with commit SHA. Avoid unsolicited Codex PR review and notification churn.
