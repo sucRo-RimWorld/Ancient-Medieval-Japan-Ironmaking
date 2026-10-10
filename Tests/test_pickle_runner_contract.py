@@ -131,6 +131,21 @@ class IsolatedLauncherContracts(unittest.TestCase):
         self.assertEqual(prefs.read_text(), prefs_text)
         self.assertEqual(mods_config.read_text(), mods_text)
 
+    def test_real_prefs_root_is_preserved_without_assuming_tag_name(self):
+        prefs = self.root / "Prefs.xml"
+        mods = self.root / "ModsConfig.xml"
+        prefs.write_text("<PrefsData><uiScale>1.25</uiScale></PrefsData>")
+        mods.write_text("<ModsConfigData><version>1.6.4871</version>"
+                        "<activeMods/><knownExpansions/></ModsConfigData>")
+        dest = self.root / "UnusualRoot" / "Config"
+        module.make_config(dest, mods, "MO", prefs)
+        root = ET.parse(dest / "Prefs.xml").getroot()
+        self.assertEqual(root.tag, "PrefsData")
+        self.assertEqual(root.findtext("uiScale"), "1.25")
+        self.assertEqual(root.findtext("devMode"), "True")
+        self.assertEqual(root.findtext("resetModsConfigOnCrash"), "False")
+        self.assertEqual(ET.parse(prefs).getroot().findtext("devMode"), None)
+
     def test_invalid_template_fails_closed_without_synthetic_dlc(self):
         prefs = self.root / "Prefs.xml"
         mods = self.root / "ModsConfig.xml"
