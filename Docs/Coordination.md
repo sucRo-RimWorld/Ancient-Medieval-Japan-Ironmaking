@@ -49,3 +49,7 @@ Author-run Vanilla Pickle aborted on a real `[ERROR]`: `AMJ_Charcoal` borrowed V
 
 **State:** MO actual game TIMED OUT at 900s (run `10f8fe08ce`); root cause OPEN, Pickle 5/5 unexecuted/undetermined.  
 Uploaded `launcher.log` confirms private-desktop PID=15988 and native timeout. `Player.log` contains startup/graphics initialization, installed-Mod metadata warnings and two Mono fallback-library lines, but no Pickle scenarios or explicit terminal cause. No missing-mod/Recipe/Unity crash diagnosis is asserted from these lines. The owner test launcher now records 30-second private-window/CPU/memory snapshots and bounded failed-run log tails for the next MO-only diagnostic attempt. The procedure/evidence scope belongs in `Docs/GoldenPaths/IronmakingPickleE2E.md`; no production XML or compatibility/balance changes are authorized by the timeout alone.
+
+## IRON-MO-STARTUP-DIFFERENTIAL-20261010
+
+**State:** TWO-PROFILE ISOLATED STARTUP DIAGNOSTIC IMPLEMENTED; actual comparison observations pending. After 900s and 180s hidden MO sessions without Pickle completion, the separate read-only diagnostic tool compares `MO-Baseline` (Harmony/Core/VEF/Processor/MO) against `MO-Pickle` (same + RimLogging/Pickle/Quickstarts). Neither loads Ironmaking or asserts Pickle success. Only the test harness/procedure changes; native game state stays isolated. Detailed commands, output paths and interpretation limits in `Docs/GoldenPaths/IronmakingPickleE2E.md`. No production XML, MO compatibility patch or E2E PASS record changed.
