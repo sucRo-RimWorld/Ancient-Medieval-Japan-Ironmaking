@@ -16,7 +16,7 @@ class IronSandStatic(unittest.TestCase):
 
     def test_all_xml_parses_and_ids_unique(self):
         files = sorted(ROOT.glob('Defs/**/*.xml')) + sorted(ROOT.glob('Patches/*.xml')) + [ROOT / 'About/About.xml']
-        self.assertEqual(len(files), 5)
+        self.assertGreaterEqual(len(files), 5)
         ids = []
         for path in files:
             element = ET.parse(path).getroot()
@@ -32,7 +32,12 @@ class IronSandStatic(unittest.TestCase):
         self.assertEqual(dep.findtext('building/mineableScatterCommonality'), '0')
         self.assertEqual(dep.findtext('building/veinMineable'), 'false')
         self.assertIsNone(dep.find('deepCommonality'))
-        self.assertEqual(len(list(ROOT.glob('Defs/**/Recipe*'))), 0)
+        # Later manufacturing Recipes are allowed, but no Recipe creates unlimited new sand or deposits.
+        for file in ROOT.glob('Defs/RecipeDefs/**/*.xml'):
+            root = ET.parse(file).getroot()
+            for products in root.findall('.//RecipeDef/products'):
+                self.assertIsNone(products.find('AMJ_IronSand'))
+                self.assertIsNone(products.find('AMJ_IronSandDeposit'))
         patch_text = (ROOT / 'Patches/AttachIronSandMapGen.xml').read_text()
         self.assertNotIn('MineableSteel', patch_text)
         self.assertNotIn('DankPyon_', patch_text)

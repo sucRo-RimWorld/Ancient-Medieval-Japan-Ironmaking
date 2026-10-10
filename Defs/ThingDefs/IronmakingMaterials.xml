@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThingDef ParentName="ResourceBase">
+    <defName>AMJ_Charcoal</defName>
+    <label>charcoal (development)</label>
+    <description>Charcoal prepared for iron smelting.</description>
+    <graphicData><texPath>Things/Item/Resource/Chemfuel</texPath><graphicClass>Graphic_StackCount</graphicClass></graphicData>
+    <statBases><MarketValue>0.7</MarketValue><Mass>0.2</Mass></statBases>
+    <thingCategories><li>AMJ_IronmakingMaterials</li></thingCategories>
+  </ThingDef>
+  <ThingDef ParentName="ResourceBase">
+    <defName>AMJ_IronBloom</defName>
+    <label>iron bloom (development)</label>
+    <description>Unworked iron produced by a small smelting furnace.</description>
+    <graphicData><texPath>Things/Item/Resource/Steel</texPath><graphicClass>Graphic_StackCount</graphicClass></graphicData>
+    <statBases><MarketValue>3</MarketValue><Mass>1</Mass></statBases>
+    <thingCategories><li>AMJ_IronmakingMaterials</li></thingCategories>
+  </ThingDef>
+</Defs>

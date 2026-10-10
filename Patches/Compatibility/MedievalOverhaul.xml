@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <Operation Class="PatchOperationFindMod">
+    <mods><li>Medieval Overhaul</li></mods>
+    <match Class="PatchOperationSequence">
+      <operations>
+        <!-- Preserve MO IronIngot -> Steel research; do not produce Steel from AMJ bloom. -->
+        <li Class="PatchOperationReplace">
+          <xpath>Defs/RecipeDef[defName="AMJ_ForgeIronBloom"]/products</xpath>
+          <value><products><DankPyon_IronIngot>8</DankPyon_IronIngot></products></value>
+        </li>
+        <li Class="PatchOperationReplace">
+          <xpath>Defs/RecipeDef[defName="AMJ_ForgeIronBloom"]/recipeUsers</xpath>
+          <value><recipeUsers><li>DankPyon_Anvil</li></recipeUsers></value>
+        </li>
+        <li Class="PatchOperationAdd">
+          <xpath>Defs/RecipeDef[defName="AMJ_SmeltIronSand"]/ingredients/li[2]/filter/thingDefs</xpath>
+          <value><li>DankPyon_Coal</li></value>
+        </li>
+        <li Class="PatchOperationAdd">
+          <xpath>Defs/RecipeDef[defName="AMJ_SmeltIronSand"]/fixedIngredientFilter/thingDefs</xpath>
+          <value><li>DankPyon_Coal</li></value>
+        </li>
+      </operations>
+    </match>
+  </Operation>
+</Patch>

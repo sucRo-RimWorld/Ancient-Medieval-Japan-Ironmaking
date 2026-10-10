@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThingDef ParentName="BenchBase">
+    <defName>AMJ_CharcoalKiln</defName>
+    <label>charcoal kiln (development)</label>
+    <description>Convert firewood into charcoal using manual labor.</description>
+    <thingClass>Building_WorkTable</thingClass>
+    <graphicData><texPath>Things/Building/Production/TableStonecutter</texPath><graphicClass>Graphic_Multi</graphicClass></graphicData>
+    <costStuffCount>20</costStuffCount><stuffCategories><li>Woody</li></stuffCategories>
+    <size>(1,1)</size><designationCategory>Production</designationCategory>
+    <altitudeLayer>Building</altitudeLayer><fillPercent>0.5</fillPercent>
+    <statBases><WorkToBuild>250</WorkToBuild><MaxHitPoints>150</MaxHitPoints><WorkTableWorkSpeedFactor>1</WorkTableWorkSpeedFactor></statBases>
+    <passability>PassThroughOnly</passability><hasInteractionCell>true</hasInteractionCell><interactionCellOffset>(0,0,-1)</interactionCellOffset>
+    <inspectorTabs><li>ITab_Bills</li></inspectorTabs>
+    <building><spawnedConceptLearnOpportunity>BillsTab</spawnedConceptLearnOpportunity></building>
+  </ThingDef>
+  <ThingDef ParentName="BenchBase">
+    <defName>AMJ_SmallIronFurnace</defName>
+    <label>small iron furnace (development)</label>
+    <description>Produce a small iron bloom from iron sand and charcoal.</description>
+    <thingClass>Building_WorkTable</thingClass>
+    <graphicData><texPath>Things/Building/Production/TableStonecutter</texPath><graphicClass>Graphic_Multi</graphicClass></graphicData>
+    <costStuffCount>30</costStuffCount><stuffCategories><li>Stony</li></stuffCategories>
+    <size>(1,1)</size><designationCategory>Production</designationCategory>
+    <altitudeLayer>Building</altitudeLayer><fillPercent>0.5</fillPercent>
+    <statBases><WorkToBuild>500</WorkToBuild><MaxHitPoints>200</MaxHitPoints><WorkTableWorkSpeedFactor>1</WorkTableWorkSpeedFactor></statBases>
+    <passability>PassThroughOnly</passability><hasInteractionCell>true</hasInteractionCell><interactionCellOffset>(0,0,-1)</interactionCellOffset>
+    <inspectorTabs><li>ITab_Bills</li></inspectorTabs>
+    <building><spawnedConceptLearnOpportunity>BillsTab</spawnedConceptLearnOpportunity></building>
+  </ThingDef>
+</Defs>
