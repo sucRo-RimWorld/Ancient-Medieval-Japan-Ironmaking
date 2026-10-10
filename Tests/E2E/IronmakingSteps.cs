@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using RimWorks.Pickle;
+using RimWorks.Pickle.Runtime;
 using RimWorld;
 using Verse;
 
@@ -10,6 +11,30 @@ namespace AncientMedievalJapan.Ironmaking.E2E
 {
     internal static class IronmakingTestThread
     {
+        // Pickle's built-in "I wait N ticks" drives ticks itself in Fast mode.
+        // ctx.WaitTicks alone only observes TickManager and deadlocks on a
+        // paused Quickstart. Match Pickle's own fast-mode simulation semantics.
+        public static async Task AdvanceTicks(PickleContext ctx, int ticks)
+        {
+            ctx.Require(ticks >= 0, "Negative simulation tick count");
+            if (PickleRunMode.Current != PickleRunMode.Mode.Fast)
+            {
+                await ctx.WaitTicks(ticks);
+                return;
+            }
+
+            ctx.Require(Find.TickManager != null, "No TickManager for Pickle fast simulation");
+            int targetTick = checked(Find.TickManager.TicksGame + ticks);
+            while (Find.TickManager.TicksGame < targetTick)
+            {
+                // Yield after bounded batches so Unity/Pickle update, rendering
+                // and scenario timeout handling continue between simulated ticks.
+                for (int batch = 0; batch < 60 && Find.TickManager.TicksGame < targetTick; batch++)
+                    Find.TickManager.DoSingleTick();
+                await ctx.WaitFrames(1);
+            }
+        }
+
         public static Task Run(Action action)
         {
             var done = new TaskCompletionSource<bool>();

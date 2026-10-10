@@ -66,7 +66,7 @@ namespace AncientMedievalJapan.Ironmaking.E2E
                 bool finished = false;
                 for (int batch = 0; batch < 110 && !finished; batch++)
                 {
-                    await ctx.WaitTicks(240);
+                    await IronmakingTestThread.AdvanceTicks(ctx, 240);
                     await IronmakingTestThread.Run(delegate
                     {
                         int afterSand = map.listerThings.ThingsOfDef(
