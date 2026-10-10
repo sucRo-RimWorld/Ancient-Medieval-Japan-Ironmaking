@@ -4,7 +4,7 @@
     <defName>AMJ_Charcoal</defName>
     <label>charcoal (development)</label>
     <description>Charcoal prepared for iron smelting.</description>
-    <graphicData><texPath>Things/Item/Resource/Chemfuel</texPath><graphicClass>Graphic_StackCount</graphicClass></graphicData>
+    <graphicData><texPath>Things/Item/Resource/Chemfuel</texPath><graphicClass>Graphic_Single</graphicClass></graphicData>
     <statBases><MarketValue>0.7</MarketValue><Mass>0.2</Mass></statBases>
     <thingCategories><li>AMJ_IronmakingMaterials</li></thingCategories>
   </ThingDef>

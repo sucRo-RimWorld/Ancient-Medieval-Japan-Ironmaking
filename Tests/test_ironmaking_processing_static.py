@@ -26,6 +26,15 @@ class ProcessingStatic(unittest.TestCase):
         self.assertEqual(self.buildings['AMJ_CharcoalKiln'].findtext('stuffCategories/li'),'Woody')
         self.assertEqual(self.buildings['AMJ_SmallIronFurnace'].findtext('stuffCategories/li'),'Stony')
 
+    def test_chemfuel_placeholder_uses_vanilla_single_graphic(self):
+        # Real 2026-10-10 Vanilla Pickle ERROR showed StackCount searches
+        # for Things/Item/Resource/Chemfuel/Chemfuel which does not exist.
+        charcoal = self.materials['AMJ_Charcoal']
+        self.assertEqual(charcoal.findtext('graphicData/texPath'),
+                         'Things/Item/Resource/Chemfuel')
+        self.assertEqual(charcoal.findtext('graphicData/graphicClass'),
+                         'Graphic_Single')
+
     def test_three_step_bill_chain(self):
         r=self.recipes
         self.assertEqual(set(r),{'AMJ_BurnCharcoal','AMJ_SmeltIronSand','AMJ_ForgeIronBloom'})
