@@ -1,6 +1,6 @@
 # Ironmaking Pickle E2E — loaded RimWorld 1.6
 
-**State:** harness source added, not yet built or run in a local RimWorld installation. This is a real-game test plan/runner, **not a claimed gameplay PASS**. The source tests are scoped to Ironmaking; they are never included in a Workshop payload.
+**State:** author-run Vanilla 1.6 Pickle E2E PASS (5/5, 2026-10-10, run `b5a5596f84`); MO profile remains **NOT RUN**. The user-provided command output was reviewed, not the private log files. This is a bounded gameplay PASS for the five scenarios, not general release readiness. The source tests are scoped to Ironmaking; they are never included in a Workshop payload.
 
 ## Prerequisites
 
@@ -56,3 +56,7 @@ Source precedents: [Pickle authoring](https://github.com/RimWorks/Rimworld-Pickl
 ## Vanilla charcoal texture regression (2026-10-10)
 
 An actual user-run Vanilla Pickle reported `[ERROR] ... Could not load Texture2D at 'Things/Item/Resource/Chemfuel/Chemfuel' for def 'AMJ_Charcoal'` followed by `MatFrom with null sourceTex`. The development `AMJ_Charcoal` reused Vanilla Chemfuel's `texPath` but incorrectly set `Graphic_StackCount`; the original Vanilla Chemfuel ThingDef uses `Graphic_Single` for that path. Fix the charcoal Def to `Graphic_Single` without changing recipe/material identity, and preserve the exact pair in a Python regression test. A previous runtime failure is **not** a Pickle PASS. Re-run the complete hidden game profile and let fresh `summary.json` + ERROR-free `Player.log` decide; no inferred graphical success from static XML.
+
+## Confirmed reported Vanilla run — 2026-10-10
+
+See [IronmakingPickleEvidence](../Testing/IronmakingPickleEvidence.md) for the exact submitted console result and limitations. The original 5 scenarios have been reported PASS with 0 skipped/flaky/error logs and cleanup completed on the author's Windows RimWorld installation. **Do not rerun Vanilla solely to reproduce this PASS.** Next cross-Mod run is `run-pickle-e2e.bat --profile MO`, which uses the same private desktop and separate SaveData and requires complete 5/5 results in the MO profile. That does not test MO `metalChain` ON/OFF as two independent profiles, nor a pawn completing charcoal/smelting Bills.
