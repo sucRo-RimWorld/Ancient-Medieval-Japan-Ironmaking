@@ -3,6 +3,6 @@
   <ThingCategoryDef>
     <defName>AMJ_IronmakingMaterials</defName>
     <label>ironmaking materials (development)</label>
-    <parent>Resources</parent>
+    <parent>Root</parent>
   </ThingCategoryDef>
 </Defs>

@@ -15,7 +15,7 @@ class IronSandStatic(unittest.TestCase):
         cls.about = ET.parse(ROOT / 'About/About.xml').getroot()
 
     def test_all_xml_parses_and_ids_unique(self):
-        files = sorted(ROOT.glob('Defs/**/*.xml')) + sorted(ROOT.glob('Patches/*.xml')) + [ROOT / 'About/About.xml']
+        files = sorted(ROOT.glob('Defs/**/*.xml')) + sorted(ROOT.glob('Patches/**/*.xml')) + [ROOT / 'About/About.xml']
         self.assertGreaterEqual(len(files), 5)
         ids = []
         for path in files:
@@ -46,8 +46,9 @@ class IronSandStatic(unittest.TestCase):
         res = next(d for d in self.resource.findall('ThingDef') if d.findtext('defName') == 'AMJ_IronSand')
         self.assertEqual(res.findtext('thingCategories/li'), 'AMJ_IronmakingMaterials')
         cat = self.categories.find('ThingCategoryDef')
-        self.assertEqual(cat.findtext('parent'), 'Resources')
+        self.assertEqual(cat.findtext('parent'), 'Root')
         self.assertNotEqual(cat.findtext('parent'), 'ResourcesRaw')
+        self.assertIsNone(cat.find('childThingDefs'))  # The three AMJ items opt in explicitly.
 
     def test_mapgen_declares_single_step_and_cell_safety(self):
         gen = self.generation.find('GenStepDef')

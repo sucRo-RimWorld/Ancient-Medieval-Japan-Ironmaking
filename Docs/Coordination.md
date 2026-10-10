@@ -22,3 +22,9 @@ Ironmaking `About/About.xml` now has packageId `sucro.ancientmedievaljapan.ironm
 
 **State:** STATIC UPSTREAM XML CHECK PASS; loaded-game behavior OPEN.  
 Optional `AMJ_MO_ARCHIVE` test reads the author's actual MO 1.6 ZIP. All 15 tests passed with it; normal suite has 12 passes + 3 explicit skips without the archive. Checked mod name/packageId, upstream Anvil/Coal/IronIngot Defs, and Ironmaking conditional output. Fixed the verifier's stale local About copy; GitHub About was already correct. This does **not** verify executed RimWorld patches or MO gameplay. Source contract and command in `Docs/GoldenPaths/IronSandStaticAudit.md`.
+
+## IRON-CORE-CATEGORY-20261010 — Vanilla source reference repair
+
+**State:** STATIC DEF PARENT CORRECTED; actual loaded RimWorld 1.6/Core and gameplay still unverified.
+
+The first Ironmaking `ThingCategoryDef AMJ_IronmakingMaterials` used a `Resources` parent not found in the checked Vanilla category tree. Changed to known `Root`, without joining `ResourcesRaw` or changing iron-sand trade/vanilla stock. Added a nested `Patches/**/*.xml` parsing regression in the owner's structural test. The rationale/procedure lives in `Docs/Design.md` and `Docs/GoldenPaths/IronSandStaticAudit.md`; this entry is only the status handoff.
