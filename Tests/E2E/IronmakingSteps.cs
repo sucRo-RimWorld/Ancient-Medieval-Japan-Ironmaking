@@ -76,8 +76,8 @@ namespace AncientMedievalJapan.Ironmaking.E2E
                     Path.GetFullPath(installed[0].RootDir).TrimEnd('\\', '/'),
                     Path.GetFullPath(expected).TrimEnd('\\', '/'),
                     StringComparison.OrdinalIgnoreCase), "Loaded Mod root is not test source");
-                bool mo = mods.Any(m => String.Equals(m.PackageIdPlayerFacing,
-                    "DankPyon.Medieval.Overhaul", StringComparison.OrdinalIgnoreCase));
+                bool mo = mods.Any(m => m.PackageIdPlayerFacing.StartsWith(
+                    "dankpyon.medieval.overhaul", StringComparison.OrdinalIgnoreCase));
                 ctx.Assert(mo == (profile == "MO"), "Expected " + profile + ", MO=" + mo);
             });
         }
@@ -101,7 +101,7 @@ namespace AncientMedievalJapan.Ironmaking.E2E
                 RecipeDef finish = DefDatabase<RecipeDef>.GetNamedSilentFail("AMJ_ForgeIronBloom");
                 ctx.Require(finish != null, "Bloom finish recipe not loaded");
                 bool mo = LoadedModManager.RunningModsListForReading.Any(m =>
-                    String.Equals(m.PackageIdPlayerFacing, "DankPyon.Medieval.Overhaul",
+                    m.PackageIdPlayerFacing.StartsWith("dankpyon.medieval.overhaul",
                                   StringComparison.OrdinalIgnoreCase));
                 string expected = mo ? "DankPyon_IronIngot" : "Steel";
                 string user = mo ? "DankPyon_Anvil" : "FueledSmithy";
