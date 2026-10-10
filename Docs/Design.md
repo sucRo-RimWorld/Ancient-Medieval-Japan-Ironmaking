@@ -358,3 +358,13 @@ Vanilla Expanded系では **Vanilla Factions Expanded - Medieval 2** を機能�
 ### 10.3 MO実機起動不具合と既存Environmentテスト方式の再利用（2026-10-10）
 
 比較起動ログの最初の例外はIronmaking非導入でも`MedievalOverhaul.MedievalOverhaulSettings..ctor`の`NullReferenceException`で共通。MO-Baselineでは続いてRimWorldがMod構成を自動リセットし、残るMOのDef/Texturesが大量に未解決となった。原因確定より先に独自診断を増やした方針を修正し、MO含む四構成で実機Pickle PASS実績のあるEnvironmentの`EnvironmentFrameworkTestCommon.write_isolated_config`を基準に、Ironmakingテスト設定も通常`ModsConfig.xml`の読み取り専用コピーを使い、`activeMods`のみ置換して`knownExpansions`等を維持する。隔離コピー側のPrefsは`devMode=True`、`resetModsConfigOnCrash=False`へ固定する。新たな依存Modの追加・製鉄本番XML変更はない。`knownExpansions`欠落がMOコンストラクタ例外の唯一の原因だったと断定しない。実機MO 5/5再検証とERRORゼロが確定するまでMO互換PASSとは報告しない。実装と手順は`Scripts/isolated_rimworld_config.py`と[Pickle E2E](GoldenPaths/IronmakingPickleE2E.md)、提供ログの範囲は[Pickle Evidence](Testing/IronmakingPickleEvidence.md)。
+
+## Developer production work assignment (2026-10-10)
+
+`AMJ_IronmakingBills` is a native `WorkGiver_DoBill` under Crafting, restricted to
+`AMJ_CharcoalKiln` and `AMJ_SmallIronFurnace`. It supplies the missing pawn-work
+connection for the existing developer Recipes; quantities, workAmount and optional
+MO outputs are unchanged. Bloom finishing uses existing Vanilla/MO workgivers.
+The separate production Pickle suite checks actual bill completion, input/output
+counts and fueled smithy consumption. Its runtime result is pending; baseline
+Vanilla/MO five-scenario PASS does not cover production execution.

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <WorkGiverDef>
+    <defName>AMJ_IronmakingBills</defName>
+    <label>make charcoal and smelt iron sand</label>
+    <giverClass>WorkGiver_DoBill</giverClass>
+    <workType>Crafting</workType>
+    <priorityInType>100</priorityInType>
+    <verb>process</verb><gerund>processing</gerund>
+    <fixedBillGiverDefs><li>AMJ_CharcoalKiln</li><li>AMJ_SmallIronFurnace</li></fixedBillGiverDefs>
+    <requiredCapacities><li>Manipulation</li></requiredCapacities>
+  </WorkGiverDef>
+</Defs>

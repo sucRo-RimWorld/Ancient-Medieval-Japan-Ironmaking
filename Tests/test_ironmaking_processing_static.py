@@ -17,6 +17,15 @@ class ProcessingStatic(unittest.TestCase):
         cls.recipes=defs('Defs/RecipeDefs/Recipes_Ironmaking.xml','RecipeDef')
         cls.compat=ET.parse(R/'Patches/Compatibility/MedievalOverhaul.xml').getroot()
 
+    def test_processing_tables_have_native_crafting_workgiver(self):
+        givers = defs('Defs/WorkGiverDefs/Ironmaking.xml', 'WorkGiverDef')
+        giver = givers['AMJ_IronmakingBills']
+        self.assertEqual(giver.findtext('giverClass'), 'WorkGiver_DoBill')
+        self.assertEqual(giver.findtext('workType'), 'Crafting')
+        self.assertEqual({li.text for li in giver.findall('fixedBillGiverDefs/li')},
+                         set(self.buildings))
+        self.assertIn('Manipulation', [li.text for li in giver.findall('requiredCapacities/li')])
+
     def test_bootstrap_without_metal(self):
         self.assertEqual(set(self.buildings),{'AMJ_CharcoalKiln','AMJ_SmallIronFurnace'})
         for building in self.buildings.values():

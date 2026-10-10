@@ -13,13 +13,21 @@ EXPECTED = {
     "Colonist mining job consumes finite deposit and yields sand",
     "Sand deposits survive real game save reload",
 }
+PRODUCTION = {
+    "Exact Ironmaking development source and profile are loaded",
+    "Charcoal bill consumes wood and produces charcoal",
+    "Smelting bill consumes sand and charcoal and produces bloom",
+    "Forging bill consumes bloom and produces the profile metal",
+}
 ERRORS = re.compile(
     r"(?im)^.*(?:\[ERROR\]|Could not resolve cross-reference|XML error|"
     r"Exception during|Error in static constructor).*$"
 )
 
 
-def validate(report):
+def validate(report, suite="core"):
+    expected = {"core": EXPECTED, "production": PRODUCTION}[suite]
+    count = len(expected)
     summary_file = report / "summary.json"
     log_file = report / "Player.log"
     if not summary_file.is_file() or not log_file.is_file():
@@ -31,13 +39,13 @@ def validate(report):
     if summary.get("exitReason") != "passed":
         raise ValueError("Pickle exitReason=" + repr(summary.get("exitReason")))
     if any(summary.get(k, -1) != v for k, v in
-           (("total", 5), ("passed", 5), ("failed", 0), ("skipped", 0))):
+           (("total", count), ("passed", count), ("failed", 0), ("skipped", 0))):
         raise ValueError("Pickle counts incomplete or failing: " + repr(summary))
     if summary.get("flaky", 0) != 0:
         raise ValueError("Pickle reported flaky scenarios")
     scenarios = summary.get("scenarios", [])
     names = [s.get("name") for s in scenarios if isinstance(s, dict)]
-    if len(names) != len(EXPECTED) or set(names) != EXPECTED:
+    if len(names) != len(expected) or set(names) != expected:
         raise ValueError("Pickle scenario identity mismatch: " + repr(names))
     if not all(s.get("outcome", "").lower() == "passed"
                for s in scenarios):
@@ -46,15 +54,16 @@ def validate(report):
     matches = ERRORS.findall(log)
     if matches:
         raise ValueError("RimWorld runtime ERROR lines: " + repr(matches[:8]))
-    return 5
+    return count
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--report", required=True, type=Path)
+    parser.add_argument("--suite", choices=("core", "production"), default="core")
     args = parser.parse_args()
     try:
-        n = validate(args.report)
+        n = validate(args.report, args.suite)
     except (ValueError, OSError) as exc:
         print("[FAIL]", exc, file=sys.stderr)
         raise SystemExit(1)

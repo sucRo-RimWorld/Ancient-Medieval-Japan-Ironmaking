@@ -99,7 +99,7 @@ class IsolatedLauncherContracts(unittest.TestCase):
         self.assertIn('parser.add_argument("--diagnose-mo-startup"', source)
         self.assertIn('from diagnose_mo_startup import diagnose', source)
         self.assertIn('diagnose(args.game, args.timeout)', source)
-        self.assertIn('run(args.game, args.profile, args.timeout)', source)
+        self.assertIn('run(args.game, args.profile, args.timeout, args.suite)', source)
 
     def test_profile_xml_preserves_real_settings_and_replaces_mods(self):
         prefs = self.root / "Prefs.xml"

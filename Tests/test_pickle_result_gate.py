@@ -31,6 +31,18 @@ class PickleResultGate(unittest.TestCase):
     def test_passes_only_all_five_named_scenarios(self):
         self.assertEqual(gate.validate(self.folder), 5)
 
+    def test_production_requires_exact_four_bill_scenarios(self):
+        self.summary.update(total=4, passed=4, scenarios=[
+            {"name": name, "outcome": "Passed"} for name in sorted(gate.PRODUCTION)])
+        self.write()
+        self.assertEqual(gate.validate(self.folder, "production"), 4)
+        with self.assertRaises(ValueError):
+            gate.validate(self.folder)
+        self.summary["scenarios"][1]["name"] = "Processing Defs and Vanilla or MO result resolve"
+        self.write()
+        with self.assertRaisesRegex(ValueError, "identity"):
+            gate.validate(self.folder, "production")
+
     def test_no_missing_or_stale_report_is_pass(self):
         (self.folder / "summary.json").unlink()
         with self.assertRaisesRegex(ValueError, "required"):
