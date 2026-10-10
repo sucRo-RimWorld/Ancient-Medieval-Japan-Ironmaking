@@ -56,3 +56,13 @@ An initial local failure resulted from a stale **local verification copy** of Ir
 RimWorld Wiki's Vanilla category list (last updated 2024-09-29) and the 1.6 Core-data reference list `Root` and `ResourcesRaw`, but do **not** list `Resources` as a valid parent. The original Ironmaking `AMJ_IronmakingMaterials` pointed to `Resources`; change that to `Root`, keeping a separate category (no generic `ResourcesRaw` stock). [Reference](https://rimworldwiki.com/wiki/Property:Thing_Categories).
 
 The `test_all_xml_parses_and_ids_unique` test now walks nested `Patches/**/*.xml` (including MO compatibility) instead of just top-level Patches. Retain `Root` parent and non-`ResourcesRaw` assertions; this prevents both missing parent regressions and missing nested XML syntax checks. **RimWorld runtime/actual Core 1.6 loaded resolution remains untested.**
+
+## Actual Vanilla 1.6 Core reference preflight (read-only)
+
+When a genuine installed RimWorld 1.6 `Data/Core/Defs` is available, run:
+
+```text
+python Tools/check_vanilla_core_defs.py --core-defs "/path/to/RimWorld/Data/Core/Defs"
+```
+
+This scans the actual Core XML for Vanilla `Root`/`ResourcesRaw`, resource/bench/mineable parent names, `WoodLog`/`Steel`, existing Vanilla smithies, two sand-trade caravan `TraderKindDef`s, `Smithing` and `MapCommonBase`. It compares the Ironmaking category parent to `Root` and exits nonzero for missing references; incomplete or missing Core sources cannot become PASS. `Tests/test_vanilla_core_def_contract.py` provides four independent **synthetic fixture tests** for successful reference lookup, old invalid `Resources` parent, missing trader kind, and empty Core input. All four fixture tests passed on 2026-10-10. **The actual Core source has not been supplied in this environment and no Core/loaded game PASS is claimed.** MO source-contract checks remain separate.
