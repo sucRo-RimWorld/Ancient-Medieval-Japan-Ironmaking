@@ -10,7 +10,7 @@ import tempfile
 import uuid
 import xml.etree.ElementTree as ET
 
-from pickle_run_monitor import run_hidden_with_status
+from pickle_run_monitor import run_hidden_with_status, diagnostic_tail
 
 REPO = Path(__file__).resolve().parents[1]
 IRON_ID = "sucro.ancientmedievaljapan.ironmaking"
@@ -235,6 +235,9 @@ def run(game, requested, timeout):
                                              [Path(command[0]), *command[1:]])
             code = run_hidden_with_status(hidden, report=report, game=game, env=env,
                                           profile=profile, timeout=timeout)
+            if code != 0:
+                print("[E2E " + profile + "] Startup/game failure diagnostics:\n" +
+                      diagnostic_tail(report), file=sys.stderr, flush=True)
             demand(code == 0,
                    "Private desktop / RimWorld / Pickle exited " + str(code) +
                    "; inspect launcher.log and Player.log in " + str(report))

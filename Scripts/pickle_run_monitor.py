@@ -19,10 +19,13 @@ def _size(path):
 def _status(report):
     log_bytes = _size(report / "Player.log")
     summary_bytes = _size(report / "summary.json")
+    launcher_bytes = _size(report / "launcher.log")
     if log_bytes is None:
         message = "Player.log absent (game may still be starting)"
     else:
         message = "Player.log=" + str(log_bytes) + " bytes"
+    if launcher_bytes is not None:
+        message += "; launcher.log=" + str(launcher_bytes) + " bytes"
     if summary_bytes is not None:
         message += "; summary.json=" + str(summary_bytes) + " bytes (not yet validated)"
     return message
@@ -96,3 +99,26 @@ def run_hidden_with_status(command, *, report, game, env, profile,
             if proc is not None:
                 _terminate_owned_tree(proc)
             raise
+
+
+def diagnostic_tail(report, max_lines=8):
+    """Human-readable source of failure; never interpret partial logs as success."""
+    report = Path(report)
+    outputs = []
+    for name in ("launcher.log", "Player.log"):
+        file = report / name
+        if not file.is_file():
+            outputs.append(name + ": absent")
+            continue
+        try:
+            lines = file.read_text(encoding="utf-8-sig", errors="replace").splitlines()
+        except OSError as exc:
+            outputs.append(name + ": unreadable (" + type(exc).__name__ + ")")
+            continue
+        # Keep diagnostics bounded even for large installed Mod sets.
+        body = " | ".join(line.strip()[:300] for line in lines[-max_lines:])
+        outputs.append(name + " (lines=" + str(len(lines)) + "): " + body[:1900])
+    summary = report / "summary.json"
+    outputs.append("Pickle summary: " + ("present (not validated)" if summary.is_file()
+                                          else "absent (game did not finish Pickle)"))
+    return "\n".join(outputs)

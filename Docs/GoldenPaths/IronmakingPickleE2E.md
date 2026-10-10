@@ -15,8 +15,8 @@
 From the repository directory:
 
 ```bat
-run-pickle-e2e.bat --profile Vanilla
-run-pickle-e2e.bat --profile All
+.\run-pickle-e2e.bat --profile Vanilla
+.\run-pickle-e2e.bat --profile All
 ```
 
 The default RimWorld location is `D:\SteamLibrary\steamapps\common\RimWorld`. If different, pass `--game "X:\path\RimWorld"`. `--profile MO` runs the MO case alone. Do not treat successful synthetic Python tests as a substitute for running the game command.
@@ -59,7 +59,7 @@ An actual user-run Vanilla Pickle reported `[ERROR] ... Could not load Texture2D
 
 ## Confirmed reported Vanilla run — 2026-10-10
 
-See [IronmakingPickleEvidence](../Testing/IronmakingPickleEvidence.md) for the exact submitted console result and limitations. The original 5 scenarios have been reported PASS with 0 skipped/flaky/error logs and cleanup completed on the author's Windows RimWorld installation. **Do not rerun Vanilla solely to reproduce this PASS.** Next cross-Mod run is `run-pickle-e2e.bat --profile MO`, which uses the same private desktop and separate SaveData and requires complete 5/5 results in the MO profile. That does not test MO `metalChain` ON/OFF as two independent profiles, nor a pawn completing charcoal/smelting Bills.
+See [IronmakingPickleEvidence](../Testing/IronmakingPickleEvidence.md) for the exact submitted console result and limitations. The original 5 scenarios have been reported PASS with 0 skipped/flaky/error logs and cleanup completed on the author's Windows RimWorld installation. **Do not rerun Vanilla solely to reproduce this PASS.** Next cross-Mod run is `.\run-pickle-e2e.bat --profile MO`, which uses the same private desktop and separate SaveData and requires complete 5/5 results in the MO profile. That does not test MO `metalChain` ON/OFF as two independent profiles, nor a pawn completing charcoal/smelting Bills.
 
 ## ALL mode transition watchdog
 
@@ -67,4 +67,14 @@ On `--profile All`, successful Vanilla output is **only** the first profile; MO 
 
 The current launcher prints an explicit `[E2E] Starting profile 2/2: MO` and recurring `[E2E MO] running ...` messages (every 15 seconds by default). Messages report elapsed time and whether `MO/Reports/Player.log` and `summary.json` exist or grew; they are **not** a PASS. Complete Pickle summaries and ERROR-free player logs are still mandatory. The Python watchdog retains the native launcher timeout and stops the **owned** launcher/game tree if the native controller stalls, including keyboard interruption; it does not affect normal game saves or ModsConfig.
 
-If a previous `All` attempt stopped showing output after Vanilla, treat MO as **not confirmed**, not as PASSED or automatically FAILED. After ending the old command safely and ensuring its hidden test process is gone, use `run-pickle-e2e.bat --profile MO` for the missing profile instead of repeating already accepted Vanilla. If MO does not finish, inspect that run's `MO/Reports/launcher.log`, `Player.log`, and `summary.json`; the runner now shows their directory before startup. Avoid blind retries or increasing timeout without diagnosing its real game log.
+If a previous `All` attempt stopped showing output after Vanilla, treat MO as **not confirmed**, not as PASSED or automatically FAILED. After ending the old command safely and ensuring its hidden test process is gone, use `.\run-pickle-e2e.bat --profile MO` for the missing profile instead of repeating already accepted Vanilla. If MO does not finish, inspect that run's `MO/Reports/launcher.log`, `Player.log`, and `summary.json`; the runner now shows their directory before startup. Avoid blind retries or increasing timeout without diagnosing its real game log.
+
+## MO launch timeout — actual uploaded logs, 2026-10-10
+
+**Result:** MO 5-scenario Pickle outcome **NOT ESTABLISHED**. Run `10f8fe08ce` on Windows launched RimWorld on the separate WinSta0 desktop (PID 15988), then the native game controller raised `System.TimeoutException` after 900 seconds. The previous top-level runner printed `Controller exited code=1 after 901s`. No `summary.json` was included with the evidence.
+
+The author's uploaded `launcher.log` contains only the PID and timeout exception. The uploaded `Player.log` reached **RimWorld 1.6.4871**, Direct3D 11 / NVIDIA renderer initialization, game command-line and installed-Mod metadata warnings, then two Mono fallback-library messages. **It contains no loaded Pickle scenario execution, verified MO initialization or explicit fatal ERROR line.** The dozens of `downloadUrl/steamWorkshopUrl` warnings name many *installed* (not necessarily active) Mods and do not establish what blocked MO. The Mono fallback-library lines are likewise not proof of a fatal missing dependency. Do not infer an Ironmaking recipe failure from this log.
+
+The existing private desktop helper previously waited a single blocking 900-second interval and could not report whether Unity's game process was CPU-busy or awaiting a private-desktop dialog. The updated helper takes **30-second diagnostic snapshots** (CPU seconds, memory and the private desktop's window classes/titles), without showing a game window or changing the active Mod list. The Python monitor also reports launcher log size and prints short log tails on nonzero exit. These snapshots provide the next information required to distinguish loading, stall and hidden dialog; they are diagnostics, **not a runtime PASS**.
+
+For one bounded **diagnostic run** after pulling changes, use `.\run-pickle-e2e.bat --profile MO --timeout 180` (PowerShell: `.\run-pickle-e2e.bat --profile MO --timeout 180`). The shorter 180s limit is for collecting startup snapshots rather than asserting an MO failure at a new arbitrary performance threshold. If MO needs longer, return to the full 900s only after interpreting process-state and log evidence. Player configuration, Workshop files and saves remain isolated/unmodified. **Do not repeat Vanilla; it already passed.**

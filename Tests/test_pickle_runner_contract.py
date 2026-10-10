@@ -77,6 +77,18 @@ class IsolatedLauncherContracts(unittest.TestCase):
         self.assertIn("run_hidden_with_status(hidden, report=report", runner_text)
         self.assertNotIn("proc = subprocess.run(hidden", runner_text)
         self.assertIn("validate_pickle_result.py", runner_text)
+        self.assertIn("diagnostic_tail(report)", runner_text)
+        self.assertIn("if code != 0:", runner_text)
+
+    def test_private_desktop_logs_startup_snapshots_before_timeout(self):
+        source = module.HIDDEN_LAUNCHER_SOURCE.read_text(encoding="utf-8")
+        for token in ("[PRIVATE_DESKTOP_DIAG]", "EnumDesktopWindows",
+                      "GetWindowThreadProcessId", "TotalProcessorTime",
+                      "WorkingSet64", "ReportStartupSnapshot(desktop, child.pid",
+                      "Math.Min(30000L, remaining)"):
+            self.assertIn(token, source)
+        self.assertIn("visible fallback is forbidden", source)
+        self.assertNotIn("-nographics", source)
 
     def test_profile_xml_is_isolated_and_exact(self):
         prefs = self.root / "Prefs.xml"

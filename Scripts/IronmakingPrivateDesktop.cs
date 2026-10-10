@@ -2,6 +2,8 @@
 // No visible fallback. If CreateDesktop/CreateProcess fails, return non-zero.
 using System;
 using System.ComponentModel;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -60,6 +62,74 @@ internal static class IronmakingPrivateDesktop
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool CloseHandle(IntPtr handle);
+
+
+    private delegate bool EnumDesktopWindowCallback(IntPtr window, IntPtr state);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool EnumDesktopWindows(
+        IntPtr desktop, EnumDesktopWindowCallback callback, IntPtr state);
+
+    [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern int GetClassName(
+        IntPtr window, StringBuilder result, int maxCount);
+
+    [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern int GetWindowText(
+        IntPtr window, StringBuilder result, int maxCount);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern uint GetWindowThreadProcessId(
+        IntPtr window, out uint processId);
+
+    private static void ReportStartupSnapshot(IntPtr desktop, uint childPid, long elapsedMs)
+    {
+        string processStats = "cpu=?,ram=?";
+        try
+        {
+            using (Process game = Process.GetProcessById(checked((int)childPid)))
+            {
+                game.Refresh();
+                processStats = "cpu=" + game.TotalProcessorTime.TotalSeconds.ToString("F1") +
+                               "s,ram=" + (game.WorkingSet64 / (1024L * 1024L)) + "MiB";
+            }
+        }
+        catch (Exception ex)
+        {
+            processStats = "process-stats-unavailable:" + ex.GetType().Name;
+        }
+
+        var windows = new List<string>();
+        try
+        {
+            EnumDesktopWindowCallback visitor = delegate(IntPtr window, IntPtr ignored)
+            {
+                uint ownerPid;
+                GetWindowThreadProcessId(window, out ownerPid);
+                if (ownerPid == childPid && windows.Count < 12)
+                {
+                    var cls = new StringBuilder(128);
+                    var title = new StringBuilder(256);
+                    GetClassName(window, cls, cls.Capacity);
+                    GetWindowText(window, title, title.Capacity);
+                    string label = title.ToString().Replace("\r", " ").Replace("\n", " ");
+                    windows.Add(cls.ToString() + ":" + label);
+                }
+                return true;
+            };
+            if (!EnumDesktopWindows(desktop, visitor, IntPtr.Zero))
+                windows.Add("EnumDesktopWindows-error=" + Marshal.GetLastWin32Error());
+        }
+        catch (Exception ex)
+        {
+            windows.Add("window-scan-unavailable:" + ex.GetType().Name);
+        }
+        string state = windows.Count == 0 ? "no-game-windows" : String.Join(" | ", windows.ToArray());
+        Console.WriteLine("[PRIVATE_DESKTOP_DIAG] elapsed=" + (elapsedMs / 1000L) +
+                          "s,pid=" + childPid + "," + processStats + ",windows=" + state);
+        Console.Out.Flush();
+    }
 
     private static string Quote(string value)
     {
@@ -129,11 +199,26 @@ internal static class IronmakingPrivateDesktop
 
             Console.WriteLine("[PRIVATE_DESKTOP] RimWorld pid=" + child.pid +
                               "; graphics enabled; normal desktop unchanged");
-            uint wait = WaitForSingleObject(child.process, (uint)seconds * 1000);
-            if (wait == WAIT_TIMEOUT) throw new TimeoutException(
-                "RimWorld Pickle exceeded hidden desktop timeout");
-            if (wait != WAIT_OBJECT_0) throw new Win32Exception(
-                Marshal.GetLastWin32Error(), "Failed to wait on hidden RimWorld process");
+            // Sample startup state without showing the game's private desktop.
+            // 30s snapshots reveal CPU load and modal windows during a silent MO boot.
+            Stopwatch clock = Stopwatch.StartNew();
+            while (true)
+            {
+                long remaining = (long)seconds * 1000L - clock.ElapsedMilliseconds;
+                if (remaining <= 0)
+                {
+                    ReportStartupSnapshot(desktop, child.pid, clock.ElapsedMilliseconds);
+                    throw new TimeoutException("RimWorld Pickle exceeded hidden desktop timeout " +
+                        seconds + "s; inspect [PRIVATE_DESKTOP_DIAG] snapshots in launcher.log");
+                }
+                uint wait = WaitForSingleObject(child.process, (uint)Math.Min(30000L, remaining));
+                if (wait == WAIT_OBJECT_0)
+                    break;
+                if (wait != WAIT_TIMEOUT)
+                    throw new Win32Exception(Marshal.GetLastWin32Error(),
+                        "Failed to wait on hidden RimWorld process");
+                ReportStartupSnapshot(desktop, child.pid, clock.ElapsedMilliseconds);
+            }
 
             finished = true;
             uint status;
