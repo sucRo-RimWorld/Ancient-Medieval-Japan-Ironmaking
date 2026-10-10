@@ -78,3 +78,29 @@ The author's uploaded `launcher.log` contains only the PID and timeout exception
 The existing private desktop helper previously waited a single blocking 900-second interval and could not report whether Unity's game process was CPU-busy or awaiting a private-desktop dialog. The updated helper takes **30-second diagnostic snapshots** (CPU seconds, memory and the private desktop's window classes/titles), without showing a game window or changing the active Mod list. The Python monitor also reports launcher log size and prints short log tails on nonzero exit. These snapshots provide the next information required to distinguish loading, stall and hidden dialog; they are diagnostics, **not a runtime PASS**.
 
 For one bounded **diagnostic run** after pulling changes, use `.\run-pickle-e2e.bat --profile MO --timeout 180` (PowerShell: `.\run-pickle-e2e.bat --profile MO --timeout 180`). The shorter 180s limit is for collecting startup snapshots rather than asserting an MO failure at a new arbitrary performance threshold. If MO needs longer, return to the full 900s only after interpreting process-state and log evidence. Player configuration, Workshop files and saves remain isolated/unmodified. **Do not repeat Vanilla; it already passed.**
+
+## Differential MO startup observation (2026-10-10)
+
+Previous MO runs `10f8fe08ce` (900 seconds) and `6f42f26ad2` (180 seconds) both ended before any structured Pickle scenario output. The 180-second log shows ongoing CPU consumption and a live `UnityWndClass` on the isolated desktop, **not** evidence of successful PlayData loading or a known blocking dialog. Diagnosing a gameplay Recipe from this startup log would be speculative.
+
+To isolate the next stage without repeating Vanilla, run the **diagnostic** matrix:
+
+```powershell
+git pull --ff-only
+.\run-pickle-e2e.bat --diagnose-mo-startup --timeout 120
+```
+
+The diagnostic runner `Scripts/diagnose_mo_startup.py` launches two **real** RimWorld processes sequentially, never together, using the existing private `WinSta0` desktop launcher and a separate `SaveData/Config` for each:
+
+| Profile | Loaded package IDs | What changes |
+| --- | --- | --- |
+| `MO-Baseline` | Harmony, RimWorld Core, VEF, Processor Framework, MO | Minimum MO startup |
+| `MO-Pickle` | Exactly the same as MO-Baseline + RimLogging, Pickle, Quickstarts | Only testing infrastructure added |
+
+Neither profile includes Ironmaking, the Ironmaking test helper, or a `-pickle-run` option. Consequently, there is **no automatic Pickle completion**: timeout is expected as an *observation cutoff*, not by itself a failed E2E or a startup success. They both retain full graphics rendering on the hidden desktop; there is no visible-window fallback and `-nographics` is never supplied. A separate isolated directory and fixed Mod ID list are created for each profile; the normal `ModsConfig.xml`, `Prefs.xml`, Workshop Mods and game saves are read-only. The hidden game process is terminated by the owned controller at the deadline.
+
+Results are recorded under `TestResults/Pickle/StartupDiagnostics/<run-id>/`, including `comparison.json` and separate `MO-Baseline` / `MO-Pickle` `Player.log`, `launcher.log`, `observation.json`. The JSON explicitly labels every profile `STARTUP_OBSERVATION_ONLY` and `pickle_scenarios_verified=false`, regardless of an early exit or timeout. The existing `--profile MO` five-scenario E2E (and its strict 5/5/ERROR gate) is unchanged.
+
+Interpretation is **comparative**, not causal proof: if both profiles reproduce the same startup point, investigate MO, its dependencies and hidden display before blaming Pickle or Ironmaking. If the baseline proceeds beyond the earlier log boundary but MO-Pickle does not, investigate testing infrastructure integration. Compare final logged milestones and 30-second CPU/memory/window snapshots, not merely whether a process consumed CPU. **Neither comparison result can authorize a gameplay PASS.**
+
+This bounded differential is preferable to blindly raising the 900-second timeout or changing game XML. Any native process could still reach a main menu and run until the observation cutoff, so do not equate the deadline with failure unless the report independently shows an error.

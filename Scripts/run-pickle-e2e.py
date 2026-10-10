@@ -257,10 +257,16 @@ def main():
                         default=Path(r"D:\SteamLibrary\steamapps\common\RimWorld"))
     parser.add_argument("--profile", choices=("Vanilla", "MO", "All"), default="Vanilla")
     parser.add_argument("--timeout", type=int, default=900)
+    parser.add_argument("--diagnose-mo-startup", action="store_true",
+                        help="Observe MO baseline vs MO+Pickle on separate hidden desktops; no E2E PASS")
     args = parser.parse_args()
     try:
-        run(args.game, args.profile, args.timeout)
-    except (RuntimeError, OSError, subprocess.CalledProcessError, ET.ParseError) as exc:
+        if args.diagnose_mo_startup:
+            from diagnose_mo_startup import diagnose
+            diagnose(args.game, args.timeout)
+        else:
+            run(args.game, args.profile, args.timeout)
+    except (RuntimeError, ValueError, OSError, subprocess.CalledProcessError, ET.ParseError) as exc:
         print("[PICKLE BLOCKED/FAIL]", exc, file=sys.stderr)
         raise SystemExit(1)
 

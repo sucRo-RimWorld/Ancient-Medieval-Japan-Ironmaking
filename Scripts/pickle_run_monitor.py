@@ -52,7 +52,8 @@ def _terminate_owned_tree(proc):
 
 
 def run_hidden_with_status(command, *, report, game, env, profile,
-                           timeout, heartbeat=15, poll_seconds=1):
+                           timeout, heartbeat=15, poll_seconds=1,
+                           diagnostic_only=False):
     """Run hidden game and report status until exit or hard deadline.
 
     The C# launcher itself enforces timeout. This Python watchdog allows 30
@@ -78,9 +79,12 @@ def run_hidden_with_status(command, *, report, game, env, profile,
             while True:
                 code = proc.poll()
                 if code is not None:
+                    next_action = ("startup observation ended; no Pickle pass inferred"
+                                   if diagnostic_only
+                                   else "validating full Pickle report next")
                     print(f"[E2E {profile}] Controller exited code={code} "
                           f"after {int(time.monotonic() - started)}s; "
-                          f"validating full Pickle report next", flush=True)
+                          f"{next_action}", flush=True)
                     return code
                 now = time.monotonic()
                 if now >= deadline:

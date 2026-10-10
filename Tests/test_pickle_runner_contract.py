@@ -90,6 +90,14 @@ class IsolatedLauncherContracts(unittest.TestCase):
         self.assertIn("visible fallback is forbidden", source)
         self.assertNotIn("-nographics", source)
 
+
+    def test_diagnostic_entry_is_separate_from_full_e2e(self):
+        source = SCRIPT.read_text(encoding="utf-8")
+        self.assertIn('parser.add_argument("--diagnose-mo-startup"', source)
+        self.assertIn('from diagnose_mo_startup import diagnose', source)
+        self.assertIn('diagnose(args.game, args.timeout)', source)
+        self.assertIn('run(args.game, args.profile, args.timeout)', source)
+
     def test_profile_xml_is_isolated_and_exact(self):
         prefs = self.root / "Prefs.xml"
         prefs.write_text("<Prefs><devMode>False</devMode></Prefs>")
