@@ -70,6 +70,14 @@ class IsolatedLauncherContracts(unittest.TestCase):
             self.assertIn(token, source)
         self.assertNotIn("-nographics", source)
 
+    def test_runner_invokes_heartbeat_monitor_for_each_profile(self):
+        runner_text = SCRIPT.read_text(encoding="utf-8")
+        self.assertIn("for profile_index, profile in enumerate(profiles, 1):",
+                      runner_text)
+        self.assertIn("run_hidden_with_status(hidden, report=report", runner_text)
+        self.assertNotIn("proc = subprocess.run(hidden", runner_text)
+        self.assertIn("validate_pickle_result.py", runner_text)
+
     def test_profile_xml_is_isolated_and_exact(self):
         prefs = self.root / "Prefs.xml"
         prefs.write_text("<Prefs><devMode>False</devMode></Prefs>")

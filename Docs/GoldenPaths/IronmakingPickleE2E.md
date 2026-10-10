@@ -60,3 +60,11 @@ An actual user-run Vanilla Pickle reported `[ERROR] ... Could not load Texture2D
 ## Confirmed reported Vanilla run — 2026-10-10
 
 See [IronmakingPickleEvidence](../Testing/IronmakingPickleEvidence.md) for the exact submitted console result and limitations. The original 5 scenarios have been reported PASS with 0 skipped/flaky/error logs and cleanup completed on the author's Windows RimWorld installation. **Do not rerun Vanilla solely to reproduce this PASS.** Next cross-Mod run is `run-pickle-e2e.bat --profile MO`, which uses the same private desktop and separate SaveData and requires complete 5/5 results in the MO profile. That does not test MO `metalChain` ON/OFF as two independent profiles, nor a pawn completing charcoal/smelting Bills.
+
+## ALL mode transition watchdog
+
+On `--profile All`, successful Vanilla output is **only** the first profile; MO is then launched in a separate hidden desktop and its own isolated SaveData. Earlier launcher builds could appear frozen after `PICKLE PASS Vanilla` because they printed nothing while MO was loading or waiting (up to the existing 900-second game timeout).
+
+The current launcher prints an explicit `[E2E] Starting profile 2/2: MO` and recurring `[E2E MO] running ...` messages (every 15 seconds by default). Messages report elapsed time and whether `MO/Reports/Player.log` and `summary.json` exist or grew; they are **not** a PASS. Complete Pickle summaries and ERROR-free player logs are still mandatory. The Python watchdog retains the native launcher timeout and stops the **owned** launcher/game tree if the native controller stalls, including keyboard interruption; it does not affect normal game saves or ModsConfig.
+
+If a previous `All` attempt stopped showing output after Vanilla, treat MO as **not confirmed**, not as PASSED or automatically FAILED. After ending the old command safely and ensuring its hidden test process is gone, use `run-pickle-e2e.bat --profile MO` for the missing profile instead of repeating already accepted Vanilla. If MO does not finish, inspect that run's `MO/Reports/launcher.log`, `Player.log`, and `summary.json`; the runner now shows their directory before startup. Avoid blind retries or increasing timeout without diagnosing its real game log.

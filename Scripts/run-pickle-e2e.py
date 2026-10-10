@@ -10,6 +10,8 @@ import tempfile
 import uuid
 import xml.etree.ElementTree as ET
 
+from pickle_run_monitor import run_hidden_with_status
+
 REPO = Path(__file__).resolve().parents[1]
 IRON_ID = "sucro.ancientmedievaljapan.ironmaking"
 HARNESS_ID = IRON_ID + ".e2e"
@@ -212,7 +214,9 @@ def run(game, requested, timeout):
         shutil.copy2(REPO / "TestResults/Pickle/Build/Steps/AMJ.Ironmaking.PickleSteps.dll",
                      steps)
 
-        for profile in profiles:
+        for profile_index, profile in enumerate(profiles, 1):
+            print(f"[E2E] Starting profile {profile_index}/{len(profiles)}: "
+                  f"{profile}; Vanilla success does not imply MO success", flush=True)
             folder = output / profile
             report = folder / "Reports"
             report.mkdir(parents=True)
@@ -227,18 +231,12 @@ def run(game, requested, timeout):
             env = os.environ.copy()
             env["AMJI_EXPECTED_PROFILE"] = profile
             env["AMJI_EXPECTED_SOURCE_ROOT"] = str(actual_source)
-            with (report / "launcher.log").open("w", encoding="utf-8") as output_log:
-                try:
-                    hidden = private_desktop_command(private_desktop, game, timeout,
-                                                     [Path(command[0]), *command[1:]])
-                    proc = subprocess.run(hidden, cwd=game, env=env, timeout=timeout + 45,
-                                          stdout=output_log, stderr=subprocess.STDOUT)
-                except subprocess.TimeoutExpired as exc:
-                    raise RuntimeError(
-                        "Private-desktop controller timed out for " + profile +
-                        "; inspect/stop any lingering test process before rerun") from exc
-            demand(proc.returncode == 0,
-                   "Private desktop / RimWorld / Pickle exited " + str(proc.returncode) +
+            hidden = private_desktop_command(private_desktop, game, timeout,
+                                             [Path(command[0]), *command[1:]])
+            code = run_hidden_with_status(hidden, report=report, game=game, env=env,
+                                          profile=profile, timeout=timeout)
+            demand(code == 0,
+                   "Private desktop / RimWorld / Pickle exited " + str(code) +
                    "; inspect launcher.log and Player.log in " + str(report))
             subprocess.run([sys.executable, str(REPO / "Scripts/validate_pickle_result.py"),
                             "--report", str(report)], check=True, cwd=REPO)
