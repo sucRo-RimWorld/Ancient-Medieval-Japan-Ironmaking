@@ -59,8 +59,11 @@ def require_packages(found, ids):
 
 def find_dll(root, name):
     matches = list(root.rglob(name))
+    preferred = [p for p in matches if "1.6" in p.parts]
+    if preferred:
+        matches = preferred
     demand(len(matches) == 1,
-           "Cannot unambiguously locate " + name + " in " + str(root))
+           "Cannot unambiguously locate 1.6 " + name + " in " + str(root))
     return matches[0]
 
 
@@ -68,16 +71,20 @@ def stage(mods_dir, label, expected, source):
     path = Path(tempfile.mkdtemp(prefix="AMJI-Pickle-" + label + "-", dir=mods_dir))
     marker = path / ".AMJI-PICKLE-OWNED"
     marker.write_text(expected, encoding="utf-8")
-    for name in ("About", "Defs", "Patches", "Assemblies", "Textures",
-                 "Languages", "Pickle"):
-        item = source / name
-        if item.is_dir():
-            shutil.copytree(item, path / name, dirs_exist_ok=True)
-    if (source / "LoadFolders.xml").is_file():
-        shutil.copy2(source / "LoadFolders.xml", path / "LoadFolders.xml")
-    demand(mod_id(path) == expected.lower(),
-           "Staged Mod has unexpected packageId: " + str(path))
-    return path
+    try:
+        for name in ("About", "Defs", "Patches", "Assemblies", "Textures",
+                     "Languages", "Pickle"):
+            item = source / name
+            if item.is_dir():
+                shutil.copytree(item, path / name, dirs_exist_ok=True)
+        if (source / "LoadFolders.xml").is_file():
+            shutil.copy2(source / "LoadFolders.xml", path / "LoadFolders.xml")
+        demand(mod_id(path) == expected.lower(),
+               "Staged Mod has unexpected packageId: " + str(path))
+        return path
+    except Exception:
+        cleanup(path, expected)  # Includes incomplete test-only staging.
+        raise
 
 
 def cleanup(path, expected):
@@ -116,6 +123,11 @@ def build(dotnet, project, game, reference_name, dll):
 
 def run(game, requested, timeout):
     game = game.resolve(strict=True)
+    if os.name == "nt":
+        tasks = subprocess.run(["tasklist", "/FI", "IMAGENAME eq RimWorldWin64.exe"],
+                               capture_output=True, text=True, check=True)
+        demand("RimWorldWin64.exe".lower() not in tasks.stdout.lower(),
+               "A normal RimWorld process is running; close it before E2E")
     exe = game / "RimWorldWin64.exe"
     mods_dir = game / "Mods"
     demand(exe.is_file() and mods_dir.is_dir(),
