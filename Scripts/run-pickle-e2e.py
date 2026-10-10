@@ -20,7 +20,6 @@ BASE_IDS = ["brrainz.harmony", "ludeon.rimworld", "RimWorks.RimLogging",
             "rimworks.pickle", "rimworks.quickstarts"]
 MO_IDS = ["OskarPotocki.VanillaFactionsExpanded.Core",
           "syrchalis.processor.framework", "DankPyon.Medieval.Overhaul"]
-FEATURE = "ironmaking-core.feature"
 HIDDEN_LAUNCHER_SOURCE = REPO / "Scripts/IronmakingPrivateDesktop.cs"
 
 
@@ -138,7 +137,7 @@ def private_desktop_command(launcher, game, timeout, game_command):
             *map(str, game_command[1:])]
 
 
-def run(game, requested, timeout):
+def run(game, requested, timeout, suite="core"):
     demand(os.name == "nt", "This test runner requires private Windows desktop; no visible fallback")
     demand(0 < timeout <= 3600, "Timeout must be 1..3600 seconds")
     game = game.resolve(strict=True)
@@ -211,7 +210,7 @@ def run(game, requested, timeout):
             make_config(save_data / "Config", normal_mods, profile, normal_prefs)
             log = report / "Player.log"
             command = [str(exe), "-savedatafolder=" + str(save_data),
-                       "-logFile", str(log), "-pickle-run=" + FEATURE,
+                       "-logFile", str(log), "-pickle-run=ironmaking-" + suite + ".feature",
                        "-pickle-mode=fast", "-pickle-set-name=" + profile,
                        "-pickle-report-dir=" + str(report), "-pickle-no-browser",
                        "-pickle-run-timeout=12", "-pickle-retry=0"]
@@ -229,8 +228,8 @@ def run(game, requested, timeout):
                    "Private desktop / RimWorld / Pickle exited " + str(code) +
                    "; inspect launcher.log and Player.log in " + str(report))
             subprocess.run([sys.executable, str(REPO / "Scripts/validate_pickle_result.py"),
-                            "--report", str(report)], check=True, cwd=REPO)
-            print("PICKLE PASS", profile, "5 loaded-game scenarios", flush=True)
+                            "--report", str(report), "--suite", suite], check=True, cwd=REPO)
+            print("PICKLE PASS", profile, ("4" if suite == "production" else "5") + " loaded-game scenarios (" + suite + ")", flush=True)
         print("All requested profiles passed. Reports:", output)
     finally:
         for path, ident in reversed(owned):
@@ -243,6 +242,7 @@ def main():
     parser.add_argument("--game", type=Path,
                         default=Path(r"D:\SteamLibrary\steamapps\common\RimWorld"))
     parser.add_argument("--profile", choices=("Vanilla", "MO", "All"), default="Vanilla")
+    parser.add_argument("--suite", choices=("core", "production"), default="core")
     parser.add_argument("--timeout", type=int, default=900)
     parser.add_argument("--diagnose-mo-startup", action="store_true",
                         help="Observe MO baseline vs MO+Pickle on separate hidden desktops; no E2E PASS")
@@ -252,7 +252,7 @@ def main():
             from diagnose_mo_startup import diagnose
             diagnose(args.game, args.timeout)
         else:
-            run(args.game, args.profile, args.timeout)
+            run(args.game, args.profile, args.timeout, args.suite)
     except (RuntimeError, ValueError, OSError, subprocess.CalledProcessError, ET.ParseError) as exc:
         print("[PICKLE BLOCKED/FAIL]", exc, file=sys.stderr)
         raise SystemExit(1)

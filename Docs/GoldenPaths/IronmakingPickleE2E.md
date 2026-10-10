@@ -125,3 +125,33 @@ Vanilla is already PASS; avoid `--profile All` unless intentionally retesting bo
 ## MO baseline completion — 2026-10-10
 
 After PR #20 corrected the isolated `Prefs.xml` root-tag assumption (main `93667960ca5901fb03634ec7cd52f5613dc53497`), the author ran `.\run-pickle-e2e.bat --profile MO --timeout 180`. Run `5127792409` reported 5/5 scenarios, zero skipped/flaky/error logs and exit code zero after 51 seconds; the runner cleaned temporary Mod folders and reported normal configuration untouched. Full report location: `TestResults/Pickle/Runs/5127792409/MO/Reports` on the author's Windows installation. Evidence currently comprises console output supplied by the author; original Player.log and summary.json have not been independently opened here. Vanilla's separately reported 5/5 remains valid. Do not infer actual production Bill execution/fuel, trade, research, or release readiness from these five checks. Earlier MO startup diagnostic failures are historical; no need to repeat baseline MO solely for the earlier timeout.
+
+## Actual production bills — separate follow-up suite
+
+The baseline core suite remains five scenarios. Run the new production suite without
+replaying natural mapgen/mining/save baseline scenarios:
+
+```powershell
+git pull --ff-only
+.\run-pickle-e2e.bat --suite production --profile All
+```
+
+This runs four scenarios per profile: exact source/profile plus actual charcoal,
+sand-smelting and bloom-forging bills. It uses the existing private desktop, normal
+rendering, isolated configuration and strict complete summary / zero-ERROR gate.
+The new result gate requires these exact four names; a core report cannot pass it.
+
+Fixtures provide completed tables, a capable pawn and exact input amounts. A real
+loaded `WorkGiver_DoBill` must assign each bill, and native jobs must finish it.
+The test requires one completed bill, exact material consumption and exact product
+counts: WoodLog20 → Charcoal10; Sand40 + Charcoal60 → Bloom10; Bloom10 → Steel8
+(Vanilla fueled smithy) or IronIngot8 (MO anvil). These are current developer XML
+amounts, not approved balance. Vanilla smithy fuel is prefilled as fixture setup;
+the test checks actual fuel decreases. Charcoal in the small furnace is a consumed
+recipe ingredient, not a CompRefuelable fuel tank. Refuelling jobs, integrated
+multi-stage logistics, trade, research, balance and accepted art remain uncovered.
+
+The owner WorkGiver `AMJ_IronmakingBills` connects Crafting to the kiln and small
+furnace. Their earlier Recipes existed without a matching WorkGiver. The E2E must
+not bypass this connection by synthesizing a DoBill Job or calling recipe output
+methods. Fresh production-suite reports are required before claiming runtime PASS.
