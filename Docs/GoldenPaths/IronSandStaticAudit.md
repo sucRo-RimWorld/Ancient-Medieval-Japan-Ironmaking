@@ -22,3 +22,13 @@ Do not conflate a successful `GenStep_ScatterThings` XML parse with valid RimWor
 4. **Graphics and balance:** accepted deposit and item textures, geographically weighted distribution, yield/price/amount, and trade availability are still unapproved and must not be promoted to release.
 
 Do not add repeated automated GitHub Actions that notify for incomplete runtime infrastructure. The default test remains local static until a verified noninteractive game harness is available.
+
+## First worktable/Recipe slice
+
+Run the same static test command after adding Recipes. Tests no longer assert "no RecipeDefs exist"; instead they reject any Recipe that produces unbounded sand or sand-deposit Things. Additional four tests verify:
+- pre-iron construction cost; no `CompProperties_Refuelable` on the AMJ production worktables;
+- three-step material and output references;
+- isolation of all `DankPyon_` symbols in a guarded MO compatibility Patch;
+- MO IronBloom finishing converts to `DankPyon_IronIngot` at `DankPyon_Anvil`, not to Vanilla `Steel`.
+
+The local source fixture passed **10 tests** on 2026-10-10. This does **not** prove the patched RecipeUsers resolve after actual load, that Vanilla has the intended Smithy Defs in the active profile, or that the MO fuel chain behaves correctly. No approved balance/visual assets exist, and every conversion ratio/work value is provisional.

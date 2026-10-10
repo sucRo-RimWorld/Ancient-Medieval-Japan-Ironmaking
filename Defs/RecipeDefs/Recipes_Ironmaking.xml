@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- DEV INPUT/OUTPUT AMOUNTS ONLY: research and economy balance not approved. -->
+  <RecipeDef>
+    <defName>AMJ_BurnCharcoal</defName>
+    <label>make charcoal (development)</label>
+    <jobString>Preparing charcoal.</jobString>
+    <workAmount>400</workAmount><workSpeedStat>GeneralLaborSpeed</workSpeedStat><workSkill>Crafting</workSkill>
+    <ingredients><li><filter><thingDefs><li>WoodLog</li></thingDefs></filter><count>20</count></li></ingredients>
+    <fixedIngredientFilter><thingDefs><li>WoodLog</li></thingDefs></fixedIngredientFilter>
+    <products><AMJ_Charcoal>10</AMJ_Charcoal></products>
+    <recipeUsers><li>AMJ_CharcoalKiln</li></recipeUsers>
+  </RecipeDef>
+  <RecipeDef>
+    <defName>AMJ_SmeltIronSand</defName>
+    <label>smelt iron sand (development)</label>
+    <jobString>Smelting iron sand.</jobString>
+    <workAmount>1600</workAmount><workSpeedStat>GeneralLaborSpeed</workSpeedStat><workSkill>Crafting</workSkill>
+    <allowMixingIngredients>false</allowMixingIngredients>
+    <ingredients>
+      <li><filter><thingDefs><li>AMJ_IronSand</li></thingDefs></filter><count>40</count></li>
+      <li><filter><thingDefs><li>AMJ_Charcoal</li></thingDefs></filter><count>60</count></li>
+    </ingredients>
+    <fixedIngredientFilter><thingDefs><li>AMJ_IronSand</li><li>AMJ_Charcoal</li></thingDefs></fixedIngredientFilter>
+    <products><AMJ_IronBloom>10</AMJ_IronBloom></products>
+    <recipeUsers><li>AMJ_SmallIronFurnace</li></recipeUsers>
+  </RecipeDef>
+  <RecipeDef>
+    <defName>AMJ_ForgeIronBloom</defName>
+    <label>forge iron bloom (development)</label>
+    <jobString>Forging a bloom into general metal.</jobString>
+    <workAmount>900</workAmount><workSpeedStat>GeneralLaborSpeed</workSpeedStat><workSkill>Crafting</workSkill>
+    <ingredients><li><filter><thingDefs><li>AMJ_IronBloom</li></thingDefs></filter><count>10</count></li></ingredients>
+    <fixedIngredientFilter><thingDefs><li>AMJ_IronBloom</li></thingDefs></fixedIngredientFilter>
+    <products><Steel>8</Steel></products>
+    <recipeUsers><li>FueledSmithy</li><li>ElectricSmithy</li></recipeUsers>
+  </RecipeDef>
+</Defs>

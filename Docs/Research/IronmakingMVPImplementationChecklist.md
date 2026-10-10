@@ -7,10 +7,10 @@
 ## Thin vertical slice
 
 1. **Static source implemented, runtime unverified:** `AMJ_IronSand` + finite `AMJ_IronSandDeposit`, dedicated `AMJ_IronmakingMaterials` resource category, `AMJ_ScatterIronSand` GenStep and MapCommonBase attachment. No extraction/mining or generated-map runtime PASS yet; region weighting absent.
-2. Provide wood-to-charcoal fuel with no inherited MO/PF dependency. When MO is present, retain AMJ charcoal Def for old saves but prefer MO Coal in usual Bills.
-3. Define a small basic furnace buildable from pre-iron materials; crafting must not require its own future output.
-4. Consume iron sand + a Bill fuel material once to produce a bloom/intermediate; avoid simultaneous Refuelable double consumption.
-5. Reuse existing Vanilla/MO smithing where possible for bloom finishing; Vanilla output goes to Steel as a gameplay proxy, MO output to `DankPyon_IronIngot`, not directly Steel.
+2. **Static XML added, runtime unverified:** WoodLog → AMJ_Charcoal via worktable Bill without MO/PF hard dependency. With MO, MO Coal is optionally accepted as a Bill ingredient; duplicate AMJ charcoal manufacture is still visible pending compatibility testing.
+3. **Static XML added, runtime unverified:** small furnace uses Stony material and requires no Steel/component; buildability and workbench visuals must be checked in loaded Vanilla.
+4. **Static XML added, runtime unverified:** sand + charcoal (or MO Coal) Bill → IronBloom; no Refuelable on AMJ kilns/furnaces. Confirm actual input/yield, work and interrupts in RimWorld.
+5. **Conditional XML implemented, runtime unverified:** Vanilla `FueledSmithy`/`ElectricSmithy` converts IronBloom → Steel; MO-Patch replaces both `recipeUsers` and output with `DankPyon_Anvil` → `DankPyon_IronIngot`. Confirm PatchOperationFindMod activation and metalChain ON/OFF; MO research must not be bypassed.
 6. Add limited explicitly targeted sand-iron **seller** supply and practical buyers, without changing Vanilla/MO current generic Steel/ingot merchant stock.
 7. Keep higher furnaces, iron sand washing, iron slag/pig iron, special sword steel, full historical waterworks and late tatara out of first executable slice.
 

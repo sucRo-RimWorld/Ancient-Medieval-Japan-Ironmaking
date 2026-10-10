@@ -5,5 +5,6 @@
   <packageId>sucro.ancientmedievaljapan.ironmaking</packageId>
   <supportedVersions><li>1.6</li></supportedVersions>
   <modVersion>0.1.0-dev</modVersion>
-  <description>Internal development slice for finite iron-sand deposits. Map generation and mining have not yet passed loaded RimWorld validation. Graphics, balance, fuel, smelting and trade are not release-ready.</description>
+  <loadAfter><li>DankPyon.Medieval.Overhaul</li></loadAfter>
+  <description>Developer XML slice for finite iron sand, charcoal, bloom and a small furnace. RimWorld loaded-game mining, worktable Bills and optional Medieval Overhaul output are not yet runtime validated. Graphics, balance, research and trade are not release-ready.</description>
 </ModMetaData>
