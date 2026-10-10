@@ -350,3 +350,7 @@ Vanilla Expanded系では **Vanilla Factions Expanded - Medieval 2** を機能�
 ### 10.1 RimWorld実機／Pickleの自動E2E（2026-10-10、Vanilla 5/5 PASS・MO未実施）
 
 [IronmakingPickleE2E](GoldenPaths/IronmakingPickleE2E.md)で実機起動ランナー、開発用PickleテストMod、Quickstartsによる生成・採掘・セーブの5シナリオを定義した。Vanilla単体とMO併用を**別々の独立Mod構成・SaveData**で検証する。実際の参照解決、Vanilla WorkGiverによる砂鉄採掘と有限性、Quickstart生成した砂鉄堆積、Pickle実セーブ／ロードを検証対象とし、MOプロファイルでは鉄塊からIronIngotへ合流する最終Recipeも照合する。2026-10-10、作者のWindows/RimWorld環境から報告されたVanilla実機ラン`b5a5596f84`は、**Pickle 5/5 PASS、skipped/flaky/error logs=0**。実行ログ上、隔離テスト用Modも削除された。ランの識別と報告原文は[Pickle実機検証記録](Testing/IronmakingPickleEvidence.md)に保存する。ゲーム実行は作者環境で行われ、このエージェントはローカル生成された`summary.json`や`Player.log`の実ファイルを直接再読取していない。MO併用ランは未報告、製錬Billのポーン作業、交易実在庫、実際の地理分布、導入後の旧セーブ、描画はまだこの5シナリオに含めない。シナリオPASSと未対象範囲を混同しない。
+
+### 10.2 MO 900秒タイムアウトの実機ログ（2026-10-10）
+
+作者が`10f8fe08ce`ランの`launcher.log`・`Player.log`をアップロードした。Windows非表示デスクトップでは実RimWorldプロセス（PID 15988）が起動したが、Pickleシナリオ完了前に900秒でタイムアウトした。`Player.log`はUnity/Direct3D・Modメタ情報の初期化からMono DLLフォールバック行までで終了し、Pickle実行結果や明示的な`[ERROR]`原因は示していない。**MO側5シナリオPASSは未成立**であり、特定Modの欠落・互換障害・Ironmaking製錬Defの失敗をこのログだけから推定しない。ゲーム内容は変更せず、30秒ごとのCPU・メモリ・非表示ウィンドウ状態を記録するランナー診断を追加した。正式な失敗証拠・再診断方法は[Pickle Evidence](Testing/IronmakingPickleEvidence.md)と[Pickle E2E](GoldenPaths/IronmakingPickleE2E.md)を参照。
