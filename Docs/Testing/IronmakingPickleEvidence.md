@@ -1,5 +1,31 @@
 # Ironmaking — actual Pickle run evidence
 
+## Current runtime results — 2026-10-10
+
+These are **author-reported real RimWorld results**, based on console output;
+the successful-run raw Player.log and summary.json were not independently inspected.
+
+| Suite/profile | Run | Reported outcome | Status |
+| --- | --- | --- | --- |
+| Core Vanilla (original harness) | `b5a5596f84` | 5/5 PASS | Prior-version evidence |
+| Core MO (original harness) | `5127792409` | 5/5 PASS | Prior-version evidence |
+| Production Vanilla (Fast-tick helper) | `240c258399` | **4/4 PASS**, exit 0 in 16s, 0 skipped/flaky/error logs | Current Vanilla Production PASS |
+| Production MO (Fast-tick helper) | — | Not run | Pending |
+
+Vanilla Production exercised the native wood-to-charcoal, sand-and-charcoal
+smelting and bloom-forging Bills, including exact fixture input/output and
+fueled smithy checks. The console confirms the strict Pickle result validator
+passed and the runner removed only its owned temporary test Mods.
+This does not establish MO Production, integrated logistics, balancing,
+trading, research, accepted art, save migration or release readiness.
+
+Next: `.\run-pickle-e2e.bat --suite production --profile MO` only.
+The Core mining helper also changed with the Fast-mode fix; repeat the Core
+Vanilla and MO suites later for *current-harness* Core evidence.
+
+## Earlier evidence and diagnostics (historical)
+
+
 This records outcomes from the author's RimWorld installation, **not execution by an assistant or GitHub Actions**. For Vanilla, the author provided only the strict Pickle result console output; its underlying `summary.json` and log were not independently inspected. For the later MO startup timeout, the author **uploaded actual `launcher.log` and `Player.log`**, which were inspected directly. No MO Pickle `summary.json` was provided.
 
 | Date | Profile | Run ID | Reported result | Status |
@@ -20,9 +46,9 @@ Cleaned owned test folders. Normal ModsConfig, Prefs and saves untouched.
 
 The named `ironmaking-core.feature` scenarios test one exact loaded Ironmaking source, Vanilla output Recipe Defs, a newly generated map containing natural IronSand deposits, a pawn actually mining a test deposit via the standard WorkGiver, and Pickle disk save/reload retaining a deposit. The `validate_pickle_result.py` gate requires five named passes and checks for error lines in `Player.log`. The observed run reports that this gate passed; it does not prove approved game balance, accepted imagery, historical geography or any trade stock.
 
-**Not yet verified:** MO 5/5; actual charcoal-kiln, small-furnace and smithy Bills executed by a pawn; fuel/material conversion and yield balance; MO `metalChain` ON/OFF; iron-sand trader inventory; save-add to a pre-Ironmaking colony; diverse climate/map types; accepted textures. In particular, the Def-only recipe scenario does **not** run a manufacturing Bill.
+**At that earlier test stage (superseded where noted above), not yet verified:** MO 5/5; actual charcoal-kiln, small-furnace and smithy Bills executed by a pawn; fuel/material conversion and yield balance; MO `metalChain` ON/OFF; iron-sand trader inventory; save-add to a pre-Ironmaking colony; diverse climate/map types; accepted textures. In particular, the Def-only recipe scenario does **not** run a manufacturing Bill.
 
-## Next runtime gate
+## Earlier next runtime gate (superseded)
 
 After pulling the diagnostic update, use `.\run-pickle-e2e.bat --profile MO --timeout 180` as a **shortened diagnostic observation** against the current Ironmaking source. If diagnostics indicate normal ongoing loading, a later full-timeout MO run is separate from this information-gathering step. This launches actual RimWorld rendering on a private Windows desktop, uses an isolated SaveData, and preserves the player's regular game configuration. Record the new run ID and exact 5/5/ERROR outcome here. Do not mark MO PASS from source-contract XML tests or substitute `--profile All` unless Vanilla has changed since its recorded PASS.
 
