@@ -104,3 +104,20 @@ Results are recorded under `TestResults/Pickle/StartupDiagnostics/<run-id>/`, in
 Interpretation is **comparative**, not causal proof: if both profiles reproduce the same startup point, investigate MO, its dependencies and hidden display before blaming Pickle or Ironmaking. If the baseline proceeds beyond the earlier log boundary but MO-Pickle does not, investigate testing infrastructure integration. Compare final logged milestones and 30-second CPU/memory/window snapshots, not merely whether a process consumed CPU. **Neither comparison result can authorize a gameplay PASS.**
 
 This bounded differential is preferable to blindly raising the 900-second timeout or changing game XML. Any native process could still reach a main menu and run until the observation cutoff, so do not equate the deadline with failure unless the report independently shows an error.
+
+## Reuse the proven Environment test configuration writer (2026-10-10)
+
+Do **not** synthesize a new, sparse `ModsConfig.xml` in Ironmaking. The already successful AMJ Environment development Pickle runner (`Environment/Scripts/EnvironmentFrameworkTestCommon.py::write_isolated_config`) reads normal player `ModsConfig.xml` as a **read-only template**, replaces its `activeMods`, keeps the original `knownExpansions` and all other ModConfig context, and sets `devMode=True` plus `resetModsConfigOnCrash=False` in the **copied** `Prefs.xml` only. Ironmaking's original runner and the differential probe instead rebuilt an empty `knownExpansions` node and allowed a failed MO start to reset the profile.
+
+Ironmaking now follows **that existing successful algorithm**, implemented once in `Scripts/isolated_rimworld_config.py` and reused by `run-pickle-e2e.py` and `diagnose_mo_startup.py`. Only the isolated config and prefs are written; normal player config, known expansion IDs, saves and installed Workshop content are never edited. The generated `activeMods` list remains an explicit profile list, normalized to lowercase just like Environment. The comparison is intended to avoid configuration artifacts and preserve the original exception; **it does not prove the earlier MO NullReferenceException was caused by the empty expansion list**.
+
+In uploaded `MO-Baseline/Player.log` (`792efd4b75`), the **first** error is `MedievalOverhaul.MedievalOverhaulSettings..ctor(ModContentPack)` throwing `NullReferenceException`. The game next prints `Resetting mods config and trying again` and `Could not recover from errors loading play data`; thousands of missing MO textures/Defs and repeated `Root.Update()` exceptions are **subsequent recovery-path symptoms** and should not be treated as independent Ironmaking graphics bugs. `MO-Pickle/Player.log` independently begins with that same MO settings constructor exception before the log ends, with no Ironmaking loaded in either comparison profile.
+
+Next action: use the **existing real** five-scenario runner after pulling this config fix:
+
+```powershell
+git pull --ff-only
+.\run-pickle-e2e.bat --profile MO
+```
+
+Vanilla is already PASS; avoid `--profile All` unless intentionally retesting both. Preserve the strict `summary.json` and complete `Player.log` ERROR gate. If MO again reports a constructor error, inspect that first error with unchanged isolated `activeMods` rather than extending timeout or creating another diagnostic matrix.

@@ -3,9 +3,12 @@ import importlib.util
 from pathlib import Path
 import tempfile
 import unittest
+import sys
 import xml.etree.ElementTree as ET
 
 SCRIPT = Path(__file__).resolve().parents[1] / "Scripts/run-pickle-e2e.py"
+if str(SCRIPT.parent) not in sys.path:
+    sys.path.insert(0, str(SCRIPT.parent))
 spec = importlib.util.spec_from_file_location("ironmaking_runner", SCRIPT)
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
@@ -98,19 +101,45 @@ class IsolatedLauncherContracts(unittest.TestCase):
         self.assertIn('diagnose(args.game, args.timeout)', source)
         self.assertIn('run(args.game, args.profile, args.timeout)', source)
 
-    def test_profile_xml_is_isolated_and_exact(self):
+    def test_profile_xml_preserves_real_settings_and_replaces_mods(self):
         prefs = self.root / "Prefs.xml"
-        prefs.write_text("<Prefs><devMode>False</devMode></Prefs>")
+        mods_config = self.root / "ModsConfig.xml"
+        prefs_text = "<Prefs><devMode>False</devMode><resetModsConfigOnCrash>True</resetModsConfigOnCrash><uiScale>1.25</uiScale></Prefs>"
+        mods_text = ("<ModsConfigData><version>1.6.4871</version>"
+                     "<activeMods><li>unrelated.current.mod</li></activeMods>"
+                     "<knownExpansions><li>ludeon.rimworld.royalty</li>"
+                     "<li>ludeon.rimworld.biotech</li></knownExpansions>"
+                     "<customContext>preserve-this</customContext></ModsConfigData>")
+        prefs.write_text(prefs_text)
+        mods_config.write_text(mods_text)
         for profile in ("Vanilla", "MO"):
             dest = self.root / profile / "Config"
-            module.make_config(dest, "1.6.123", profile, prefs)
-            mods = [li.text for li in ET.parse(dest / "ModsConfig.xml")
-                    .getroot().findall("activeMods/li")]
-            self.assertIn(module.IRON_ID, mods)
-            self.assertIn(module.HARNESS_ID, mods)
-            self.assertEqual("DankPyon.Medieval.Overhaul" in mods, profile == "MO")
-            self.assertEqual(ET.parse(dest / "Prefs.xml").getroot().findtext("devMode"), "True")
-        self.assertEqual(ET.parse(prefs).getroot().findtext("devMode"), "False")
+            module.make_config(dest, mods_config, profile, prefs)
+            parsed = ET.parse(dest / "ModsConfig.xml").getroot()
+            ids = [li.text for li in parsed.findall("activeMods/li")]
+            self.assertEqual(ids, [v.lower() for v in
+                (module.BASE_IDS + (module.MO_IDS if profile == "MO" else [])
+                 + [module.IRON_ID, module.HARNESS_ID])])
+            self.assertNotIn("unrelated.current.mod", ids)
+            self.assertEqual(parsed.findtext("customContext"), "preserve-this")
+            self.assertEqual([x.text for x in parsed.findall("knownExpansions/li")],
+                             ["ludeon.rimworld.royalty", "ludeon.rimworld.biotech"])
+            pref = ET.parse(dest / "Prefs.xml").getroot()
+            self.assertEqual(pref.findtext("devMode"), "True")
+            self.assertEqual(pref.findtext("resetModsConfigOnCrash"), "False")
+            self.assertEqual(pref.findtext("uiScale"), "1.25")
+        self.assertEqual(prefs.read_text(), prefs_text)
+        self.assertEqual(mods_config.read_text(), mods_text)
+
+    def test_invalid_template_fails_closed_without_synthetic_dlc(self):
+        prefs = self.root / "Prefs.xml"
+        mods = self.root / "ModsConfig.xml"
+        prefs.write_text("<Prefs/>")
+        mods.write_text("<ModsConfigData><version>1.6.4871</version><activeMods/>"
+                        "</ModsConfigData>")
+        with self.assertRaisesRegex(ValueError, "knownExpansions"):
+            module.make_config(self.root / "Invalid", mods, "MO", prefs)
+        self.assertFalse((self.root / "Invalid").exists())
 
 if __name__ == "__main__":
     unittest.main()

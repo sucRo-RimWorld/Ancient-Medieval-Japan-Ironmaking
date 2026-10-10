@@ -17,6 +17,7 @@ import sys
 import time
 import uuid
 import xml.etree.ElementTree as ET
+from isolated_rimworld_config import write_isolated_config
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
@@ -40,23 +41,9 @@ def active_mods(profile):
     return list(MO_BASE + (PICKLE_TOOLS if profile == "MO-Pickle" else ()))
 
 
-def config_for_observation(path, normal_prefs, version, profile):
-    """Write config only under the new run-specific SaveData directory."""
-    path.mkdir(parents=True, exist_ok=False)
-    preferences = ET.parse(normal_prefs)
-    dev = preferences.getroot().find(".//devMode")
-    if dev is None:
-        dev = ET.SubElement(preferences.getroot(), "devMode")
-    dev.text = "True"
-    preferences.write(path / "Prefs.xml", encoding="utf-8", xml_declaration=True)
-    root = ET.Element("ModsConfigData")
-    ET.SubElement(root, "version").text = version
-    mods = ET.SubElement(root, "activeMods")
-    for package in active_mods(profile):
-        ET.SubElement(mods, "li").text = package
-    ET.SubElement(root, "knownExpansions")
-    ET.ElementTree(root).write(path / "ModsConfig.xml",
-                               encoding="utf-8", xml_declaration=True)
+def config_for_observation(path, normal_mods, normal_prefs, profile):
+    """Reuse the Environment-proven, DLC-preserving isolated ModConfig writer."""
+    write_isolated_config(path, normal_mods, normal_prefs, active_mods(profile))
 
 
 def observe_log(report):
@@ -136,7 +123,7 @@ def diagnose(game, timeout):
         report = out / profile / "Reports"
         report.mkdir(parents=True)
         savedata = out / profile / "SaveData"
-        config_for_observation(savedata / "Config", normal_prefs, version, profile)
+        config_for_observation(savedata / "Config", normal_config, normal_prefs, profile)
         log = report / "Player.log"
         command = [exe, "-savedatafolder=" + str(savedata), "-logFile", str(log)]
         native_command = runner.private_desktop_command(hidden, game, timeout, command)

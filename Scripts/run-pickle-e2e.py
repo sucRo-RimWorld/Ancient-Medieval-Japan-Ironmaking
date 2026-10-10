@@ -11,6 +11,7 @@ import uuid
 import xml.etree.ElementTree as ET
 
 from pickle_run_monitor import run_hidden_with_status, diagnostic_tail
+from isolated_rimworld_config import write_isolated_config
 
 REPO = Path(__file__).resolve().parents[1]
 IRON_ID = "sucro.ancientmedievaljapan.ironmaking"
@@ -98,23 +99,9 @@ def cleanup(path, expected):
     shutil.rmtree(path)
 
 
-def make_config(config_dir, version, profile, normal_prefs):
-    config_dir.mkdir(parents=True, exist_ok=False)
-    prefs = ET.parse(normal_prefs)
-    dev = prefs.getroot().find(".//devMode")
-    if dev is None:
-        dev = ET.SubElement(prefs.getroot(), "devMode")
-    dev.text = "True"
-    prefs.write(config_dir / "Prefs.xml", encoding="utf-8", xml_declaration=True)
+def make_config(config_dir, normal_mods, profile, normal_prefs):
     ids = BASE_IDS + (MO_IDS if profile == "MO" else []) + [IRON_ID, HARNESS_ID]
-    root = ET.Element("ModsConfigData")
-    ET.SubElement(root, "version").text = version
-    active = ET.SubElement(root, "activeMods")
-    for pid in ids:
-        ET.SubElement(active, "li").text = pid
-    ET.SubElement(root, "knownExpansions")
-    ET.ElementTree(root).write(config_dir / "ModsConfig.xml",
-                               encoding="utf-8", xml_declaration=True)
+    write_isolated_config(config_dir, normal_mods, normal_prefs, ids)
 
 
 def build(dotnet, project, game, reference_name, dll):
@@ -221,7 +208,7 @@ def run(game, requested, timeout):
             report = folder / "Reports"
             report.mkdir(parents=True)
             save_data = folder / "SaveData"
-            make_config(save_data / "Config", version, profile, normal_prefs)
+            make_config(save_data / "Config", normal_mods, profile, normal_prefs)
             log = report / "Player.log"
             command = [str(exe), "-savedatafolder=" + str(save_data),
                        "-logFile", str(log), "-pickle-run=" + FEATURE,
