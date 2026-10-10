@@ -2,6 +2,7 @@
 from contextlib import redirect_stdout
 import importlib.util
 import io
+import json
 from pathlib import Path
 import sys
 import tempfile
@@ -75,6 +76,42 @@ class RuntimeMonitorTests(unittest.TestCase):
         message = monitor._status(self.root)
         self.assertIn("Player.log=7 bytes", message)
         self.assertIn("not yet validated", message)
+
+    def test_pickle_watchdog_timeout_fails_fast(self):
+        (self.root / "summary.json").write_text(json.dumps({
+            "total": 1, "passed": 1, "failed": 0,
+            "exitReason": "watchdog-timeout"}))
+        command = [sys.executable, "-c", "import time; time.sleep(30)"]
+        with self.assertRaisesRegex(RuntimeError, "Pickle reported watchdog-timeout"):
+            with redirect_stdout(io.StringIO()):
+                monitor.run_hidden_with_status(
+                    command, report=self.root, game=self.root, env=None,
+                    profile="Vanilla", timeout=300, suite="production",
+                    heartbeat=0.01, poll_seconds=0.01)
+
+    def test_production_idle_without_game_milestones_is_bounded(self):
+        command = [sys.executable, "-c", "import time; time.sleep(30)"]
+        with self.assertRaisesRegex(RuntimeError, "no verified scenario/tick progress"):
+            with redirect_stdout(io.StringIO()):
+                monitor.run_hidden_with_status(
+                    command, report=self.root, game=self.root, env=None,
+                    profile="Vanilla", timeout=3, suite="production",
+                    startup_timeout=0.15, idle_timeout=0.1,
+                    heartbeat=0.02, poll_seconds=0.01)
+
+    def test_real_step_milestones_prevent_false_idle_failure(self):
+        progress = self.root / "step-progress.txt"
+        command = [sys.executable, "-c",
+                   ("import pathlib,time; p=pathlib.Path(" + repr(str(progress)) +
+                    "); [(p.write_text('tick:'+str(i)),time.sleep(0.1))"
+                    " for i in range(10)]")]
+        with redirect_stdout(io.StringIO()):
+            result = monitor.run_hidden_with_status(
+                command, report=self.root, game=self.root, env=None,
+                profile="Vanilla", timeout=4, suite="production",
+                startup_timeout=1.5, idle_timeout=0.6,
+                heartbeat=0.04, poll_seconds=0.01)
+        self.assertEqual(result, 0)
 
 
 if __name__ == "__main__":

@@ -213,14 +213,15 @@ def run(game, requested, timeout, suite="core"):
                        "-logFile", str(log), "-pickle-run=ironmaking-" + suite + ".feature",
                        "-pickle-mode=fast", "-pickle-set-name=" + profile,
                        "-pickle-report-dir=" + str(report), "-pickle-no-browser",
-                       "-pickle-run-timeout=12", "-pickle-retry=0"]
+                       "-pickle-run-timeout=4", "-pickle-retry=0"]
             env = os.environ.copy()
             env["AMJI_EXPECTED_PROFILE"] = profile
             env["AMJI_EXPECTED_SOURCE_ROOT"] = str(actual_source)
+            env["AMJI_PROGRESS_PATH"] = str(report / "step-progress.txt")
             hidden = private_desktop_command(private_desktop, game, timeout,
                                              [Path(command[0]), *command[1:]])
             code = run_hidden_with_status(hidden, report=report, game=game, env=env,
-                                          profile=profile, timeout=timeout)
+                                          profile=profile, timeout=timeout, suite=suite)
             if code != 0:
                 print("[E2E " + profile + "] Startup/game failure diagnostics:\n" +
                       diagnostic_tail(report), file=sys.stderr, flush=True)
@@ -243,7 +244,7 @@ def main():
                         default=Path(r"D:\SteamLibrary\steamapps\common\RimWorld"))
     parser.add_argument("--profile", choices=("Vanilla", "MO", "All"), default="Vanilla")
     parser.add_argument("--suite", choices=("core", "production"), default="core")
-    parser.add_argument("--timeout", type=int, default=900)
+    parser.add_argument("--timeout", type=int, default=300)
     parser.add_argument("--diagnose-mo-startup", action="store_true",
                         help="Observe MO baseline vs MO+Pickle on separate hidden desktops; no E2E PASS")
     args = parser.parse_args()

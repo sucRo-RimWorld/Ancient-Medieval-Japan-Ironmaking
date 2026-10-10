@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
 using RimWorks.Pickle;
 using RimWorld;
@@ -51,6 +52,7 @@ namespace AncientMedievalJapan.Ironmaking.E2E
             var fixtures = new List<Thing>();
             try
             {
+                Progress("setup:" + recipeName);
                 await IronmakingTestThread.Run(delegate
                 {
                     map = Find.CurrentMap;
@@ -127,11 +129,13 @@ namespace AncientMedievalJapan.Ironmaking.E2E
                     ctx.Require(job != null, "No loaded WorkGiver assigns actual bill " + recipeName);
                     job.playerForced = true;
                     worker.jobs.StartJob(job, JobCondition.InterruptForced);
+                    Progress("job:" + recipeName);
                 });
                 bool finished = false;
                 for (int i = 0; i < 110 && !finished; i++)
                 {
                     await ctx.WaitTicks(240);
+                    Progress("tick:" + recipeName + ":" + i);
                     await IronmakingTestThread.Run(delegate
                     {
                         finished = bill.repeatCount == 0 && Count(map, outputName) == beforeOutput + amount;
@@ -146,6 +150,7 @@ namespace AncientMedievalJapan.Ironmaking.E2E
                     if (fuel != null)
                         ctx.Assert(fuel.Fuel < initialFuel, "Fueled table did not consume fuel");
                 });
+                Progress("completed:" + recipeName);
             }
             finally
             {
@@ -160,6 +165,14 @@ namespace AncientMedievalJapan.Ironmaking.E2E
                         if (!t.Destroyed) t.Destroy(DestroyMode.Vanish);
                 });
             }
+        }
+
+        private static void Progress(string marker)
+        {
+            // Real game-tick milestone in the isolated test report folder.
+            string path = Environment.GetEnvironmentVariable("AMJI_PROGRESS_PATH");
+            if (!String.IsNullOrEmpty(path))
+                File.WriteAllText(path, marker);
         }
 
         private static int Count(Map map, string name)
