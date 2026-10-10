@@ -34,3 +34,9 @@ The first Ironmaking `ThingCategoryDef AMJ_IronmakingMaterials` used a `Resource
 **State:** E2E HARNESS AUTHORED; RimWorld/Pickle game execution and .NET test build OPEN.
 
 Five test-only Pickle scenarios now target loaded Defs and Vanilla/MO result, a naturally spawned map deposit, a pawn mining job and real save/reload. The runner stages owner-marked temporary Mods and isolated SaveData, requiring complete Pickle summary/ERROR-free Player.log; normal ModsConfig/Prefs and Steam installs must remain unchanged. Four fixture checks of the exact result validator passed; no real game or MO profile E2E was run in this environment. Owner procedure: `Docs/GoldenPaths/IronmakingPickleE2E.md`.
+
+## IRON-PICKLE-HIDDEN-TEX-20261010 — Isolated display and charcoal texture fix
+
+**State:** SOURCE FIX / LOCAL STRUCTURAL CHECKS; fresh loaded-game retest still required.
+
+Author-run Vanilla Pickle aborted on a real `[ERROR]`: `AMJ_Charcoal` borrowed Vanilla Chemfuel's texture but used `Graphic_StackCount`, causing the nonexistent `Things/Item/Resource/Chemfuel/Chemfuel` lookup and a null material. The owner ThingDef switches to Chemfuel-compatible `Graphic_Single` and an explicit regression checks the pair. The default Pickle launcher now requires a private Windows `WinSta0` desktop and fails closed if native launcher building/desktop creation fails; rendering is not disabled and no visible fallback is allowed. Historical failed run is not a PASS. Next required evidence is fresh actual Vanilla then MO Pickle reports and ERROR-free player logs. Procedure/specification is in `Docs/GoldenPaths/IronmakingPickleE2E.md`, code in `Defs/ThingDefs/IronmakingMaterials.xml` and `Scripts/`.

@@ -44,6 +44,32 @@ class IsolatedLauncherContracts(unittest.TestCase):
             module.stage(self.root, "Foreign", module.HARNESS_ID, foreign)
         self.assertEqual(len(list(self.root.glob("AMJI-Pickle-Foreign-*"))), 0)
 
+    def test_real_game_launch_uses_only_private_desktop(self):
+        launcher = self.root / "FakePrivateDesktop.exe"
+        game = self.root / "RimWorld"
+        exe = game / "RimWorldWin64.exe"
+        command = [exe, "-savedatafolder=private", "-logFile", "private.log"]
+        got = module.private_desktop_command(launcher, game, 900, command)
+        self.assertEqual(got[0], str(launcher))
+        self.assertEqual(got[1], str(exe))
+        self.assertEqual(got[2], str(game))
+        self.assertEqual(got[3], "900")
+        self.assertEqual(got[4:], list(map(str, command[1:])))
+        self.assertNotIn("-nographics", got)
+        with self.assertRaisesRegex(RuntimeError, "Unexpected"):
+            module.private_desktop_command(launcher, game, 900,
+                                           [self.root / "OtherGame.exe"])
+        with self.assertRaisesRegex(RuntimeError, "timeout"):
+            module.private_desktop_command(launcher, game, 0, command)
+
+    def test_private_desktop_source_refuses_visible_fallback(self):
+        source = module.HIDDEN_LAUNCHER_SOURCE.read_text(encoding="utf-8")
+        for token in ("CreateDesktop", 'startup.desktop = "WinSta0', "CreateProcess",
+                      "WaitForSingleObject", "TerminateProcess",
+                      "visible fallback is forbidden"):
+            self.assertIn(token, source)
+        self.assertNotIn("-nographics", source)
+
     def test_profile_xml_is_isolated_and_exact(self):
         prefs = self.root / "Prefs.xml"
         prefs.write_text("<Prefs><devMode>False</devMode></Prefs>")

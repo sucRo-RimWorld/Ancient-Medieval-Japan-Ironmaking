@@ -18,6 +18,7 @@ BASE_IDS = ["brrainz.harmony", "ludeon.rimworld", "RimWorks.RimLogging",
 MO_IDS = ["OskarPotocki.VanillaFactionsExpanded.Core",
           "syrchalis.processor.framework", "DankPyon.Medieval.Overhaul"]
 FEATURE = "ironmaking-core.feature"
+HIDDEN_LAUNCHER_SOURCE = REPO / "Scripts/IronmakingPrivateDesktop.cs"
 
 
 def demand(ok, message):
@@ -121,7 +122,36 @@ def build(dotnet, project, game, reference_name, dll):
                    check=True, cwd=REPO)
 
 
+def build_private_desktop_launcher():
+    """Build the Windows desktop-isolation helper; no visible-game fallback."""
+    demand(os.name == "nt", "Hidden Windows desktop needs native Windows")
+    windir = Path(os.environ.get("WINDIR", r"C:\Windows"))
+    candidates = [windir / "Microsoft.NET/Framework64/v4.0.30319/csc.exe",
+                  windir / "Microsoft.NET/Framework/v4.0.30319/csc.exe"]
+    csc = next((p for p in candidates if p.is_file()), None)
+    demand(csc is not None, "Windows .NET Framework csc.exe unavailable; refusing visible run")
+    demand(HIDDEN_LAUNCHER_SOURCE.is_file(), "Hidden desktop C# source missing")
+    destination = REPO / "TestResults/Pickle/Build/PrivateDesktop/IronmakingPrivateDesktop.exe"
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run([str(csc), "/nologo", "/target:exe",
+                    "/out:" + str(destination), str(HIDDEN_LAUNCHER_SOURCE)],
+                   cwd=REPO, check=True)
+    demand(destination.is_file(), "Hidden desktop launcher did not build")
+    return destination
+
+
+def private_desktop_command(launcher, game, timeout, game_command):
+    """Launch RimWorld through WinSta0 private desktop, retaining normal rendering."""
+    demand(game_command and game_command[0].name.lower() == "rimworldwin64.exe",
+           "Unexpected RimWorld launch command")
+    demand(0 < timeout <= 3600, "Invalid private-desktop timeout")
+    return [str(launcher), str(game_command[0]), str(game), str(timeout),
+            *map(str, game_command[1:])]
+
+
 def run(game, requested, timeout):
+    demand(os.name == "nt", "This test runner requires private Windows desktop; no visible fallback")
+    demand(0 < timeout <= 3600, "Timeout must be 1..3600 seconds")
     game = game.resolve(strict=True)
     if os.name == "nt":
         tasks = subprocess.run(["tasklist", "/FI", "IMAGENAME eq RimWorldWin64.exe"],
@@ -151,6 +181,7 @@ def run(game, requested, timeout):
     demand(dotnet is not None, "dotnet SDK is required to build Pickle steps")
     build(dotnet, REPO / "Tests/E2E/Quickstarts.csproj", game, "QuickstartsDll", quick)
     build(dotnet, REPO / "Tests/E2E/Steps.csproj", game, "PickleDll", pickle)
+    private_desktop = build_private_desktop_launcher()
 
     stamp = uuid.uuid4().hex[:10]
     output = REPO / "TestResults/Pickle/Runs" / stamp
@@ -198,12 +229,17 @@ def run(game, requested, timeout):
             env["AMJI_EXPECTED_SOURCE_ROOT"] = str(actual_source)
             with (report / "launcher.log").open("w", encoding="utf-8") as output_log:
                 try:
-                    proc = subprocess.run(command, cwd=game, env=env, timeout=timeout,
+                    hidden = private_desktop_command(private_desktop, game, timeout,
+                                                     [Path(command[0]), *command[1:]])
+                    proc = subprocess.run(hidden, cwd=game, env=env, timeout=timeout + 45,
                                           stdout=output_log, stderr=subprocess.STDOUT)
                 except subprocess.TimeoutExpired as exc:
-                    raise RuntimeError("RimWorld timed out for " + profile) from exc
+                    raise RuntimeError(
+                        "Private-desktop controller timed out for " + profile +
+                        "; inspect/stop any lingering test process before rerun") from exc
             demand(proc.returncode == 0,
-                   "RimWorld/Pickle exited " + str(proc.returncode) + "; " + str(report))
+                   "Private desktop / RimWorld / Pickle exited " + str(proc.returncode) +
+                   "; inspect launcher.log and Player.log in " + str(report))
             subprocess.run([sys.executable, str(REPO / "Scripts/validate_pickle_result.py"),
                             "--report", str(report)], check=True, cwd=REPO)
             print("PICKLE PASS", profile, "5 loaded-game scenarios", flush=True)
