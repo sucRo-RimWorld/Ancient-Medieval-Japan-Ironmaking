@@ -24,7 +24,7 @@ The named `ironmaking-core.feature` scenarios test one exact loaded Ironmaking s
 
 ## Next runtime gate
 
-After pulling the diagnostic update, use `.\\run-pickle-e2e.bat --profile MO --timeout 180` as a **shortened diagnostic observation** against the current Ironmaking source. If diagnostics indicate normal ongoing loading, a later full-timeout MO run is separate from this information-gathering step. This launches actual RimWorld rendering on a private Windows desktop, uses an isolated SaveData, and preserves the player's regular game configuration. Record the new run ID and exact 5/5/ERROR outcome here. Do not mark MO PASS from source-contract XML tests or substitute `--profile All` unless Vanilla has changed since its recorded PASS.
+After pulling the diagnostic update, use `.\run-pickle-e2e.bat --profile MO --timeout 180` as a **shortened diagnostic observation** against the current Ironmaking source. If diagnostics indicate normal ongoing loading, a later full-timeout MO run is separate from this information-gathering step. This launches actual RimWorld rendering on a private Windows desktop, uses an isolated SaveData, and preserves the player's regular game configuration. Record the new run ID and exact 5/5/ERROR outcome here. Do not mark MO PASS from source-contract XML tests or substitute `--profile All` unless Vanilla has changed since its recorded PASS.
 
 ## MO 900-second startup timeout — uploaded evidence
 
