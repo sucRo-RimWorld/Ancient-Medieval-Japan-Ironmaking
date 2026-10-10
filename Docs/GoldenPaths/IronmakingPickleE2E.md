@@ -155,3 +155,39 @@ The owner WorkGiver `AMJ_IronmakingBills` connects Crafting to the kiln and smal
 furnace. Their earlier Recipes existed without a matching WorkGiver. The E2E must
 not bypass this connection by synthesizing a DoBill Job or calling recipe output
 methods. Fresh production-suite reports are required before claiming runtime PASS.
+
+## Production watchdog: bounded feedback (2026-10-10)
+
+The first author-run production/Vanilla attempt loaded `IronmakingWorkMap` but
+remained alive beyond 840 seconds. Its interim `summary.json` had only the source
+scenario passed and `exitReason=watchdog-timeout`. The prior outer 900-second
+default reported growing launcher diagnostics, not production progress.
+
+The E2E runner now uses a **300-second per-profile hard deadline** instead of
+900 seconds and Pickle's run timeout is 4 instead of 12. It **fails immediately**
+on a Pickle `watchdog-timeout`/`failed`/`error`/`timeout` summary instead of
+waiting for the outer process to exit. In production, after 120 seconds without
+a new completed scenario or test-step milestone during startup/map transition,
+or 60 seconds without a *completed game-Tick batch* within an active Bill step,
+the runner terminates only its owned game/controller and retains reports.
+
+A separate test-only `step-progress.txt` in each report folder records Bill
+setup, native Job start, each completed 240-Tick wait and Bill completion.
+**Neither launcher.log growth, CPU use nor unchanged Player.log counts as
+gameplay progress.** Milestones never count as PASS; the unchanged
+`validate_pickle_result.py` full-summary and Player.log ERROR gates remain
+mandatory. No visible-window fallback, changes to normal saves/config,
+or weaker yield/fuel assertions were introduced. `--timeout N` still overrides
+the 300-second hard deadline for explicitly diagnosed slower setups;
+the separate startup-observation mode is unchanged.
+
+To re-check after pulling and ensuring the previous hidden game is gone:
+
+```powershell
+.\run-pickle-e2e.bat --suite production --profile Vanilla
+```
+
+Run MO only after the new Vanilla production result is known. A synthetic unit
+test of the watchdog is **not** a game runtime PASS. Inspect the named run's
+`Vanilla/Reports/{summary.json,Player.log,launcher.log,step-progress.txt}`
+on failure; retain the earliest error and avoid blind retries.

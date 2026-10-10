@@ -12,7 +12,7 @@ balance and accepted textures remain unimplemented/unaccepted. Static checks do
 not establish loaded gameplay. See MVP checklist and Design for scope.
 
 ## IRON-PICKLE-20261010
-**State:** VANILLA/MO CORE 5/5 AUTHOR-REPORTED PASS; PRODUCTION SUITE IMPLEMENTED, RUNTIME PENDING.
+**State:** VANILLA/MO CORE 5/5 AUTHOR-REPORTED PASS; PRODUCTION VANILLA WATCHDOG-TIMEOUT OBSERVED, RUNTIME PASS PENDING.
 Vanilla run `b5a5596f84` and MO run `5127792409` passed five baseline scenarios each;
 MO exit 0 in 51s with zero skipped/flaky/error logs after PR #20 (`93667960ca5901fb03634ec7cd52f5613dc53497`).
 Raw local reports were not independently inspected. Earlier hidden-startup/config
@@ -22,6 +22,10 @@ Next suite: `run-pickle-e2e.bat --suite production --profile All`, four scenario
 profile via the same private-desktop runner. Native WorkGiver/Bill jobs, exact input
 and output counts and fueled Vanilla smithy consumption are asserted. Owner kiln/
 furnace Crafting WorkGiver connection added; production XML amounts unchanged.
+First Vanilla production run passed only the source scenario; interim Pickle summary
+reported watchdog-timeout after work-map load and no bill result. Runner now
+has bounded/early-fail monitoring and test-only Bill tick milestones; fresh
+Windows gameplay evidence remains required (Golden Path linked below).
 Fresh reports required; no production runtime PASS yet. Refuelling jobs, integrated
 chain logistics, trade, research and distribution remain OPEN.
 Canonical procedure/evidence: `Docs/GoldenPaths/IronmakingPickleE2E.md`,

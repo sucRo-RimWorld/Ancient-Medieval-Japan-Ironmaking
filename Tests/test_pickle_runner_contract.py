@@ -73,6 +73,17 @@ class IsolatedLauncherContracts(unittest.TestCase):
             self.assertIn(token, source)
         self.assertNotIn("-nographics", source)
 
+    def test_production_uses_bounded_timeout_and_game_tick_markers(self):
+        source = SCRIPT.read_text(encoding="utf-8")
+        self.assertIn('parser.add_argument("--timeout", type=int, default=300)', source)
+        self.assertIn('"-pickle-run-timeout=4"', source)
+        self.assertIn('env["AMJI_PROGRESS_PATH"]', source)
+        self.assertIn("timeout=timeout, suite=suite", source)
+        steps = (SCRIPT.parent.parent / "Tests/E2E/IronmakingBillSteps.cs").read_text()
+        for marker in ('Progress("setup:"', 'Progress("job:"',
+                       'Progress("tick:"', 'Progress("completed:"'):
+            self.assertIn(marker, steps)
+
     def test_runner_invokes_heartbeat_monitor_for_each_profile(self):
         runner_text = SCRIPT.read_text(encoding="utf-8")
         self.assertIn("for profile_index, profile in enumerate(profiles, 1):",
