@@ -32,3 +32,9 @@ Run the same static test command after adding Recipes. Tests no longer assert "n
 - MO IronBloom finishing converts to `DankPyon_IronIngot` at `DankPyon_Anvil`, not to Vanilla `Steel`.
 
 The local source fixture passed **10 tests** on 2026-10-10. This does **not** prove the patched RecipeUsers resolve after actual load, that Vanilla has the intended Smithy Defs in the active profile, or that the MO fuel chain behaves correctly. No approved balance/visual assets exist, and every conversion ratio/work value is provisional.
+
+## Targeted trade supplement
+
+`Patches/TradeIronSand.xml` uses an existence-guarded `PatchOperationConditional` on Vanilla bulk caravans. It appends only `AMJ_IronSand` seller and buyer generators; it does not use `StockGenerator_Category(ResourcesRaw)`, remove Steel/IronIngot availability or modify MO-owned merchant Defs.
+
+Two additional static tests check limited trader targets, correct separation of selling from buying, and no unrelated metal rewrites. The 2026-10-10 local suite passed **12 static tests**. Confirm actual Vanilla Core `TraderKindDef` existence, trader visitation/stock/price and save load in the RimWorld runtime before treating this as a reliable rescue route. Sales count 10~30 is a developer placeholder, not an approved balance value.
