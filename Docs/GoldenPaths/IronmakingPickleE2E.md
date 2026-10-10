@@ -225,3 +225,26 @@ Vanilla first, then MO; rerun Core mining in both profiles before making current
 source-wide runtime claims. Inspect `step-progress.txt` if a later failure
 occurs after tick batches; in that case treat Job outcome as a separate gameplay
 issue rather than the old waiting deadlock.
+
+## Vanilla Production PASS after Fast-mode correction — 2026-10-10
+
+Author run `240c258399` of
+`run-pickle-e2e.bat --suite production --profile Vanilla` passed all four
+Production scenarios in 16 seconds (exit code 0, zero skipped/flaky/error
+logs, test-only Mod cleanup). This is **author-provided console evidence**;
+raw report files have not been independently inspected. In Vanilla, the
+corrected Tick helper now permits the native production Bill fixtures to
+complete under the existing strict input/output/fuel and ERROR gates.
+The old Vanilla deadlock is superseded; do not repeat its successful
+Production profile solely to test MO.
+
+Next command:
+
+```powershell
+.\run-pickle-e2e.bat --suite production --profile MO
+```
+
+Core mining uses the changed shared Tick helper too; rerun Core Vanilla/MO
+for new current-harness evidence later. Production MO, refuelling, integrated
+logistics, trader inventory, research, balance, accepted textures and release
+remain separately unverified.
