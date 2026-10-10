@@ -2,7 +2,7 @@
 
 古代・中世日本の製鉄 / Standalone ancient–medieval Japanese ironmaking for RimWorld.
 
-**Status:** finite iron-sand deposit XML developer slice exists; not playable or distributable and no RimWorld load/map/mining validation completed.
+**Status:** developer XML covers finite sand deposit plus charcoal → small furnace → bloom → general metal, with guarded MO output; no RimWorld load/map/mining/workbench validation completed. Not ready for distribution.
 
 A Vanilla-compatible, finite iron-sand → iron bloom → usable iron path, growing from small furnaces to improved and medieval tatara operations. Medieval Overhaul and other AMJ mods are optional integrations, not hard dependencies. Edo-period full modern tatara and global ore replacement are excluded.
 
