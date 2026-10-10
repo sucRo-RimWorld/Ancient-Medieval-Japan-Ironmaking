@@ -38,3 +38,15 @@ The local source fixture passed **10 tests** on 2026-10-10. This does **not** pr
 `Patches/TradeIronSand.xml` uses an existence-guarded `PatchOperationConditional` on Vanilla bulk caravans. It appends only `AMJ_IronSand` seller and buyer generators; it does not use `StockGenerator_Category(ResourcesRaw)`, remove Steel/IronIngot availability or modify MO-owned merchant Defs.
 
 Two additional static tests check limited trader targets, correct separation of selling from buying, and no unrelated metal rewrites. The 2026-10-10 local suite passed **12 static tests**. Confirm actual Vanilla Core `TraderKindDef` existence, trader visitation/stock/price and save load in the RimWorld runtime before treating this as a reliable rescue route. Sales count 10~30 is a developer placeholder, not an approved balance value.
+
+## Optional source-contract check against actual MO 1.6
+
+When an actual MO 1.6 ZIP is available, run from the owner repository root:
+
+```bash
+AMJ_MO_ARCHIVE=/absolute/path/to/3219596926.zip python -m unittest discover -s Tests -p "test_*.py" -v
+```
+
+The three additional tests in `Tests/test_mo_archive_contract.py` read the **supplied external archive**, do not vendor MO assets, and confirm MO package/name, IronIngot/Coal/Anvil upstream ThingDefs, the Ironmaking `loadAfter` soft order and the MO-guarded bloom output. With the author-provided archive on 2026-10-10, **15 tests passed**. Without `AMJ_MO_ARCHIVE`, the same suite runs 12 regular static checks and **skips three** MO-only tests rather than fabricating a MO compatibility PASS.
+
+An initial local failure resulted from a stale **local verification copy** of Ironmaking `About/About.xml` lacking the current `loadAfter`; refreshing the local test copy to the already merged GitHub About resolved it. Always test the **current same-source tree**, not a previous exported prototype. This validation verifies source contracts only; actual RimWorld PatchOperation, worktable interaction, generation and game ERROR=0 remain unverified.
