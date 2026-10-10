@@ -66,3 +66,7 @@ python Tools/check_vanilla_core_defs.py --core-defs "/path/to/RimWorld/Data/Core
 ```
 
 This scans the actual Core XML for Vanilla `Root`/`ResourcesRaw`, resource/bench/mineable parent names, `WoodLog`/`Steel`, existing Vanilla smithies, two sand-trade caravan `TraderKindDef`s, `Smithing` and `MapCommonBase`. It compares the Ironmaking category parent to `Root` and exits nonzero for missing references; incomplete or missing Core sources cannot become PASS. `Tests/test_vanilla_core_def_contract.py` provides four independent **synthetic fixture tests** for successful reference lookup, old invalid `Resources` parent, missing trader kind, and empty Core input. All four fixture tests passed on 2026-10-10. **The actual Core source has not been supplied in this environment and no Core/loaded game PASS is claimed.** MO source-contract checks remain separate.
+
+## From static source to loaded-game E2E
+
+Use the owner [Ironmaking Pickle E2E procedure](IronmakingPickleE2E.md) for the two actual game profiles, independent Quickstarts, real mining WorkGiver and Pickle disk save/reload. The static XML/Mock Core tests are **not** a loaded-game gate; only a fresh exact five-scenario Pickle report with zero runtime errors qualifies.

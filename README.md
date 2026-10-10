@@ -9,7 +9,8 @@ A Vanilla-compatible, finite iron-sand → iron bloom → usable iron path, grow
 - [Formal design](Docs/Design.md)
 - [Existing-Mod research and entry gate](Docs/Research/IronmakingExistingModEntryAudit-20261010.md)
 - [MVP checklist](Docs/Research/IronmakingMVPImplementationChecklist.md)
-- [Finite sand static audit and test procedure](Docs/GoldenPaths/IronSandStaticAudit.md)
+- [Finite sand static audit](Docs/GoldenPaths/IronSandStaticAudit.md)
+- [RimWorld/Pickle E2E runner (real-game validation, pending)](Docs/GoldenPaths/IronmakingPickleE2E.md)
 - [Agent instructions](AGENTS.md)
 - [Coordination — main only](Docs/Coordination.md)
 
