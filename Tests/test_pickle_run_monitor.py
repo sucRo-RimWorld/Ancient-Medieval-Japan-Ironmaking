@@ -56,6 +56,18 @@ class RuntimeMonitorTests(unittest.TestCase):
         finally:
             monitor.time.monotonic = original
 
+    def test_failed_startup_diagnostic_reads_both_logs_without_claiming_pass(self):
+        (self.root / "launcher.log").write_text(
+            "[PRIVATE_DESKTOP] pid=100\n[PRIVATE_DESKTOP_DIAG] cpu=0.1\n"
+            "[PRIVATE_DESKTOP_FAIL] timeout\n")
+        (self.root / "Player.log").write_text(
+            "RimWorld 1.6\nFallback handler could not load library\n")
+        detail = monitor.diagnostic_tail(self.root)
+        self.assertIn("[PRIVATE_DESKTOP_FAIL]", detail)
+        self.assertIn("Fallback handler", detail)
+        self.assertIn("Pickle summary: absent", detail)
+        self.assertNotIn("PASS", detail)
+
     def test_log_status_never_claims_pass(self):
         self.assertIn("Player.log absent", monitor._status(self.root))
         (self.root / "Player.log").write_text("loading")

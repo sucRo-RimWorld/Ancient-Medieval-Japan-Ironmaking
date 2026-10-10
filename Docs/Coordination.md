@@ -44,3 +44,8 @@ Author-run Vanilla Pickle aborted on a real `[ERROR]`: `AMJ_Charcoal` borrowed V
 ## IRON-PICKLE-ALL-MO-TRANSITION-20261010
 
 **State:** Vanilla 5/5 verified; author reported no console output after Vanilla during `--profile All`, MO not yet confirmed. Source-level diagnosis: old Python runner used blocking `subprocess.run` for each hidden game profile without MO launch/heartbeat messages. The separate MO load could therefore appear frozen for the full timeout even if still running. Updated owner runner and its Golden Path with explicit profile start, 15-second MO log/report heartbeat, fail-closed deadline, and owned-process-tree cleanup on timeout/interruption. See `Scripts/pickle_run_monitor.py` and `Docs/GoldenPaths/IronmakingPickleE2E.md` for implementation/diagnosis; **no fresh MO runtime outcome has been observed here**. Remaining run is MO-only, not a mandatory replay of Vanilla.
+
+## IRON-MO-HIDDEN-STARTUP-20261010 — timeout evidence and investigation
+
+**State:** MO actual game TIMED OUT at 900s (run `10f8fe08ce`); root cause OPEN, Pickle 5/5 unexecuted/undetermined.  
+Uploaded `launcher.log` confirms private-desktop PID=15988 and native timeout. `Player.log` contains startup/graphics initialization, installed-Mod metadata warnings and two Mono fallback-library lines, but no Pickle scenarios or explicit terminal cause. No missing-mod/Recipe/Unity crash diagnosis is asserted from these lines. The owner test launcher now records 30-second private-window/CPU/memory snapshots and bounded failed-run log tails for the next MO-only diagnostic attempt. The procedure/evidence scope belongs in `Docs/GoldenPaths/IronmakingPickleE2E.md`; no production XML or compatibility/balance changes are authorized by the timeout alone.

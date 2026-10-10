@@ -77,6 +77,8 @@ class IsolatedLauncherContracts(unittest.TestCase):
         self.assertIn("run_hidden_with_status(hidden, report=report", runner_text)
         self.assertNotIn("proc = subprocess.run(hidden", runner_text)
         self.assertIn("validate_pickle_result.py", runner_text)
+        self.assertIn("diagnostic_tail(report)", runner_text)
+        self.assertIn("if code != 0:", runner_text)
 
     def test_profile_xml_is_isolated_and_exact(self):
         prefs = self.root / "Prefs.xml"
