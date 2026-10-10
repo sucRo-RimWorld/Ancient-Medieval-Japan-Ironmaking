@@ -33,8 +33,6 @@ def write_isolated_config(config_dir, source_mods, source_prefs, package_ids):
         ET.SubElement(active, "li").text = name
 
     prefs = ET.parse(source_prefs)
-    if prefs.getroot().tag != "Prefs":
-        raise ValueError("Source Prefs.xml has an unexpected root")
     for name, value in (("devMode", "True"), ("resetModsConfigOnCrash", "False")):
         node = prefs.getroot().find(name)
         if node is None:
