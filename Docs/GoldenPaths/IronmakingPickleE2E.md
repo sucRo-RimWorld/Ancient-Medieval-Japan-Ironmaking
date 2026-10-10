@@ -191,3 +191,37 @@ Run MO only after the new Vanilla production result is known. A synthetic unit
 test of the watchdog is **not** a game runtime PASS. Inspect the named run's
 `Vanilla/Reports/{summary.json,Player.log,launcher.log,step-progress.txt}`
 on failure; retain the earliest error and avoid blind retries.
+
+## Pickle Fast-mode game-tick deadlock found after 60-second watchdog run (2026-10-10)
+
+Author run `cc232937e7` built both test assemblies with zero warnings and
+passed only the exact-source Production scenario. During the charcoal scenario,
+the test wrote `job:AMJ_BurnCharcoal` and then emitted **no** `tick:` milestone.
+The monitor failed after 60 seconds without verified progress. This is a test
+harness failure, not proof that the kiln or production recipe failed.
+
+**Root cause (upstream source verified):** Ironmaking's custom Bill step awaited
+`ctx.WaitTicks(240)` in `-pickle-mode=fast`. Upstream
+`RimWorks/Rimworld-Pickle` at
+`Source/Pickle/Runtime/PickleDriver.cs` implements `WaitTicks` as a passive
+wait for `Find.TickManager.TicksGame` to advance; it only unpauses in **non-Fast**
+mode. Its built-in tick step in
+`Source/Pickle.Vanilla/SimSteps.cs` explicitly advances
+`Find.TickManager.DoSingleTick()` in batches of 60, yielding
+`ctx.WaitFrames(1)` between batches while in Fast mode.
+A paused Quickstart therefore cannot advance through the custom passive wait.
+
+The single common test-only `IronmakingTestThread.AdvanceTicks` now uses
+that upstream-compatible simulation pattern in Fast mode and retains the
+passive `ctx.WaitTicks` in Watch mode. Both Production Bills and the Core mining
+test use this helper. **Do not** change the Mod's production XML or job
+implementation to address the harness deadlock. The strict Pickle four/five
+scenario, output/ingredient/fuel and Player.log ERROR gates are unchanged.
+
+The correction still requires actual Windows RimWorld confirmation. The previous
+Core 5/5 evidence remains valid only for its original tested source/harness;
+it is not a new PASS of the modified shared tick helper. Rerun Production
+Vanilla first, then MO; rerun Core mining in both profiles before making current
+source-wide runtime claims. Inspect `step-progress.txt` if a later failure
+occurs after tick batches; in that case treat Job outcome as a separate gameplay
+issue rather than the old waiting deadlock.

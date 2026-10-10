@@ -134,7 +134,7 @@ namespace AncientMedievalJapan.Ironmaking.E2E
                 bool finished = false;
                 for (int i = 0; i < 110 && !finished; i++)
                 {
-                    await ctx.WaitTicks(240);
+                    await IronmakingTestThread.AdvanceTicks(ctx, 240);
                     Progress("tick:" + recipeName + ":" + i);
                     await IronmakingTestThread.Run(delegate
                     {

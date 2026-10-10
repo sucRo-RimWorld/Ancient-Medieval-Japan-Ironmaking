@@ -22,10 +22,12 @@ Next suite: `run-pickle-e2e.bat --suite production --profile All`, four scenario
 profile via the same private-desktop runner. Native WorkGiver/Bill jobs, exact input
 and output counts and fueled Vanilla smithy consumption are asserted. Owner kiln/
 furnace Crafting WorkGiver connection added; production XML amounts unchanged.
-First Vanilla production run passed only the source scenario; interim Pickle summary
-reported watchdog-timeout after work-map load and no bill result. Runner now
-has bounded/early-fail monitoring and test-only Bill tick milestones; fresh
-Windows gameplay evidence remains required (Golden Path linked below).
+First Vanilla production run passed only source; subsequent run `cc232937e7`
+reached charcoal Job start and stalled before its first 240-tick wait returned.
+Confirmed harness cause: passive `ctx.WaitTicks` in Pickle Fast mode; upstream
+built-in tick step advances native DoSingleTick instead. Shared fast-mode tick
+helper now used by Bills and Core mining; new Windows runtime evidence required.
+Bounded/early-fail monitoring and milestones remain (Golden Path linked below).
 Fresh reports required; no production runtime PASS yet. Refuelling jobs, integrated
 chain logistics, trade, research and distribution remain OPEN.
 Canonical procedure/evidence: `Docs/GoldenPaths/IronmakingPickleE2E.md`,

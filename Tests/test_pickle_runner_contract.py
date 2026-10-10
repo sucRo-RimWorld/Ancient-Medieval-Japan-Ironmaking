@@ -73,6 +73,18 @@ class IsolatedLauncherContracts(unittest.TestCase):
             self.assertIn(token, source)
         self.assertNotIn("-nographics", source)
 
+    def test_real_game_jobs_advance_ticks_in_pickle_fast_mode(self):
+        root = SCRIPT.parent.parent / "Tests/E2E"
+        shared = (root / "IronmakingSteps.cs").read_text(encoding="utf-8")
+        self.assertIn("PickleRunMode.Mode.Fast", shared)
+        self.assertIn("Find.TickManager.DoSingleTick()", shared)
+        self.assertIn("await ctx.WaitFrames(1)", shared)
+        self.assertIn("await ctx.WaitTicks(ticks)", shared)  # Watch mode only
+        for name in ("IronmakingBillSteps.cs", "IronmakingMiningSteps.cs"):
+            source = (root / name).read_text(encoding="utf-8")
+            self.assertIn("await IronmakingTestThread.AdvanceTicks(ctx, 240)", source)
+            self.assertNotIn("await ctx.WaitTicks(240)", source)
+
     def test_production_uses_bounded_timeout_and_game_tick_markers(self):
         source = SCRIPT.read_text(encoding="utf-8")
         self.assertIn('parser.add_argument("--timeout", type=int, default=300)', source)
