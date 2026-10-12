@@ -4,7 +4,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-SCRIPT = Path(__file__).resolve().parents[1] / "Tools/check_vanilla_core_defs.py"
+SCRIPT = Path(__file__).resolve().parents[2] / "Tools/check_vanilla_core_defs.py"
 SPEC = importlib.util.spec_from_file_location("core_preflight", SCRIPT)
 MODULE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MODULE)

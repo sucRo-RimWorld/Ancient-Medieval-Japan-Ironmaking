@@ -9,7 +9,7 @@ import unittest
 import xml.etree.ElementTree as ET
 import zipfile
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 ARCHIVE = os.environ.get('AMJ_MO_ARCHIVE', '')
 
 

@@ -1,0 +1,19 @@
+name: Ironmaking static and runner contracts
+on:
+  pull_request:
+    paths: ['Defs/**', 'Patches/**', 'About/**', 'Tools/**', 'Scripts/**', 'Tests/Production/**', 'Tests/Runtime/**', '.github/workflows/test-contracts.yml']
+  push:
+    branches: [main]
+    paths: ['Defs/**', 'Patches/**', 'About/**', 'Tools/**', 'Scripts/**', 'Tests/Production/**', 'Tests/Runtime/**', '.github/workflows/test-contracts.yml']
+concurrency:
+  group: ironmaking-contracts-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  source-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Run production source contracts
+        run: python -m unittest discover -s Tests/Production -p 'test_*.py' -v
+      - name: Run isolated harness tooling contracts (not game E2E)
+        run: python -m unittest discover -s Tests/Runtime -p 'test_*.py' -v

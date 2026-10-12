@@ -3,7 +3,7 @@ from pathlib import Path
 import unittest
 import xml.etree.ElementTree as ET
 
-R = Path(__file__).resolve().parents[1]
+R = Path(__file__).resolve().parents[2]
 
 def defs(path, kind):
     root=ET.parse(R/path).getroot()

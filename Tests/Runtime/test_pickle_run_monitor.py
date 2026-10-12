@@ -8,7 +8,7 @@ import sys
 import tempfile
 import unittest
 
-SCRIPT = Path(__file__).resolve().parents[1] / "Scripts/pickle_run_monitor.py"
+SCRIPT = Path(__file__).resolve().parents[2] / "Scripts/pickle_run_monitor.py"
 spec = importlib.util.spec_from_file_location("pickle_run_monitor", SCRIPT)
 monitor = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(monitor)

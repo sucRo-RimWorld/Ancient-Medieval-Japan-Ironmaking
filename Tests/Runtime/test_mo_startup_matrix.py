@@ -7,7 +7,7 @@ import unittest
 import sys
 import xml.etree.ElementTree as ET
 
-SCRIPT = Path(__file__).resolve().parents[1] / "Scripts/diagnose_mo_startup.py"
+SCRIPT = Path(__file__).resolve().parents[2] / "Scripts/diagnose_mo_startup.py"
 if str(SCRIPT.parent) not in sys.path:
     sys.path.insert(0, str(SCRIPT.parent))
 SPEC = importlib.util.spec_from_file_location("amji_mo_startup", SCRIPT)

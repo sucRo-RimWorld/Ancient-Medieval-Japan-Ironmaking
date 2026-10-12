@@ -5,7 +5,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-SCRIPT = Path(__file__).resolve().parents[1] / "Scripts/validate_pickle_result.py"
+SCRIPT = Path(__file__).resolve().parents[2] / "Scripts/validate_pickle_result.py"
 spec = importlib.util.spec_from_file_location("pickle_result_gate", SCRIPT)
 gate = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(gate)
