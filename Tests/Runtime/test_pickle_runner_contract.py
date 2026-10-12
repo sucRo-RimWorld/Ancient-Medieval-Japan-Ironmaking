@@ -6,7 +6,7 @@ import unittest
 import sys
 import xml.etree.ElementTree as ET
 
-SCRIPT = Path(__file__).resolve().parents[1] / "Scripts/run-pickle-e2e.py"
+SCRIPT = Path(__file__).resolve().parents[2] / "Scripts/run-pickle-e2e.py"
 if str(SCRIPT.parent) not in sys.path:
     sys.path.insert(0, str(SCRIPT.parent))
 spec = importlib.util.spec_from_file_location("ironmaking_runner", SCRIPT)
