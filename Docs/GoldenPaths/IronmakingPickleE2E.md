@@ -1,14 +1,31 @@
-# Ironmaking Pickle E2E — loaded RimWorld 1.6
+# Ironmaking Pickle E2E — loaded RimWorld 1.6; 1.7 unstable test preparation
 
 **State:** author-run Vanilla 1.6 Pickle E2E PASS (5/5, 2026-10-10, run `b5a5596f84`); MO profile **author-reported PASS 5/5** (run `5127792409`, 2026-10-10; raw local reports not independently inspected). The user-provided command output was reviewed, not the private log files. This is a bounded gameplay PASS for the five scenarios, not general release readiness. The source tests are scoped to Ironmaking; they are never included in a Workshop payload.
 
 ## Prerequisites
 
-- Windows installation of **RimWorld 1.6**, with `RimWorldWin64.exe`, `RimWorldWin64_Data/Managed`, and a normal user configuration that can be read as a template.
+- Windows installation of **RimWorld 1.6 or 1.7 unstable**, with `RimWorldWin64.exe`, `RimWorldWin64_Data/Managed`, and a normal user configuration that can be read as a template.
 - Installed Workshop **Harmony** (2009463077), **RimLogging** (3733484696), **Pickle** (3791648678), and **Quickstarts** (3793646067), plus a **.NET SDK** capable of building `net472` test assemblies. The test runner locates these by actual `About.xml` packageId and refuses ambiguous/missing installations.
 - MO profile only: actual **Medieval Overhaul** (3219596926), **Vanilla Expanded Framework**, and **[SYR] Processor Framework**. The runner checks all MO dependencies *before* launching.
 - Close any ordinary RimWorld process. The runner refuses to run simultaneously with it.
 - **Private Windows desktop is mandatory.** A .NET Framework C# compiler (`csc.exe`) is required to build the WinSta0 test launcher. If desktop creation or compilation fails, the runner stops; it does **not** fall back to a visible game window. No `-nographics` is passed: the full graphics path remains active.
+
+## RimWorld 1.7 unstable test boundary
+
+The isolated runner now accepts normal `ModsConfig.xml` test-template versions
+`1.6.*` and `1.7.*`. It selects the matching Pickle and Quickstarts
+version-specific assembly first, then `Current` / unversioned assemblies.
+A single older versioned provider may be used as a **logged compatibility
+probe**; ambiguous providers fail rather than selecting an arbitrary DLL.
+The normal config is read-only. The selected executable's internal version is
+not independently established by this test-only preflight; capture the actual
+game version in the loaded-game report before claiming a 1.7 runtime PASS.
+Existing five-scenario core and four-scenario production gates, isolated
+config, ERROR checks and private rendering remain unchanged.
+
+This is **not** an authorization to migrate production C#, add 1.7 to public
+`supportedVersions`, release a 1.7 Workshop payload or claim 1.7 PASS
+without a fresh actual 1.7 run. Retain distinct 1.6 and 1.7 evidence.
 
 ## One-command run
 
@@ -22,7 +39,7 @@ From the repository directory:
 The default RimWorld location is `D:\SteamLibrary\steamapps\common\RimWorld`. If different, pass `--game "X:\path\RimWorld"`. `--profile MO` runs the MO case alone. Do not treat successful synthetic Python tests as a substitute for running the game command.
 
 The launcher:
-1. Validates installed game, tool assemblies, required Mods and readable normal prefs; builds `Tests/E2E/{Quickstarts,Steps}.csproj` against real 1.6 game and Pickle/Quickstarts DLLs.
+1. Validates installed game, tool assemblies, required Mods and readable normal prefs; builds `Tests/E2E/{Quickstarts,Steps}.csproj` against the selected local game's managed assemblies and Pickle/Quickstarts DLLs.
 2. Uses the actual Ironmaking source when installed directly under `RimWorld/Mods`; otherwise copies only production directories into **uniquely named, marked temporary Mod folders**. It stages a separate test-only Pickle+Quickstarts Mod. An unmarked or unrelated folder is never overwritten/deleted.
 3. Writes **new isolated** `SaveData/Config/ModsConfig.xml` and `Prefs.xml` for each profile, leaving normal configuration, saves, installed Workshop content and source bytes untouched. Compiles `Scripts/IronmakingPrivateDesktop.cs` and uses it to start the **real** RimWorld process on a private `WinSta0` desktop with `-savedatafolder`, `-pickle-run=ironmaking-core.feature`, and `-pickle-mode=fast`. The normal desktop never receives the game's window or focus. Normal Unity rendering remains enabled (no `-nographics`).
 4. Requires exact five scenario IDs, five passes, zero failures/skips/flaky retries, `exitReason=passed`, exit code zero and no ERROR-level Player.log/cross-reference XML error. Results persist under `TestResults/Pickle/Runs/<run-id>/<profile>/Reports`.

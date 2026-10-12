@@ -25,6 +25,36 @@ class IsolatedLauncherContracts(unittest.TestCase):
             "<ModMetaData><packageId>" + module.HARNESS_ID +
             "</packageId></ModMetaData>", encoding="utf-8")
 
+    def test_supported_game_version_gate(self):
+        for version in ("1.6.4871", "1.7.0", "1.7.5000"):
+            self.assertEqual(module.test_game_version(version),
+                             ".".join(version.split(".")[:2]))
+        for version in ("", "1.5.9999", "1.8.1", "1.70.0", "1.7beta"):
+            with self.assertRaisesRegex(RuntimeError, "Expected RimWorld 1.6 or 1.7"):
+                module.test_game_version(version)
+
+    def test_provider_selection_prefers_exact_game_version(self):
+        provider = self.root / "Provider"
+        for name in ("1.6", "1.7"):
+            dll = provider / name / "Assemblies" / "Quickstarts.dll"
+            dll.parent.mkdir(parents=True)
+            dll.write_bytes(b"fixture")
+        self.assertEqual(module.find_dll(provider, "Quickstarts.dll", "1.6").parts[-3], "1.6")
+        self.assertEqual(module.find_dll(provider, "Quickstarts.dll", "1.7").parts[-3], "1.7")
+        with self.assertRaisesRegex(RuntimeError, "No unambiguous"):
+            module.find_dll(provider, "Quickstarts.dll", "1.8")
+
+    def test_provider_fallback_must_be_unambiguous(self):
+        provider = self.root / "Provider"
+        dll = provider / "1.6" / "Assemblies" / "RimWorks.Pickle.dll"
+        dll.parent.mkdir(parents=True)
+        dll.write_bytes(b"fixture")
+        self.assertEqual(module.find_dll(provider, dll.name, "1.7"), dll)
+        current = provider / "Current" / "Assemblies" / dll.name
+        current.parent.mkdir(parents=True)
+        current.write_bytes(b"fixture")
+        self.assertEqual(module.find_dll(provider, dll.name, "1.7"), current)
+
     def test_stage_and_cleanup_are_owned_only(self):
         staged = module.stage(self.root, "Harness", module.HARNESS_ID, self.base)
         self.assertEqual(module.mod_id(staged), module.HARNESS_ID)

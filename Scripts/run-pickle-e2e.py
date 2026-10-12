@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Launch real RimWorld 1.6 + Pickle in isolated saves. Never edit normal config."""
+"""Launch real RimWorld 1.6/1.7 + Pickle in isolated saves. Never edit normal config."""
 import argparse
 import os
 from pathlib import Path
@@ -60,13 +60,36 @@ def require_packages(found, ids):
                "; found " + str(len(roots)) + " (no normal load-order changes made).")
 
 
-def find_dll(root, name):
+SUPPORTED_TEST_VERSIONS = ("1.6", "1.7")
+
+
+def test_game_version(config_version):
+    major_minor = ".".join(config_version.split(".")[:2])
+    demand(major_minor in SUPPORTED_TEST_VERSIONS,
+           "Expected RimWorld 1.6 or 1.7 test config, version=" + config_version)
+    return major_minor
+
+
+def find_dll(root, name, game_version):
     matches = list(root.rglob(name))
-    preferred = [p for p in matches if "1.6" in p.parts]
-    if preferred:
-        matches = preferred
+    demand(matches, "Missing test provider " + name + " in " + str(root))
+    for selected in (
+        [p for p in matches if game_version in p.parts],
+        [p for p in matches if "Current" in p.parts],
+        [p for p in matches if p.parent.name == "Assemblies" and
+         not any(part in SUPPORTED_TEST_VERSIONS for part in p.parts)],
+    ):
+        if selected:
+            demand(len(selected) == 1,
+                   "Ambiguous " + name + " for " + game_version + " in " + str(root))
+            return selected[0]
     demand(len(matches) == 1,
-           "Cannot unambiguously locate 1.6 " + name + " in " + str(root))
+           "No unambiguous test provider " + name + " for " + game_version +
+           " in " + str(root))
+    if game_version not in matches[0].parts:
+        print("[WARN] Testing " + game_version + " with versioned provider " +
+              str(matches[0]) + "; loaded-game results must verify compatibility.",
+              flush=True)
     return matches[0]
 
 
@@ -151,20 +174,23 @@ def run(game, requested, timeout, suite="core"):
     demand(exe.is_file() and mods_dir.is_dir(),
            "RimWorldWin64.exe or Mods missing from " + str(game))
     demand((game / "RimWorldWin64_Data/Managed/Assembly-CSharp.dll").is_file(),
-           "RimWorld 1.6 managed Assembly-CSharp.dll not found")
+           "RimWorld managed Assembly-CSharp.dll not found")
     local = Path.home() / "AppData/LocalLow/Ludeon Studios/RimWorld by Ludeon Studios/Config"
     normal_mods, normal_prefs = local / "ModsConfig.xml", local / "Prefs.xml"
     demand(normal_mods.is_file() and normal_prefs.is_file(),
            "Normal RimWorld ModsConfig and Prefs required as read-only templates")
     version = ET.parse(normal_mods).getroot().findtext("version") or ""
-    demand(version.startswith("1.6"), "Expected RimWorld 1.6, config version=" + version)
+    game_version = test_game_version(version)
+    print("[E2E] RimWorld test config version:", version,
+          "(target " + game_version + "); game executable version is not independently verified.",
+          flush=True)
     profiles = ["Vanilla", "MO"] if requested == "All" else [requested]
     found = installed(game)
     require_packages(found, BASE_IDS[0:1] + BASE_IDS[2:])
     if "MO" in profiles:
         require_packages(found, MO_IDS)
-    pickle = find_dll(found["rimworks.pickle"][0], "RimWorks.Pickle.dll")
-    quick = find_dll(found["rimworks.quickstarts"][0], "Quickstarts.dll")
+    pickle = find_dll(found["rimworks.pickle"][0], "RimWorks.Pickle.dll", game_version)
+    quick = find_dll(found["rimworks.quickstarts"][0], "Quickstarts.dll", game_version)
     dotnet = shutil.which("dotnet")
     demand(dotnet is not None, "dotnet SDK is required to build Pickle steps")
     build(dotnet, REPO / "Tests/E2E/Quickstarts.csproj", game, "QuickstartsDll", quick)
