@@ -4,7 +4,7 @@
 
 ## Prerequisites
 
-- Windows installation of **RimWorld 1.6 or 1.7 unstable**, with `RimWorldWin64.exe`, `RimWorldWin64_Data/Managed`, and a normal user configuration that can be read as a template.
+- Windows installation of **RimWorld 1.6**, with `RimWorldWin64.exe` and `RimWorldWin64_Data/Managed` for the established Python/private-desktop 1.6 path. RimWorld 1.7 unstable uses the separate native Waylith test entry described below (`RimWorld.exe`, `Version.txt`, Roslyn and game-root assemblies). Both require a readable normal user config template.
 - Installed Workshop **Harmony** (2009463077), **RimLogging** (3733484696), **Pickle** (3791648678), and **Quickstarts** (3793646067), plus a **.NET SDK** capable of building `net472` test assemblies. The test runner locates these by actual `About.xml` packageId and refuses ambiguous/missing installations.
 - MO profile only: actual **Medieval Overhaul** (3219596926), **Vanilla Expanded Framework**, and **[SYR] Processor Framework**. The runner checks all MO dependencies *before* launching.
 - Close any ordinary RimWorld process. The runner refuses to run simultaneously with it.
@@ -26,6 +26,36 @@ config, ERROR checks and private rendering remain unchanged.
 This is **not** an authorization to migrate production C#, add 1.7 to public
 `supportedVersions`, release a 1.7 Workshop payload or claim 1.7 PASS
 without a fresh actual 1.7 run. Retain distinct 1.6 and 1.7 evidence.
+
+## Native RimWorld 1.7 unstable test entry (no production migration)
+
+The default `run-pickle-e2e.bat --profile Vanilla|MO|All --suite core|production`
+now examines the **actual game root** `Version.txt`. For 1.7 it delegates to
+`Scripts/Run-17Tests.ps1`, and for 1.6 it retains the established Python/
+private-WinSta0 runner. The 1.7 script may also be invoked explicitly:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File Scripts/Run-17Tests.ps1 -GameRoot "D:\SteamLibrary\steamapps\common\RimWorld" -Profile All -Suite core
+```
+
+The 1.7 path verifies `RimWorld.exe` and the actual `Version.txt`, selects
+the installed Pickle/Quickstarts assemblies using their versioned
+`LoadFolders.xml`, compiles **test-only** Steps/Quickstarts against the local
+Waylith runtime with Roslyn, and runs on a private desktop with normal rendering.
+It preserves the normal ModsConfig/Prefs as read-only templates with DLC context,
+uses a new isolated SaveData per Vanilla/MO profile, checks native log PID and
+ERROR=0, then applies the **unchanged** exact 5-core or 4-production scenario
+validator. Source staging outside RimWorld/Mods and test companion modules are
+uniquely marked and removed without touching unmarked folders. Production
+Defs/C#/About version metadata and Steam payload are unchanged.
+
+Vanilla core checks loaded Ironmaking source, production Defs, natural sand
+generation, a real mining job and a save roundtrip. Production tests check
+real charcoal, bloom and forging Bills. MO checks the same named assertions
+with real MO/provider dependencies, not synthesized MO Defs. An unsupported
+production source or provider DLL must fail, not be reported compatible.
+The 1.7 runtime has **not** been executed by the GitHub CI/changes in this task;
+offline test selection/log/error contracts alone never establish gameplay PASS.
 
 ## One-command run
 

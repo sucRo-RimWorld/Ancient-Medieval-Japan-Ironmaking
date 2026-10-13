@@ -55,6 +55,28 @@ class IsolatedLauncherContracts(unittest.TestCase):
         current.write_bytes(b"fixture")
         self.assertEqual(module.find_dll(provider, dll.name, "1.7"), current)
 
+    def test_17_entry_resolves_actual_game_version_not_user_config(self):
+        game = self.root / "RimWorld"
+        game.mkdir()
+        self.assertFalse(module.is_waylith_game(game))
+        (game / "Version.txt").write_text("1.6.4871", encoding="utf-8")
+        self.assertFalse(module.is_waylith_game(game))
+        (game / "Version.txt").write_text("1.7.4976 rev1043", encoding="utf-8")
+        self.assertTrue(module.is_waylith_game(game))
+        (game / "Version.txt").write_text("1.8.1000", encoding="utf-8")
+        self.assertFalse(module.is_waylith_game(game))
+
+    def test_17_dispatch_preserves_suite_profile_timeout_and_no_game_launch(self):
+        from unittest import mock
+        with mock.patch.object(module.subprocess, "run") as call:
+            module.run_waylith_test(self.root, "MO", "production", 420)
+            command = call.call_args.args[0]
+            self.assertIn("Run-17Tests.ps1", " ".join(command))
+            self.assertEqual(command[-6:], ["-Profile", "MO", "-Suite",
+                                             "production", "-TimeoutSeconds", "420"])
+            self.assertEqual(call.call_args.kwargs["cwd"], module.REPO)
+            self.assertTrue(call.call_args.kwargs["check"])
+
     def test_stage_and_cleanup_are_owned_only(self):
         staged = module.stage(self.root, "Harness", module.HARNESS_ID, self.base)
         self.assertEqual(module.mod_id(staged), module.HARNESS_ID)
