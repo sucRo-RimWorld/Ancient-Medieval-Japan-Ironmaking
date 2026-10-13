@@ -65,6 +65,15 @@ class PickleResultGate(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "identity"):
             gate.validate(self.folder)
 
+    def test_feature_files_agree_with_exact_named_result_gate(self):
+        root = SCRIPT.parent.parent / "Tests/E2E/TestMod/Pickle/Features"
+        for name, expected in (("core", gate.EXPECTED), ("production", gate.PRODUCTION)):
+            feature = (root / ("ironmaking-" + name + ".feature")).read_text()
+            import re
+            scenarios = re.findall(r"(?m)^\s*Scenario: (.+?)\s*$", feature)
+            self.assertEqual(set(scenarios), expected, "Pickle gate diverged from " + name)
+            self.assertEqual(len(scenarios), len(expected), "Duplicate scenario names")
+
     def test_player_log_error_fails_even_if_summary_passed(self):
         self.write("[ERROR] Failed to load XML")
         with self.assertRaisesRegex(ValueError, "ERROR"):

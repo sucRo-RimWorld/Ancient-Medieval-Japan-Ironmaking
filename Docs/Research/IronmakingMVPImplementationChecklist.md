@@ -1,19 +1,22 @@
 # AMJ Ironmaking — minimal implementation checklist (candidate)
 
-**Status:** finite sand, charcoal and small-furnace XML exists; 2026-10-10 Vanilla loaded Pickle E2E 5/5 PASS (author-run, run `b5a5596f84`). MO profile, worktable Bill execution, exact resource balance and release graphics are unverified.  
+**Status:** finite sand, charcoal, furnace, bloom-finishing and initial research are implemented in development XML. Old 1.7 native baseline passed five Core and four Production scenarios for Vanilla/MO; this was **before** initial-research gating. The revised tests (six Core / six Production in each profile) have **no loaded-game PASS** yet. Research layout, MO settings, trade, true old saves, balance and graphics remain open.  
 **Authoritative concept:** [Ironmaking design](../Design.md).  
-**Owner:** `sucRo-RimWorld/Ancient-Medieval-Japan-Ironmaking`.
+**Owner:** `sucRo-RimWorld/Ancient-Medieval-Japan-Ironmaking`.  
+**Acceptance and exact tested assumptions:** [IronmakingV1Coverage.md](../Testing/IronmakingV1Coverage.md).
 
-## Thin vertical slice
+## Minimal production slice — retain
 
-1. **Vanilla runtime Pickle PASS, bounded:** `AMJ_IronSand` and finite `AMJ_IronSandDeposit` loaded; Quickstarts natural map generation, real pawn mining and save/reload succeeded in the five-scenario Vanilla run `b5a5596f84`. Regional sand-iron weighting and multi-seed/map-type robustness are still absent/unverified.
-2. **Static XML added, runtime unverified:** WoodLog → AMJ_Charcoal via worktable Bill without MO/PF hard dependency. With MO, MO Coal is optionally accepted as a Bill ingredient; duplicate AMJ charcoal manufacture is still visible pending compatibility testing.
-3. **Static XML added, runtime unverified:** small furnace uses Stony material and requires no Steel/component; buildability and workbench visuals must be checked in loaded Vanilla.
-4. **Static XML added, runtime unverified:** sand + charcoal (or MO Coal) Bill → IronBloom; no Refuelable on AMJ kilns/furnaces. Confirm actual input/yield, work and interrupts in RimWorld.
-5. **Conditional XML implemented, runtime unverified:** Vanilla `FueledSmithy`/`ElectricSmithy` converts IronBloom → Steel; MO-Patch replaces both `recipeUsers` and output with `DankPyon_Anvil` → `DankPyon_IronIngot`. Confirm PatchOperationFindMod activation and metalChain ON/OFF; MO research must not be bypassed.
-6. **Static Patch added, runtime unverified:** two Vanilla bulk caravan TraderKinds get a limited `AMJ_IronSand` `StockGenerator_SingleDef` (seller) and `StockGenerator_BuySingleDef` (buyer), conditional on an existing TraderKind stock list. Vanilla/MO metal goods remain unchanged; visit stock and quantities require loaded-game testing.
-7. **Development research XML implemented, not game-verified:** `AMJ_InitialIronmaking` follows Vanilla `Smithing`; it gates the small furnace and its smelting Recipe, while charcoal production and existing smithing remain unblocked. MO optionally moves only the AMJ research node into MO's tab; the 600-point cost and UI coordinates remain provisional. Verify both research layouts, current and legacy save behavior, and metal-chain setting variants in native E2E before accepting.
-8. Keep higher furnaces, iron sand washing, iron slag/pig iron, special sword steel, full historical waterworks and late tatara out of first executable slice.
+1. One finite natural sand deposit and real extraction, without infinite resource creation.
+2. Wood → charcoal using the charcoal kiln, no hard dependency on MO/Processor Framework.
+3. Small stone-built furnace and `AMJ_InitialIronmaking` after `Smithing`; charcoal remains ungated.
+4. IronSand + one allowed charcoal-type fuel → IronBloom via one Bill; no double building fuel consumption.
+5. Bloom → Vanilla Steel or, only with MO installed, `DankPyon_Anvil` → `DankPyon_IronIngot`. Do not bypass MO Steel research.
+6. Limited sand seller and buyer stock, distinct from existing generic metal resources; maintain a low-sand-map import fallback.
+7. No dependent requirement on Environment/Grains/Waterworks/WTL/Japanization; extra Japanization-specific MO supply tuning remains that owner's work.
+8. Do not expand the initial executable slice with improved/medieval furnaces, slag, pig iron, premium sword steel, full washing/waterworks or post-medieval installations before the minimum loop and its balance are verified.
+
+All currently encoded ingredient numbers, spawn yields and trader stock ranges are **development fixture expectations**, not accepted historical or economic balance. Do not freeze the exact total number of Defs/Recipes/patch operations in regression tests. Graphical placeholder paths are not release texture acceptance.
 
 ## Resource discovery / map generation prototype
 
@@ -51,6 +54,8 @@ Use RimTest Redux/Pickle where suitable; avoid turning all optional-Mod combinat
 
 The XML-only finite deposit probe passed five isolated syntax/structure tests. It is explicitly **not a loaded-game MapGen/Mining PASS** and is not part of a subscriber payload. `RockBase` and placeholder graphics are only used to test XML wiring. A targeted 1.6 maintained-source comparison of Vanilla Iron and Steel Continued, Expanded Materials - Metals and tatara compatibility is still required by the new-feature entry gate; see `IronmakingExistingModEntryAudit-20261010.md`. Do not copy the research probe into another AMJ owner runtime repository, and do not merge production code before the decision record is ready.
 
-## RimWorld 1.6 / Pickle automated E2E harness status (2026-10-10)
+## Historical: RimWorld 1.6 / Pickle harness state (2026-10-10, superseded)
+
+This section records the original 2026-10-10 baseline only. Current acceptance and pending tests are maintained in [IronmakingV1Coverage](../Testing/IronmakingV1Coverage.md). Do not follow its old 'Next' command or infer current runtime PASS.
 
 Owner `Tests/E2E` contains a test-only Pickle Steps assembly, deterministic Quickstarts maps and a five-scenario feature. **Author-run Vanilla passed 5/5 on 2026-10-10** (`b5a5596f84`, zero skipped/flaky/error logs). This validates that the harness ran in the author's actual installed RimWorld and returned complete structured success, not that this agent independently inspected the report files. **Next: `run-pickle-e2e.bat --profile MO`**, with isolated SaveData; do not repeat already successful Vanilla without a source change. Bill execution, trade stock, MO `metalChain` setting variants, old-save installation, balance and graphics remain separate follow-up gates. See `Docs/Testing/IronmakingPickleEvidence.md` and `Docs/GoldenPaths/IronmakingPickleE2E.md`.

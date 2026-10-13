@@ -1,6 +1,18 @@
 # Ironmaking — actual Pickle run evidence
 
-## Current runtime results — 2026-10-10
+## Latest independently inspected native game evidence — 2026-10-13 (superseded for changed features)
+
+RimWorld 1.7.4976 rev1043: Vanilla and MO **Core 5/5**, **Production 4/4** per
+profile, native ERROR 0, complete logs and no skips/flaky results. Production
+base `1af461eac9d6b1326975a9866593d694f5d291f5`, test-only corrections
+at `efd68cd570afa8e6e5c40b4acd281f6f57239194`. Exact summaries/hashes
+are in [Native17-20261013.json](Native17-20261013.json).
+These are historical, *pre-research-gate* runs: do not report the current
+production source as native-verified. New research/fuel/map/trade scenarios have
+no native PASS until executed with their exact source. Normal old-save
+add/remove, economy, accepted art and distribution remain unverified.
+
+## Historical console-reported outcomes — 2026-10-10
 
 These are **author-reported real RimWorld results**, based on console output;
 the successful-run raw Player.log and summary.json were not independently inspected.
@@ -19,7 +31,7 @@ passed and the runner removed only its owned temporary test Mods.
 This does not establish MO Production, integrated logistics, balancing,
 trading, research, accepted art, save migration or release readiness.
 
-Next: `.\run-pickle-e2e.bat --suite production --profile MO` only.
+Historical next-step instruction (superseded by the 2026-10-13 evidence): `.\run-pickle-e2e.bat --suite production --profile MO`.
 The Core mining helper also changed with the Fast-mode fix; repeat the Core
 Vanilla and MO suites later for *current-harness* Core evidence.
 

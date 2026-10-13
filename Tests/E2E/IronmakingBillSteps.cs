@@ -28,6 +28,34 @@ namespace AncientMedievalJapan.Ironmaking.E2E
                 "AMJ_IronBloom", 10);
         }
 
+        [Then("AMJ Bill-fueled worktables have no loaded refuelable component")]
+        public Task FuelComponent(PickleContext ctx)
+        {
+            return IronmakingTestThread.Run(delegate
+            {
+                foreach (string name in new[] { "AMJ_CharcoalKiln", "AMJ_SmallIronFurnace" })
+                    ctx.Assert(IronmakingTestWorld.Thing(name, ctx)
+                        .GetCompProperties<CompProperties_Refuelable>() == null,
+                        "Unexpected second fuel system on " + name);
+            });
+        }
+
+        [Then("MO coal fuels a real smelting bill or Vanilla keeps MO resources absent")]
+        public Task MoCoal(PickleContext ctx)
+        {
+            bool mo = Environment.GetEnvironmentVariable("AMJI_EXPECTED_PROFILE") == "MO";
+            if (!mo)
+                return IronmakingTestThread.Run(delegate
+                {
+                    ctx.Assert(DefDatabase<ThingDef>.GetNamedSilentFail("DankPyon_Coal") == null,
+                        "MO resource unexpectedly loaded in Vanilla profile");
+                });
+            return Execute(ctx, "AMJ_SmeltIronSand", "AMJ_SmallIronFurnace",
+                "BlocksGranite",
+                new Dictionary<string, int> { { "AMJ_IronSand", 40 }, { "DankPyon_Coal", 60 } },
+                "AMJ_IronBloom", 10);
+        }
+
         [Then("a colonist completes the bloom-forging bill with the profile metal output")]
         public Task Forge(PickleContext ctx)
         {
@@ -84,6 +112,13 @@ namespace AncientMedievalJapan.Ironmaking.E2E
                         + string.Join("; ", CellRect.CenteredOn(at, 4).Cells.Where(c => !c.Standable(map))
                             .Select(c => c + " terrain=" + c.GetTerrain(map).defName + " things="
                                 + string.Join(",", c.GetThingList(map).Select(t => t.def.defName).ToArray())).ToArray()));
+                    // The old Bill fixture bypassed research; current source must first
+                    // unlock native research, not just force-assign a production Job.
+                    if (recipeName != "AMJ_BurnCharcoal")
+                    {
+                        IronmakingResearchTest.Finish("Smithing", ctx);
+                        IronmakingResearchTest.Finish("AMJ_InitialIronmaking", ctx);
+                    }
                     ThingDef def = IronmakingTestWorld.Thing(tableName, ctx);
                     table = ThingMaker.MakeThing(def, stuffName == null ? null :
                         IronmakingTestWorld.Thing(stuffName, ctx)) as Building_WorkTable;
