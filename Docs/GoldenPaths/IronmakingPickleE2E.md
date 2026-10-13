@@ -295,3 +295,8 @@ Core mining uses the changed shared Tick helper too; rerun Core Vanilla/MO
 for new current-harness evidence later. Production MO, refuelling, integrated
 logistics, trader inventory, research, balance, accepted textures and release
 remain separately unverified.
+
+
+## Independently verified 1.7 current harness
+
+Final main-thread tick and plant-dense fixture corrections passed Core 5/5 and Production 4/4 in both Vanilla and MO on 1.7.4976 rev1043. Current named premises, source/provider hashes, log completeness and remaining gaps are in [the owner evidence](../Testing/IronmakingPickleEvidence.md#independently-inspected-windows-17-run--2026-10-13) and its adjacent Native17 JSON. Historical 1.6 console evidence is not reused as a current-harness runtime result.

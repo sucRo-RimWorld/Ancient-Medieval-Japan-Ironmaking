@@ -1,0 +1,240 @@
+{
+  "game_version": "1.7.4976 rev1043",
+  "production_base": "1af461eac9d6b1326975a9866593d694f5d291f5",
+  "tested_code_commit": "efd68cd570afa8e6e5c40b4acd281f6f57239194",
+  "production_changed_from_base": false,
+  "test_source_sha256": {
+    "Scripts/IronmakingPrivateDesktop.cs": "1fa3ea30b3daddc035f87a3ebc029e52d4b87faed6843fdf7f18161d800f2e1b",
+    "Scripts/RimWorldRuntime.ps1": "b8266365efcf05cde283632a429b9c7be8ac0804dc853b9b959c35508eb0ed4a",
+    "Scripts/Run-17Tests.ps1": "cb7137ad29cb31b9a8adb7fbdd645f7b70a1a16a77acf7efd5b7829f846a058d",
+    "Tests/E2E/IronmakingBillSteps.cs": "87f2b4403019f4a8a69fde913e35b1b7b5a3e2f9ba5570aa9d5234ff92c6a5de",
+    "Tests/E2E/IronmakingMiningSteps.cs": "60b95e69561ae37eb9d426a8232ea73b65be01ecc3e5af230b94592ef546546d",
+    "Tests/E2E/IronmakingQuickstarts.cs": "58a443142c53637528daccfc0f6cee20cebc23455fb25d1d10c807214f143885",
+    "Tests/E2E/IronmakingSteps.cs": "7a07dfecdb12259e5fed8a01e4bccf83fbece6d5871723a8eee76b168d10cee9",
+    "Tests/E2E/Quickstarts.csproj": "2f45e4503a3430e654600ec6f94747dc3580a16961abfe19f7a5ab0d84476778",
+    "Tests/E2E/Steps.csproj": "061c35d7af6ac5b5036ea6246cb6431097bc5dcd81753e18344fa8cf4b828372",
+    "Tests/E2E/TestMod/Pickle/Features/ironmaking-core.feature": "da8adebb9e430f1b590a43e14dadb05e60dee2126d725fc20e9b6a5ef46499c8",
+    "Tests/E2E/TestMod/Pickle/Features/ironmaking-production.feature": "0c8f2f4ad9a954f1f5c7c21c796e89df5e8f213d8b9948d341b38e9799ab7df8",
+    "Tests/Runtime/Test-RimWorld17Harness.ps1": "77c688a97b39b9da310b8b99f02a09ba1112e05ecfc7807f19d5df2e91894e43"
+  },
+  "game_sha256": {
+    "Assembly-CSharp.dll": "a75352be43ff6fe20a45f014dd0969e90842ee6468c60655d02b9f5138eb69e7",
+    "UnityStubs.dll": "b0b997c300670d5a42ea70f468ff9fedaba03cbd65eabf5d522675b3f16cdb22",
+    "RimWorld.dll": "7183c5b884bf22dfe9efa10e596ffac862eeb3c71678b544c357ed69f50030a3",
+    "RimWorld.exe": "eb7db15592d9aaf9c952f1e82d96320c713b2952bed08acfb4e880149c78b46a"
+  },
+  "available_real_provider_dll_sha256": {
+    "steamapps/workshop/content/294100/2009463077/1.4/Assemblies/0Harmony.dll": "d04ec5b2590dd1bbb57f0f11dc417b1a5bebbb36b1f97006d35f2d87c3a2a69f",
+    "steamapps/workshop/content/294100/2009463077/1.5/Assemblies/0Harmony.dll": "e96fc01100b6bbdc094b900efe47850cf97aa9df7c6a78cbe723b1decf5a506a",
+    "steamapps/workshop/content/294100/2009463077/1.6/Assemblies/0Harmony.dll": "8ac54fdf0fab257148d68bc744d67609b74554ee72a4f3452e32030eaad009c6",
+    "steamapps/workshop/content/294100/2009463077/1.7/Assemblies/0Harmony.dll": "94dd929a06f720869f6a718a64bc6713a37dbe153c2f4c16c031b2587d7ee694",
+    "steamapps/workshop/content/294100/2023507013/1.0/Assemblies/0Harmony.dll": "e271d22a7c32bfca105d0e471c04eee14eec6142d37a30cd73cb7d32c7d1dd0f",
+    "steamapps/workshop/content/294100/3210544395/1.3/Assemblies/ProcessorFramework.dll": "c271052c8d61a1825aa4d88fa1e3a60c52f4e77fc42eff807164d22ade231621",
+    "steamapps/workshop/content/294100/3210544395/1.4/Assemblies/ProcessorFramework.dll": "18ac0eb4b65150f2d1803bfcfa3eb38c911439c4d7b1cb92e522be1e407d01a0",
+    "steamapps/workshop/content/294100/3210544395/1.5/Assemblies/ProcessorFramework.dll": "5458fe65bf0c78d54c7dba2ead3348a61a2624a586874fa64ed753278eb5accb",
+    "steamapps/workshop/content/294100/3210544395/1.6/Assemblies/0Harmony.dll": "df043f05c6e43602fa8e8f38f52a3a2cf962aab7a65a9d85573ea25f01a63e80",
+    "steamapps/workshop/content/294100/3210544395/1.6/Assemblies/ProcessorFramework.dll": "3e24319ecfca8f3e1c7c040df956cd61eb70b304476f0e4b74ce8b99e1ff1377",
+    "steamapps/workshop/content/294100/3219596926/1.4/Assemblies/MedievalOverhaul.dll": "254debaa238e56f617685397d25509cb05c4b438880147783efc5b5019dda719",
+    "steamapps/workshop/content/294100/3219596926/1.5/Assemblies/MedievalOverhaul.dll": "3c0d71c54c9599bbaf10e45446c2172709818e0646bd7b079b7c6033bf147513",
+    "steamapps/workshop/content/294100/3219596926/1.6/Assemblies/MedievalOverhaul.dll": "d92b9693f0cb4536504837fa0ce4df1ac8f1b57b547958c006f852c0287b85e1",
+    "steamapps/workshop/content/294100/3733484696/1.5/Assemblies/RimWorks.RimLogging.dll": "223284da0de164c7ec522ed10270c21f4c647ddfbf7fc2d00457a480b96c4b9c",
+    "steamapps/workshop/content/294100/3733484696/1.6/Assemblies/RimWorks.RimLogging.dll": "95a0b4d3a55187fa7d8cb7506ff2da0cc878b33d0ac235c3f39fcaf8eb0826cf",
+    "steamapps/workshop/content/294100/3733484696/1.7/Assemblies/RimWorks.RimLogging.dll": "176e837176ef206f766b6090346e6b8ff2031c7c3adaa2315108912dc39a382a",
+    "steamapps/workshop/content/294100/3791648678/1.5/Assemblies/RimWorks.Pickle.dll": "b3358fb0b67a681e8b72a598796c32464d56e35f498565c8de505c7fcb7a14e1",
+    "steamapps/workshop/content/294100/3791648678/1.6/Assemblies/RimWorks.Pickle.dll": "43d2d4aac76d444f8efa904d46649dce9ac8d387cd090541fd1466964a133eef",
+    "steamapps/workshop/content/294100/3793646067/1.5/Assemblies/Quickstarts.dll": "6225e36a30c38100ad0cf7340cd3e3901328c8217cbcd1d0a2004236129691fe",
+    "steamapps/workshop/content/294100/3793646067/1.6/Assemblies/Quickstarts.dll": "703caa0d2c279c486b688a8cbf7deaa67137239f612c7f0a9fff1a92037acaf5",
+    "steamapps/workshop/content/294100/3793646067/1.7/Assemblies/Quickstarts.dll": "eae575d43c525814a35a7557238bea5300457da4e602a399d46d0467581b6d64",
+    "steamapps/common/RimWorld/Mods/CropColdToleranceOverhaul/Assemblies/CropColdToleranceOverhaul.dll": "14ff28b0dcffade343a51b55df354b8e52d0bbd88c3edf6587a77a847002b77b"
+  },
+  "runs": [
+    {
+      "profile": "Vanilla/Core",
+      "local_report": "TestResults/Ironmaking17-20261013-194733-450/Vanilla/Reports",
+      "pid": 24524,
+      "log_complete": true,
+      "native_errors": 0,
+      "summary_sha256": "cded178ec52932b2f89e91069711f4f3093841131138f958bb86511f3432ad23",
+      "log_sha256": "8c74fa903cfca9e026e4c3e94b549b39ae8a9c7c7e97e5657d6dad8ff54baa50",
+      "summary": {
+        "total": 5,
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0,
+        "flaky": 0,
+        "exitReason": "passed",
+        "setName": "Vanilla",
+        "scenarios": [
+          {
+            "name": "Exact Ironmaking development source and profile are loaded",
+            "outcome": "Passed",
+            "durationMs": 741,
+            "attempts": 1
+          },
+          {
+            "name": "Processing Defs and Vanilla or MO result resolve",
+            "outcome": "Passed",
+            "durationMs": 7,
+            "attempts": 1
+          },
+          {
+            "name": "Natural map creation produces finite iron sand",
+            "outcome": "Passed",
+            "durationMs": 5602,
+            "attempts": 1
+          },
+          {
+            "name": "Colonist mining job consumes finite deposit and yields sand",
+            "outcome": "Passed",
+            "durationMs": 1851,
+            "attempts": 1
+          },
+          {
+            "name": "Sand deposits survive real game save reload",
+            "outcome": "Passed",
+            "durationMs": 3166,
+            "attempts": 1
+          }
+        ]
+      }
+    },
+    {
+      "profile": "MO/Core",
+      "local_report": "TestResults/Ironmaking17-20261013-194733-450/MO/Reports",
+      "pid": 37168,
+      "log_complete": true,
+      "native_errors": 0,
+      "summary_sha256": "1fe21ce151d058c54a47041c5f15bacbde1308d72cb4e41c1c704bff2b3af2b1",
+      "log_sha256": "443a55e9a4a2750007737edd8dc0b15cb56b3b8b1cecb5ee54deaaa4c4719072",
+      "summary": {
+        "total": 5,
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0,
+        "flaky": 0,
+        "exitReason": "passed",
+        "setName": "MO",
+        "scenarios": [
+          {
+            "name": "Exact Ironmaking development source and profile are loaded",
+            "outcome": "Passed",
+            "durationMs": 990,
+            "attempts": 1
+          },
+          {
+            "name": "Processing Defs and Vanilla or MO result resolve",
+            "outcome": "Passed",
+            "durationMs": 7,
+            "attempts": 1
+          },
+          {
+            "name": "Natural map creation produces finite iron sand",
+            "outcome": "Passed",
+            "durationMs": 7170,
+            "attempts": 1
+          },
+          {
+            "name": "Colonist mining job consumes finite deposit and yields sand",
+            "outcome": "Passed",
+            "durationMs": 1960,
+            "attempts": 1
+          },
+          {
+            "name": "Sand deposits survive real game save reload",
+            "outcome": "Passed",
+            "durationMs": 3187,
+            "attempts": 1
+          }
+        ]
+      }
+    },
+    {
+      "profile": "Vanilla/Production",
+      "local_report": "TestResults/Ironmaking17-20261013-193405-164/Vanilla/Reports",
+      "pid": 35484,
+      "log_complete": true,
+      "native_errors": 0,
+      "summary_sha256": "6ed3263ca8cbe6289f7033b4135c8cfac10e74ba42b18d4cb5c1a166d267a2e7",
+      "log_sha256": "3886484d3228a0197e4d2f67541142446555c2660df530b4e94c95c2a9ad0013",
+      "summary": {
+        "total": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0,
+        "flaky": 0,
+        "exitReason": "passed",
+        "setName": "Vanilla",
+        "scenarios": [
+          {
+            "name": "Exact Ironmaking development source and profile are loaded",
+            "outcome": "Passed",
+            "durationMs": 778,
+            "attempts": 1
+          },
+          {
+            "name": "Charcoal bill consumes wood and produces charcoal",
+            "outcome": "Passed",
+            "durationMs": 3016,
+            "attempts": 1
+          },
+          {
+            "name": "Smelting bill consumes sand and charcoal and produces bloom",
+            "outcome": "Passed",
+            "durationMs": 3011,
+            "attempts": 1
+          },
+          {
+            "name": "Forging bill consumes bloom and produces the profile metal",
+            "outcome": "Passed",
+            "durationMs": 2706,
+            "attempts": 1
+          }
+        ]
+      }
+    },
+    {
+      "profile": "MO/Production",
+      "local_report": "TestResults/Ironmaking17-20261013-193405-164/MO/Reports",
+      "pid": 31288,
+      "log_complete": true,
+      "native_errors": 0,
+      "summary_sha256": "66c1ed0677fc548fbf3974cfe43ee3213e8a26339575de8f12d100751cc08cb0",
+      "log_sha256": "e657900822418f0e1ddc32104f5124236f4a1f0b89d0c7c049d12ef138b93ff0",
+      "summary": {
+        "total": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0,
+        "flaky": 0,
+        "exitReason": "passed",
+        "setName": "MO",
+        "scenarios": [
+          {
+            "name": "Exact Ironmaking development source and profile are loaded",
+            "outcome": "Passed",
+            "durationMs": 949,
+            "attempts": 1
+          },
+          {
+            "name": "Charcoal bill consumes wood and produces charcoal",
+            "outcome": "Passed",
+            "durationMs": 4259,
+            "attempts": 1
+          },
+          {
+            "name": "Smelting bill consumes sand and charcoal and produces bloom",
+            "outcome": "Passed",
+            "durationMs": 3894,
+            "attempts": 1
+          },
+          {
+            "name": "Forging bill consumes bloom and produces the profile metal",
+            "outcome": "Passed",
+            "durationMs": 2200,
+            "attempts": 1
+          }
+        ]
+      }
+    }
+  ]
+}
