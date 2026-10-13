@@ -20,5 +20,9 @@ Feature: Ironmaking actual production bills
     Then MO coal fuels a real smelting bill or Vanilla keeps MO resources absent
 
   @quickstart:IronmakingWorkMap @timeout:240
+  Scenario: Interrupted smelting conserves resources
+    Then an interrupted smelting bill resumes without losing or multiplying resources
+
+  @quickstart:IronmakingWorkMap @timeout:240
   Scenario: Forging bill consumes bloom and produces the profile metal
     Then a colonist completes the bloom-forging bill with the profile metal output

@@ -10,6 +10,9 @@ Feature: Ironmaking in a real RimWorld 1.6 or 1.7 session
   Scenario: Native initial ironmaking research gate
     Then the initial ironmaking research gate operates in the loaded game
 
+  Scenario: Loaded sand trade generators distinguish buying and selling
+    Then the loaded bulk traders expose bounded sand buying and selling
+
   @quickstart:IronmakingLargeMap @timeout:180
   Scenario: Natural map creation produces finite iron sand
     Then the generated map has accessible natural iron-sand deposits

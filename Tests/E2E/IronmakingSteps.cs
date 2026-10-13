@@ -215,10 +215,62 @@ namespace AncientMedievalJapan.Ironmaking.E2E
                 ctx.Assert(kiln.researchPrerequisites == null ||
                     !kiln.researchPrerequisites.Contains(amj), "Charcoal kiln wrongly locked");
                 ctx.Assert(charcoal.researchPrerequisite == null, "Charcoal recipe wrongly locked");
+                // Validate actual research state on both sides, not only XML field
+                // presence. A prior version finished research without checking
+                // the negative gate, so it could not detect a prematurely
+                // available furnace/recipe.
                 ctx.Require(!amj.IsFinished, "New colony must start without initial ironmaking");
+                ctx.Assert(!furnace.researchPrerequisites.All(r => r.IsFinished),
+                    "Furnace unlock was satisfied before initial research");
+                ctx.Assert(!smelt.researchPrerequisite.IsFinished,
+                    "Smelting recipe was available before initial research");
                 IronmakingResearchTest.Finish("Smithing", ctx);
+                ctx.Assert(!amj.IsFinished, "Smithing must not auto-finish AMJ research");
+                ctx.Assert(!furnace.researchPrerequisites.All(r => r.IsFinished),
+                    "Furnace unlocked by Smithing alone");
                 IronmakingResearchTest.Finish("AMJ_InitialIronmaking", ctx);
                 ctx.Assert(amj.IsFinished, "Initial ironmaking cannot be completed");
+                ctx.Assert(furnace.researchPrerequisites.All(r => r.IsFinished) &&
+                    smelt.researchPrerequisite.IsFinished,
+                    "Furnace and smelting recipe were not unlocked by AMJ research");
+            });
+        }
+
+        [Then("the loaded bulk traders expose bounded sand buying and selling")]
+        public Task SandTrade(PickleContext ctx)
+        {
+            return IronmakingTestThread.Run(delegate
+            {
+                ThingDef sand = IronmakingTestWorld.Thing("AMJ_IronSand", ctx);
+                // Inspect instantiated TraderKindDefs after all patches; a source
+                // XML check alone cannot prove that the optional operation applied.
+                foreach (string name in new[] {
+                    "Caravan_Neolithic_BulkGoods", "Caravan_Outlander_BulkGoods" })
+                {
+                    TraderKindDef trader = DefDatabase<TraderKindDef>.GetNamedSilentFail(name);
+                    ctx.Require(trader != null && trader.stockGenerators != null,
+                        "Missing loaded bulk trader " + name);
+                    int sellers = 0;
+                    int buyers = 0;
+                    foreach (StockGenerator generator in trader.stockGenerators)
+                    {
+                        if (generator == null) continue;
+                        string typeName = generator.GetType().Name;
+                        if (typeName != "StockGenerator_SingleDef" &&
+                            typeName != "StockGenerator_BuySingleDef") continue;
+                        FieldInfo field = generator.GetType().GetField(
+                            "thingDef", BindingFlags.Instance | BindingFlags.Public |
+                            BindingFlags.NonPublic);
+                        ctx.Require(field != null,
+                            "Cannot inspect loaded trade generator " + typeName);
+                        if (!Object.ReferenceEquals(field.GetValue(generator), sand)) continue;
+                        if (typeName == "StockGenerator_SingleDef") sellers++;
+                        else buyers++;
+                    }
+                    ctx.Assert(sellers == 1 && buyers == 1,
+                        "Sand seller and buyer generators must each occur once on " +
+                        name + " (sellers=" + sellers + ", buyers=" + buyers + ")");
+                }
             });
         }
 
