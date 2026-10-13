@@ -7,7 +7,7 @@
 **Maturity:** revised source/Pickle tests require *new* loaded-game runs; no
 2026-10-13 old PASS is inherited after the research implementation or this test change.
 
-## Routine runtime scenarios (eight Core + seven Production per profile)
+## Routine runtime scenarios (nine Core + seven Production per profile)
 
 | Suite | Named scenario | Contract / exact assumption | Evidence |
 |---|---|---|---|
@@ -19,6 +19,7 @@
 | Core | Natural iron-sand deposit is actually mineable and finite | A native Mining WorkGiver can designate, mine and destroy a **naturally placed** deposit next to a standable revealed cell; IronSand increases; the consumed node does not spontaneously reappear after 1,200 ticks on that map | New, native pending |
 | Core | Colonist mining job consumes finite deposit and yields sand | Mine WorkGiver depletes a **fixture-spawned** deposit; sand quantity rises | Old 1.7 passed; revised pending |
 | Core | Sand deposits survive real game save reload | Genuine disk save/reload persists a fixture deposit on a map | Old 1.7 passed; revised pending |
+| Core | Natural iron-sand locations survive save reload unchanged | A genuine Pickle disk reload preserves the full sorted list of **naturally generated** deposit cell positions, without regeneration, duplication or silent deletion | New, native pending |
 | Production | Exact Ironmaking development source and profile are loaded | Same source/profile identity, independent run | Old 1.7 passed; revised pending |
 | Production | Loaded fuel component exclusivity | AMJ kiln and furnace have no Refuelable comp after actual Def inheritance/patching | New, native pending |
 | Production | Charcoal bill consumes wood and produces charcoal | Native crafting pawn Bill; currently **20 WoodLog → 10 AMJ_Charcoal**; resource conservation | Old 1.7 passed; revised pending |
@@ -54,7 +55,7 @@ Vanilla MO-coal conversion. No runtime scenario above tests final economic value
 | P0 | Research construction/UI availability before/after | Not merely XML prerequisites: actual building designator and Bill exposure must obey the gate; research visibility/placement in Vanilla/MO/Japanization |
 | P0 | Interrupted work across save/reload / fuel depletion | Native forced-interrupt and retry has a new scenario, **not run**; the additional interrupted-job save/reload and depleted-fuel cases remain open. Do not treat the new one-session test as all interruption modes |
 | P0 | Native integrated logistics | Valid initial bootstrap with no steel; actual hauling, fuel replenishment and full output chain without test-spawned intermediate items |
-| P0 | Genuine existing colony addition/removal/re-add | An *actual pre-mod save* remains loadable; no assumed backfilled deposits; trade fallback, safe item/recipe cleanup as applicable. Fresh-test save/reload does not substitute |
+| P0 | Genuine existing colony addition/removal/re-add | The added natural-deposit save roundtrip is for a **newly generated Ironmaking map** only. It cannot validate loading a colony saved before the Mod was installed, absence of backfill, nor save safety after removal/re-addition |
 | P0 | Exact release texture and presentation | Owner-approved natural low-profile sand deposit, AMJ material/building artwork, recipe/UI layout, graphic states |
 | P1 | Seed/map/terrain distribution | The new natural-source mining test covers one fixed map and one depleted cell, **not** alternative seeds, regional weighting, map-wide inaccessibility or landform statistics. No placement in water/impassable/starter/quest structures |
 | P1 | Actual generated merchant inventories | Loaded trader generator presence has a new scenario, **not run**; verify that real arrivals sell/buy sand in appropriate quantities and that sparse/old maps can import it without guaranteed stock |

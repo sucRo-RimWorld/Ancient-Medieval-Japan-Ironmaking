@@ -4,9 +4,10 @@
 scenarios passed per Vanilla/MO profile against the **pre-research** production
 source, with complete PID logs/ERROR 0 (historical only; see
 [Native17-20261013.json](../Testing/Native17-20261013.json)).
-Current test definitions contain **8 Core + 7 Production** scenarios per
+Current test definitions contain **9 Core + 7 Production** scenarios per
 profile, including research before/after, loaded sand-trader generators,
-**mining a naturally generated deposit and checking finite exhaustion**,
+**mining a naturally generated deposit, checking finite exhaustion and
+natural-deposit location stability after genuine disk save/reload**,
 worktable fuel exclusivity, MO Coal Bills, and interrupted smelting.
 **These revised scenarios have not been compiled or executed against a real
 RimWorld build.** The exact current assertion matrix and still-missing
@@ -37,7 +38,7 @@ The normal config is read-only. The selected executable's internal version is
 not independently established by this test-only preflight; capture the actual
 game version in the loaded-game report before claiming a 1.7 runtime PASS.
 The historical 5 Core / 4 Production 1.7 record is retained. The current
-8 Core / 7 Production names are enforced by `validate_pickle_result.py`;
+9 Core / 7 Production names are enforced by `validate_pickle_result.py`;
 each new revision needs new named native results and complete logs.
 
 This is **not** an authorization to migrate production C#, add 1.7 to public
@@ -61,7 +62,7 @@ the installed Pickle/Quickstarts assemblies using their versioned
 Waylith runtime with Roslyn, and runs on a private desktop with normal rendering.
 It preserves the normal ModsConfig/Prefs as read-only templates with DLC context,
 uses a new isolated SaveData per Vanilla/MO profile, checks native log PID and
-ERROR=0, then applies the source-controlled current (8 Core / 7 Production)
+ERROR=0, then applies the source-controlled current (9 Core / 7 Production)
 exact-named scenario validator. Source staging outside RimWorld/Mods and test companion modules are
 uniquely marked and removed without touching unmarked folders. Production
 Defs/C#/About version metadata and Steam payload are unchanged.

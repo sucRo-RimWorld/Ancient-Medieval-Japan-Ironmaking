@@ -25,6 +25,12 @@ Feature: Ironmaking in a real RimWorld 1.6 or 1.7 session
   Scenario: Colonist mining job consumes finite deposit and yields sand
     Then a mining colonist depletes an iron-sand deposit and receives sand
 
+  @quickstart:IronmakingLargeMap @timeout:180
+  Scenario: Natural iron-sand locations survive save reload unchanged
+    Given the generated natural iron-sand locations are recorded
+    When I save and reload
+    Then the generated natural iron-sand locations are unchanged after reload
+
   @quickstart:IronmakingWorkMap @timeout:180
   Scenario: Sand deposits survive real game save reload
     Given an iron-sand deposit is prepared for persistence

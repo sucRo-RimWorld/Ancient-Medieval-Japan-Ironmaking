@@ -290,6 +290,45 @@ namespace AncientMedievalJapan.Ironmaking.E2E
             });
         }
 
+        [Given("the generated natural iron-sand locations are recorded")]
+        public Task RecordNaturalLocations(PickleContext ctx)
+        {
+            return IronmakingTestThread.Run(delegate
+            {
+                Map map = Find.CurrentMap;
+                ctx.Require(map != null && map.Size.x >= 200,
+                    "Natural persistence requires a new large generated map");
+                ThingDef target = IronmakingTestWorld.Thing("AMJ_IronSandDeposit", ctx);
+                var positions = map.listerThings.ThingsOfDef(target)
+                    .Where(t => t.Spawned)
+                    .Select(t => t.Position.ToString())
+                    .OrderBy(p => p, StringComparer.Ordinal)
+                    .ToArray();
+                ctx.Require(positions.Length > 0,
+                    "No naturally scattered deposits to inspect after save reload");
+                ctx.Set<string>(String.Join("|", positions));
+            });
+        }
+
+        [Then("the generated natural iron-sand locations are unchanged after reload")]
+        public Task VerifyNaturalLocations(PickleContext ctx)
+        {
+            return IronmakingTestThread.Run(delegate
+            {
+                Map map = Find.CurrentMap;
+                ctx.Require(map != null, "No map after Pickle disk reload");
+                ThingDef target = IronmakingTestWorld.Thing("AMJ_IronSandDeposit", ctx);
+                string expected = ctx.Get<string>();
+                string actual = String.Join("|", map.listerThings.ThingsOfDef(target)
+                    .Where(t => t.Spawned)
+                    .Select(t => t.Position.ToString())
+                    .OrderBy(p => p, StringComparer.Ordinal)
+                    .ToArray());
+                ctx.Assert(expected == actual,
+                    "Save reload regenerated, duplicated or lost naturally scattered sand deposits");
+            });
+        }
+
         [Given("an iron-sand deposit is prepared for persistence")]
         public Task PreparePersistence(PickleContext ctx)
         {
