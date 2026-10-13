@@ -17,6 +17,10 @@ Feature: Ironmaking in a real RimWorld 1.6 or 1.7 session
   Scenario: Natural map creation produces finite iron sand
     Then the generated map has accessible natural iron-sand deposits
 
+  @quickstart:IronmakingLargeMap @timeout:240
+  Scenario: Natural iron-sand deposit is actually mineable and finite
+    Then a mining colonist depletes naturally generated iron sand without respawn
+
   @quickstart:IronmakingWorkMap @timeout:240
   Scenario: Colonist mining job consumes finite deposit and yields sand
     Then a mining colonist depletes an iron-sand deposit and receives sand

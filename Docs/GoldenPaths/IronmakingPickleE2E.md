@@ -4,8 +4,9 @@
 scenarios passed per Vanilla/MO profile against the **pre-research** production
 source, with complete PID logs/ERROR 0 (historical only; see
 [Native17-20261013.json](../Testing/Native17-20261013.json)).
-Current test definitions contain **7 Core + 7 Production** scenarios per
+Current test definitions contain **8 Core + 7 Production** scenarios per
 profile, including research before/after, loaded sand-trader generators,
+**mining a naturally generated deposit and checking finite exhaustion**,
 worktable fuel exclusivity, MO Coal Bills, and interrupted smelting.
 **These revised scenarios have not been compiled or executed against a real
 RimWorld build.** The exact current assertion matrix and still-missing
@@ -36,7 +37,7 @@ The normal config is read-only. The selected executable's internal version is
 not independently established by this test-only preflight; capture the actual
 game version in the loaded-game report before claiming a 1.7 runtime PASS.
 The historical 5 Core / 4 Production 1.7 record is retained. The current
-7 Core / 7 Production names are enforced by `validate_pickle_result.py`;
+8 Core / 7 Production names are enforced by `validate_pickle_result.py`;
 each new revision needs new named native results and complete logs.
 
 This is **not** an authorization to migrate production C#, add 1.7 to public
@@ -60,8 +61,8 @@ the installed Pickle/Quickstarts assemblies using their versioned
 Waylith runtime with Roslyn, and runs on a private desktop with normal rendering.
 It preserves the normal ModsConfig/Prefs as read-only templates with DLC context,
 uses a new isolated SaveData per Vanilla/MO profile, checks native log PID and
-ERROR=0, then applies the **unchanged** exact 5-core or 4-production scenario
-validator. Source staging outside RimWorld/Mods and test companion modules are
+ERROR=0, then applies the source-controlled current (8 Core / 7 Production)
+exact-named scenario validator. Source staging outside RimWorld/Mods and test companion modules are
 uniquely marked and removed without touching unmarked folders. Production
 Defs/C#/About version metadata and Steam payload are unchanged.
 
@@ -88,7 +89,7 @@ The launcher:
 1. Validates installed game, tool assemblies, required Mods and readable normal prefs; builds `Tests/E2E/{Quickstarts,Steps}.csproj` against the selected local game's managed assemblies and Pickle/Quickstarts DLLs.
 2. Uses the actual Ironmaking source when installed directly under `RimWorld/Mods`; otherwise copies only production directories into **uniquely named, marked temporary Mod folders**. It stages a separate test-only Pickle+Quickstarts Mod. An unmarked or unrelated folder is never overwritten/deleted.
 3. Writes **new isolated** `SaveData/Config/ModsConfig.xml` and `Prefs.xml` for each profile, leaving normal configuration, saves, installed Workshop content and source bytes untouched. Compiles `Scripts/IronmakingPrivateDesktop.cs` and uses it to start the **real** RimWorld process on a private `WinSta0` desktop with `-savedatafolder`, `-pickle-run=ironmaking-core.feature`, and `-pickle-mode=fast`. The normal desktop never receives the game's window or focus. Normal Unity rendering remains enabled (no `-nographics`).
-4. Requires exact five scenario IDs, five passes, zero failures/skips/flaky retries, `exitReason=passed`, exit code zero and no ERROR-level Player.log/cross-reference XML error. Results persist under `TestResults/Pickle/Runs/<run-id>/<profile>/Reports`.
+4. Requires the exact per-suite named scenario IDs and all passes, zero failures/skips/flaky retries, `exitReason=passed`, exit code zero and no ERROR-level Player.log/cross-reference XML error. Results persist under `TestResults/Pickle/Runs/<run-id>/<profile>/Reports`.
 5. Removes only temporary Mod folders bearing the unique AMJI E2E marker. A failed build or missing dependency is **BLOCKED/FAIL**, never PASS.
 
 ## Scenarios and evidence scope

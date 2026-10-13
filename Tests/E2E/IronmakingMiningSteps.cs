@@ -12,23 +12,60 @@ namespace AncientMedievalJapan.Ironmaking.E2E
     public sealed class IronmakingMiningSteps
     {
         [Then("a mining colonist depletes an iron-sand deposit and receives sand")]
-        public async Task ActuallyMine(PickleContext ctx)
+        public Task ActuallyMine(PickleContext ctx)
+        {
+            return Mine(ctx, false);
+        }
+
+        [Then("a mining colonist depletes naturally generated iron sand without respawn")]
+        public Task MineNatural(PickleContext ctx)
+        {
+            return Mine(ctx, true);
+        }
+
+        private async Task Mine(PickleContext ctx, bool natural)
         {
             Pawn worker = null;
             Thing node = null;
             Map map = null;
             int originalSand = 0;
+            IntVec3 minedCell = IntVec3.Invalid;
             try
             {
                 await IronmakingTestThread.Run(delegate
                 {
                     map = Find.CurrentMap;
-                    IntVec3 at = IronmakingTestWorld.ClearCell(map, ctx);
+                    ctx.Require(map != null, "No active RimWorld map");
                     ThingDef sand = IronmakingTestWorld.Thing("AMJ_IronSand", ctx);
+                    ThingDef deposit = IronmakingTestWorld.Thing("AMJ_IronSandDeposit", ctx);
                     originalSand = map.listerThings.ThingsOfDef(sand).Sum(t => t.stackCount);
-                    node = GenSpawn.Spawn(ThingMaker.MakeThing(
-                        IronmakingTestWorld.Thing("AMJ_IronSandDeposit", ctx)), at, map);
-                    ctx.Require(node != null && node.Spawned, "Mineable fixture failed to spawn");
+                    IntVec3 at;
+                    if (natural)
+                    {
+                        // Mine *the actual GenStep output*. A fixture-spawned
+                        // Thing cannot establish that placed resources are usable.
+                        ctx.Require(map.Size.x >= 200, "Natural source requires large generated map");
+                        node = map.listerThings.ThingsOfDef(deposit).FirstOrDefault(t =>
+                            t.Spawned && !t.Position.Fogged(map) &&
+                            new[] { IntVec3.North, IntVec3.East, IntVec3.South, IntVec3.West }
+                                .Any(d => (t.Position + d).InBounds(map) &&
+                                          (t.Position + d).Standable(map) &&
+                                          !(t.Position + d).Fogged(map)));
+                        ctx.Require(node != null,
+                            "No naturally generated sand node has a revealed standable neighbor");
+                        at = new[] { IntVec3.North, IntVec3.East, IntVec3.South, IntVec3.West }
+                            .Select(d => node.Position + d)
+                            .First(c => c.InBounds(map) && c.Standable(map) && !c.Fogged(map));
+                    }
+                    else
+                    {
+                        at = IronmakingTestWorld.ClearCell(map, ctx);
+                        node = GenSpawn.Spawn(ThingMaker.MakeThing(deposit), at, map);
+                        ctx.Require(node != null && node.Spawned,
+                            "Mineable fixture failed to spawn");
+                        at += IntVec3.North;
+                    }
+                    minedCell = node.Position;
                     for (int i = 0; i < 30; i++)
                     {
                         Pawn candidate = PawnGenerator.GeneratePawn(
@@ -42,7 +79,7 @@ namespace AncientMedievalJapan.Ironmaking.E2E
                         candidate.Destroy(DestroyMode.Vanish);
                     }
                     ctx.Require(worker != null, "No pawn capable of Mining was generated");
-                    GenSpawn.Spawn(worker, at + IntVec3.North, map);
+                    GenSpawn.Spawn(worker, at, map);
                     worker.workSettings.EnableAndInitializeIfNotAlreadyInitialized();
                     worker.skills.GetSkill(SkillDefOf.Mining).Level = 20;
                     if (worker.needs.food != null) worker.needs.food.CurLevelPercentage = 1f;
@@ -80,6 +117,18 @@ namespace AncientMedievalJapan.Ironmaking.E2E
                     ctx.Assert(finished,
                         "Real mining failed to deplete the deposit and produce iron sand within 26400 ticks");
                 });
+                if (natural)
+                {
+                    // GenStep runs on map creation, not each game tick. Confirm
+                    // that actual consumption is finite at the mined cell.
+                    await IronmakingTestThread.AdvanceTicks(ctx, 1200);
+                    await IronmakingTestThread.Run(delegate
+                    {
+                        ctx.Assert(!minedCell.GetThingList(map).Any(t =>
+                            t.Spawned && t.def.defName == "AMJ_IronSandDeposit"),
+                            "Depleted natural sand regenerated without creating a new map");
+                    });
+                }
             }
             finally
             {

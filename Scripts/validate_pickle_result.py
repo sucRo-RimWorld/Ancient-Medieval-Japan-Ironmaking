@@ -12,6 +12,7 @@ EXPECTED = {
     "Native initial ironmaking research gate",
     "Loaded sand trade generators distinguish buying and selling",
     "Natural map creation produces finite iron sand",
+    "Natural iron-sand deposit is actually mineable and finite",
     "Colonist mining job consumes finite deposit and yields sand",
     "Sand deposits survive real game save reload",
 }
