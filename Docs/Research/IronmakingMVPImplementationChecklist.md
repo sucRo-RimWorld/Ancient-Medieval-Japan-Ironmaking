@@ -1,6 +1,6 @@
 # AMJ Ironmaking — minimal implementation checklist (candidate)
 
-**Status:** finite sand, charcoal, furnace, bloom-finishing and initial research are implemented in development XML. Old 1.7 native baseline passed five Core and four Production scenarios for Vanilla/MO; this was **before** initial-research gating. The revised tests (eight Core / seven Production per profile) have **no loaded-game PASS** yet. Research UI, generated merchant stock, MO settings, true old saves, balance and graphics remain open.  
+**Status:** finite sand, charcoal, furnace, bloom-finishing and initial research are implemented in development XML. Old 1.7 native baseline passed five Core and four Production scenarios for Vanilla/MO; this was **before** initial-research gating. The revised tests (nine Core / seven Production per profile) have **no loaded-game PASS** yet. Research UI, generated merchant stock, MO settings, true old saves, balance and graphics remain open.  
 **Authoritative concept:** [Ironmaking design](../Design.md).  
 **Owner:** `sucRo-RimWorld/Ancient-Medieval-Japan-Ironmaking`.  
 **Acceptance and exact tested assumptions:** [IronmakingV1Coverage.md](../Testing/IronmakingV1Coverage.md).
