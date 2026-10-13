@@ -63,10 +63,27 @@ namespace AncientMedievalJapan.Ironmaking.E2E
                         {
                             IntVec3 p = new IntVec3(x, 0, z);
                             if (CellRect.CenteredOn(p, 4).Cells.All(c => c.InBounds(map) &&
-                                !c.Fogged(map) && c.Standable(map) && c.GetFirstBuilding(map) == null))
+                                !c.Fogged(map) && c.GetTerrain(map).passability == Traversability.Standable &&
+                                c.GetFirstBuilding(map) == null &&
+                                c.GetThingList(map).All(t => t is Plant ||
+                                    t.def.passability == Traversability.Standable)))
                                 at = p;
                         }
                     ctx.Require(at.IsValid, "No clear production fixture area");
+                    // Dense real MO vegetation must not determine whether the
+                    // disposable bill fixture can be prepared. Preserve terrain
+                    // and buildings; remove only plants without yielding resources.
+                    foreach (IntVec3 cell in CellRect.CenteredOn(at, 4).Cells)
+                    {
+                        foreach (Plant plant in cell.GetThingList(map).OfType<Plant>().ToList())
+                            plant.Destroy(DestroyMode.Vanish);
+                        map.pathing.RecalculatePerceivedPathCostAt(cell);
+                    }
+                    ctx.Require(CellRect.CenteredOn(at, 4).Cells.All(c => c.Standable(map)),
+                        "Prepared production fixture must remain natively standable: "
+                        + string.Join("; ", CellRect.CenteredOn(at, 4).Cells.Where(c => !c.Standable(map))
+                            .Select(c => c + " terrain=" + c.GetTerrain(map).defName + " things="
+                                + string.Join(",", c.GetThingList(map).Select(t => t.def.defName).ToArray())).ToArray()));
                     ThingDef def = IronmakingTestWorld.Thing(tableName, ctx);
                     table = ThingMaker.MakeThing(def, stuffName == null ? null :
                         IronmakingTestWorld.Thing(stuffName, ctx)) as Building_WorkTable;
