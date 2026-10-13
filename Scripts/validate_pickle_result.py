@@ -10,6 +10,7 @@ EXPECTED = {
     "Exact Ironmaking development source and profile are loaded",
     "Processing Defs and Vanilla or MO result resolve",
     "Native initial ironmaking research gate",
+    "Loaded sand trade generators distinguish buying and selling",
     "Natural map creation produces finite iron sand",
     "Colonist mining job consumes finite deposit and yields sand",
     "Sand deposits survive real game save reload",
@@ -20,6 +21,7 @@ PRODUCTION = {
     "Charcoal bill consumes wood and produces charcoal",
     "Smelting bill consumes sand and charcoal and produces bloom",
     "Optional MO coal fuel and Vanilla isolation",
+    "Interrupted smelting conserves resources",
     "Forging bill consumes bloom and produces the profile metal",
 }
 ERRORS = re.compile(

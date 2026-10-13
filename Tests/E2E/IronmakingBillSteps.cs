@@ -56,6 +56,17 @@ namespace AncientMedievalJapan.Ironmaking.E2E
                 "AMJ_IronBloom", 10);
         }
 
+        [Then("an interrupted smelting bill resumes without losing or multiplying resources")]
+        public Task InterruptedSmelting(PickleContext ctx)
+        {
+            // The same real native Bill/WorkGiver is used, not a mocked product
+            // stack. Assert the final exact resource delta across interruption.
+            return Execute(ctx, "AMJ_SmeltIronSand", "AMJ_SmallIronFurnace",
+                "BlocksGranite",
+                new Dictionary<string, int> { { "AMJ_IronSand", 40 }, { "AMJ_Charcoal", 60 } },
+                "AMJ_IronBloom", 10, true);
+        }
+
         [Then("a colonist completes the bloom-forging bill with the profile metal output")]
         public Task Forge(PickleContext ctx)
         {
@@ -67,7 +78,8 @@ namespace AncientMedievalJapan.Ironmaking.E2E
         }
 
         private async Task Execute(PickleContext ctx, string recipeName, string tableName,
-            string stuffName, Dictionary<string, int> inputs, string outputName, int amount)
+            string stuffName, Dictionary<string, int> inputs, string outputName, int amount,
+            bool interruptOnce = false)
         {
             Map map = null;
             Pawn worker = null;
@@ -183,6 +195,43 @@ namespace AncientMedievalJapan.Ironmaking.E2E
                     worker.jobs.StartJob(job, JobCondition.InterruptForced);
                     Progress("job:" + recipeName);
                 });
+                if (interruptOnce)
+                {
+                    // Interrupt before the 1600-work smelting batch completes.
+                    // A forced job alone is not proof: require real native job
+                    // dispatch and an actual tick advancement on its map.
+                    await IronmakingTestThread.AdvanceTicks(ctx, 20);
+                    await IronmakingTestThread.Run(delegate
+                    {
+                        ctx.Assert(bill.repeatCount == 1 &&
+                            Count(map, outputName) == beforeOutput,
+                            "The test Bill already completed before interruption");
+                        ctx.Require(worker.CurJob != null &&
+                            worker.CurJob.def == JobDefOf.DoBill,
+                            "No native DoBill job running before interruption");
+                        worker.jobs.EndCurrentJob(JobCondition.InterruptForced, false);
+                        ctx.Assert(Count(map, outputName) == beforeOutput,
+                            "Interrupt produced metal without completing a Bill");
+
+                        Job retry = null;
+                        foreach (WorkGiverDef giverDef in
+                                 DefDatabase<WorkGiverDef>.AllDefsListForReading)
+                        {
+                            var giver = giverDef.Worker as WorkGiver_DoBill;
+                            if (giver == null || !giver.ThingIsUsableBillGiver(table) ||
+                                (giverDef.workType != null &&
+                                worker.WorkTypeIsDisabled(giverDef.workType))) continue;
+                            retry = giver.JobOnThing(worker, table, true);
+                            if (retry != null && retry.def == JobDefOf.DoBill &&
+                                retry.bill == bill) break;
+                            retry = null;
+                        }
+                        ctx.Require(retry != null,
+                            "Interrupted Bill was not offered again by a native WorkGiver");
+                        retry.playerForced = true;
+                        worker.jobs.StartJob(retry, JobCondition.InterruptForced);
+                    });
+                }
                 bool finished = false;
                 for (int i = 0; i < 110 && !finished; i++)
                 {

@@ -1,6 +1,21 @@
-# Ironmaking Pickle E2E — loaded RimWorld 1.6; 1.7 unstable test preparation
+# Ironmaking Pickle E2E — RimWorld 1.6 / 1.7 native suites
 
-**State:** author-run Vanilla 1.6 Pickle E2E PASS (5/5, 2026-10-10, run `b5a5596f84`); MO profile **author-reported PASS 5/5** (run `5127792409`, 2026-10-10; raw local reports not independently inspected). The user-provided command output was reviewed, not the private log files. This is a bounded gameplay PASS for the five scenarios, not general release readiness. The source tests are scoped to Ironmaking; they are never included in a Workshop payload.
+**Current state (2026-10-13):** 1.7 native **5 Core + 4 Production**
+scenarios passed per Vanilla/MO profile against the **pre-research** production
+source, with complete PID logs/ERROR 0 (historical only; see
+[Native17-20261013.json](../Testing/Native17-20261013.json)).
+Current test definitions contain **7 Core + 7 Production** scenarios per
+profile, including research before/after, loaded sand-trader generators,
+worktable fuel exclusivity, MO Coal Bills, and interrupted smelting.
+**These revised scenarios have not been compiled or executed against a real
+RimWorld build.** The exact current assertion matrix and still-missing
+old-save, transport, trader inventory and MO-setting tests are in
+[IronmakingV1Coverage](../Testing/IronmakingV1Coverage.md).
+
+Testing uses a separate isolated SaveData and hidden desktop; do not touch
+normal saves or interpret a source/runner unit test as native gameplay PASS.
+The original author-reported 1.6 Vanilla/MO five-scenario results remain
+historical and are not evidence of the expanded suites.
 
 ## Prerequisites
 
@@ -20,8 +35,9 @@ probe**; ambiguous providers fail rather than selecting an arbitrary DLL.
 The normal config is read-only. The selected executable's internal version is
 not independently established by this test-only preflight; capture the actual
 game version in the loaded-game report before claiming a 1.7 runtime PASS.
-Existing five-scenario core and four-scenario production gates, isolated
-config, ERROR checks and private rendering remain unchanged.
+The historical 5 Core / 4 Production 1.7 record is retained. The current
+7 Core / 7 Production names are enforced by `validate_pickle_result.py`;
+each new revision needs new named native results and complete logs.
 
 This is **not** an authorization to migrate production C#, add 1.7 to public
 `supportedVersions`, release a 1.7 Workshop payload or claim 1.7 PASS

@@ -74,6 +74,20 @@ class PickleResultGate(unittest.TestCase):
             self.assertEqual(set(scenarios), expected, "Pickle gate diverged from " + name)
             self.assertEqual(len(scenarios), len(expected), "Duplicate scenario names")
 
+    def test_all_owner_steps_have_exact_loaded_game_implementations(self):
+        # Gherkin names can match while a Then/Given binding silently drifts.
+        # Pickle's built-in "When I save and reload" is deliberately excluded.
+        import re
+        root = SCRIPT.parent.parent / "Tests/E2E"
+        steps = "\n".join(p.read_text(encoding="utf-8")
+                          for p in root.glob("Ironmaking*Steps.cs"))
+        feature_root = root / "TestMod/Pickle/Features"
+        for suite in ("core", "production"):
+            feature = (feature_root / ("ironmaking-" + suite + ".feature")).read_text()
+            for keyword, line in re.findall(r"(?m)^\s*(Then|Given) (.+?)\s*$", feature):
+                self.assertIn('[' + keyword + '("' + line + '")]', steps,
+                              "Missing C# step implementation for " + keyword + " " + line)
+
     def test_player_log_error_fails_even_if_summary_passed(self):
         self.write("[ERROR] Failed to load XML")
         with self.assertRaisesRegex(ValueError, "ERROR"):
