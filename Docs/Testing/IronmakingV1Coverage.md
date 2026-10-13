@@ -7,14 +7,15 @@
 **Maturity:** revised source/Pickle tests require *new* loaded-game runs; no
 2026-10-13 old PASS is inherited after the research implementation or this test change.
 
-## Routine runtime scenarios (nine Core + seven Production per profile)
+## Routine runtime scenarios (ten Core + seven Production per profile)
 
 | Suite | Named scenario | Contract / exact assumption | Evidence |
 |---|---|---|---|
 | Core | Exact Ironmaking development source and profile are loaded | One loaded Ironmaking package at the expected source root, correct MO profile; **root identity, not content-hash equality** | Old 1.7 passed; revised pending |
 | Core | Processing Defs and Vanilla or MO result resolve | Finite mineable Def and three basic process Defs; Vanilla bloom→Steel, MO bloom→IronIngot via Anvil, no MO direct Steel shortcut | Old 1.7 passed; revised pending |
 | Core | Native initial ironmaking research gate | Smithing precedes AMJ research; before initial research the furnace and smelting requirement are unsatisfied, Smithing alone does not unlock them; afterwards both requirements are satisfied; charcoal remains ungated. **Designator visibility is a separate UI gate.** | New, native pending |
-| Core | Loaded sand trade generators distinguish buying and selling | After XML Patch execution, Vanilla Tribal/Outlander bulk traders each contain exactly one sand `StockGenerator_SingleDef` seller and `StockGenerator_BuySingleDef` buyer; **this is not generated merchant inventory** | New, native pending |
+| Core | Loaded sand trade generators distinguish buying and selling | After XML Patch execution, Vanilla Tribal/Outlander bulk traders each contain exactly one sand `StockGenerator_SingleDef` seller and `StockGenerator_BuySingleDef` buyer; generator registration alone does not prove real stock | New, native pending |
+| Core | Native sand trader generates finite sellable stock | Loaded Tribal/Outlander sand seller uses its native `GenerateThings` method to produce only AMJ_IronSand with total count inside its positive configured range; buyer recognizes the sand Def. Uses a fixed test RNG state. **This is not a spawned merchant or trade UI.** | New, native pending |
 | Core | Natural map creation produces finite iron sand | One naturally generated deposit exists and is revealed; this is a prerequisite for, not a substitute for, native mining | Old 1.7 passed; revised pending |
 | Core | Natural iron-sand deposit is actually mineable and finite | A native Mining WorkGiver can designate, mine and destroy a **naturally placed** deposit next to a standable revealed cell; IronSand increases; the consumed node does not spontaneously reappear after 1,200 ticks on that map | New, native pending |
 | Core | Colonist mining job consumes finite deposit and yields sand | Mine WorkGiver depletes a **fixture-spawned** deposit; sand quantity rises | Old 1.7 passed; revised pending |
@@ -58,7 +59,7 @@ Vanilla MO-coal conversion. No runtime scenario above tests final economic value
 | P0 | Genuine existing colony addition/removal/re-add | The added natural-deposit save roundtrip is for a **newly generated Ironmaking map** only. It cannot validate loading a colony saved before the Mod was installed, absence of backfill, nor save safety after removal/re-addition |
 | P0 | Exact release texture and presentation | Owner-approved natural low-profile sand deposit, AMJ material/building artwork, recipe/UI layout, graphic states |
 | P1 | Seed/map/terrain distribution | The new natural-source mining test covers one fixed map and one depleted cell, **not** alternative seeds, regional weighting, map-wide inaccessibility or landform statistics. No placement in water/impassable/starter/quest structures |
-| P1 | Actual generated merchant inventories | Loaded trader generator presence has a new scenario, **not run**; verify that real arrivals sell/buy sand in appropriate quantities and that sparse/old maps can import it without guaranteed stock |
+| P1 | Actual generated merchant inventories | Added real stock-generator output test is native-pending; **arrival, inventory merging, trade UI/exchange, sparse old-map imports** still require separate actual-game validation |
 | P1 | MO on/off settings | metalChain ON/OFF with woodChain sample; stable MO ore/Mine Shaft/deep/traders and no user setting mutation |
 | P1 | Balanced yield/cost/time/fuel/transport | No adopted economic values yet; use real work, multiple batches, storage/haul cost comparisons |
 | Optional | Japanization, WTL, Environment | Only specific conditional features; Japanization owns MO-wide resource rebalance; no mandatory dependency or unrequested full Cartesian matrix |

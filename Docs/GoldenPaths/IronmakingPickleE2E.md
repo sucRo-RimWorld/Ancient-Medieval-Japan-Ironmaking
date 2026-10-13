@@ -4,11 +4,11 @@
 scenarios passed per Vanilla/MO profile against the **pre-research** production
 source, with complete PID logs/ERROR 0 (historical only; see
 [Native17-20261013.json](../Testing/Native17-20261013.json)).
-Current test definitions contain **9 Core + 7 Production** scenarios per
+Current test definitions contain **10 Core + 7 Production** scenarios per
 profile, including research before/after, loaded sand-trader generators,
 **mining a naturally generated deposit, checking finite exhaustion and
 natural-deposit location stability after genuine disk save/reload**,
-worktable fuel exclusivity, MO Coal Bills, and interrupted smelting.
+loaded trader stock generation, worktable fuel exclusivity, MO Coal Bills, and interrupted smelting.
 **These revised scenarios have not been compiled or executed against a real
 RimWorld build.** The exact current assertion matrix and still-missing
 old-save, transport, trader inventory and MO-setting tests are in
@@ -38,7 +38,7 @@ The normal config is read-only. The selected executable's internal version is
 not independently established by this test-only preflight; capture the actual
 game version in the loaded-game report before claiming a 1.7 runtime PASS.
 The historical 5 Core / 4 Production 1.7 record is retained. The current
-9 Core / 7 Production names are enforced by `validate_pickle_result.py`;
+10 Core / 7 Production names are enforced by `validate_pickle_result.py`;
 each new revision needs new named native results and complete logs.
 
 This is **not** an authorization to migrate production C#, add 1.7 to public
@@ -62,7 +62,7 @@ the installed Pickle/Quickstarts assemblies using their versioned
 Waylith runtime with Roslyn, and runs on a private desktop with normal rendering.
 It preserves the normal ModsConfig/Prefs as read-only templates with DLC context,
 uses a new isolated SaveData per Vanilla/MO profile, checks native log PID and
-ERROR=0, then applies the source-controlled current (9 Core / 7 Production)
+ERROR=0, then applies the source-controlled current (10 Core / 7 Production)
 exact-named scenario validator. Source staging outside RimWorld/Mods and test companion modules are
 uniquely marked and removed without touching unmarked folders. Production
 Defs/C#/About version metadata and Steam payload are unchanged.
@@ -93,7 +93,7 @@ The launcher:
 4. Requires the exact per-suite named scenario IDs and all passes, zero failures/skips/flaky retries, `exitReason=passed`, exit code zero and no ERROR-level Player.log/cross-reference XML error. Results persist under `TestResults/Pickle/Runs/<run-id>/<profile>/Reports`.
 5. Removes only temporary Mod folders bearing the unique AMJI E2E marker. A failed build or missing dependency is **BLOCKED/FAIL**, never PASS.
 
-## Scenarios and evidence scope
+## Historical five-scenario baseline and evidence scope (superseded by current test matrix)
 
 | Scenario | What is asserted in **loaded RimWorld**, if run | Not yet covered |
 |---|---|---|
@@ -191,7 +191,7 @@ Vanilla is already PASS; avoid `--profile All` unless intentionally retesting bo
 
 After PR #20 corrected the isolated `Prefs.xml` root-tag assumption (main `93667960ca5901fb03634ec7cd52f5613dc53497`), the author ran `.\run-pickle-e2e.bat --profile MO --timeout 180`. Run `5127792409` reported 5/5 scenarios, zero skipped/flaky/error logs and exit code zero after 51 seconds; the runner cleaned temporary Mod folders and reported normal configuration untouched. Full report location: `TestResults/Pickle/Runs/5127792409/MO/Reports` on the author's Windows installation. Evidence currently comprises console output supplied by the author; original Player.log and summary.json have not been independently opened here. Vanilla's separately reported 5/5 remains valid. Do not infer actual production Bill execution/fuel, trade, research, or release readiness from these five checks. Earlier MO startup diagnostic failures are historical; no need to repeat baseline MO solely for the earlier timeout.
 
-## Actual production bills — separate follow-up suite
+## Historical production suite (2026-10-10; superseded by current seven-case Production)
 
 The baseline core suite remains five scenarios. Run the new production suite without
 replaying natural mapgen/mining/save baseline scenarios:
@@ -201,10 +201,10 @@ git pull --ff-only
 .\run-pickle-e2e.bat --suite production --profile All
 ```
 
-This runs four scenarios per profile: exact source/profile plus actual charcoal,
+The historical four-case suite ran per profile: exact source/profile plus actual charcoal,
 sand-smelting and bloom-forging bills. It uses the existing private desktop, normal
 rendering, isolated configuration and strict complete summary / zero-ERROR gate.
-The new result gate requires these exact four names; a core report cannot pass it.
+The historical four-case gate required these names; the current seven-case Production gate is defined by Scripts/validate_pickle_result.py and Docs/Testing/IronmakingV1Coverage.md.
 
 Fixtures provide completed tables, a capable pawn and exact input amounts. A real
 loaded `WorkGiver_DoBill` must assign each bill, and native jobs must finish it.

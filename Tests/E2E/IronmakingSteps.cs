@@ -274,6 +274,96 @@ namespace AncientMedievalJapan.Ironmaking.E2E
             });
         }
 
+        [Then("the loaded sand trader can generate actual stock and accept sand")]
+        public Task SandStock(PickleContext ctx)
+        {
+            return IronmakingTestThread.Run(delegate
+            {
+                // Generate stock through the *loaded* Vanilla/MO stock generator,
+                // not by creating a synthetic Thing with ThingMaker.
+                ThingDef sand = IronmakingTestWorld.Thing("AMJ_IronSand", ctx);
+                Map map = Find.CurrentMap;
+                ctx.Require(map != null, "Real trade generator needs a live map/tile");
+                foreach (string name in new[] {
+                    "Caravan_Neolithic_BulkGoods", "Caravan_Outlander_BulkGoods" })
+                {
+                    TraderKindDef trader = DefDatabase<TraderKindDef>.GetNamedSilentFail(name);
+                    ctx.Require(trader != null && trader.stockGenerators != null,
+                        "Loaded trader missing: " + name);
+
+                    StockGenerator seller = null;
+                    StockGenerator buyer = null;
+                    foreach (StockGenerator candidate in trader.stockGenerators)
+                    {
+                        if (candidate == null || !candidate.HandlesThingDef(sand)) continue;
+                        if (candidate.GetType().Name == "StockGenerator_SingleDef")
+                            seller = candidate;
+                        else if (candidate.GetType().Name == "StockGenerator_BuySingleDef")
+                            buyer = candidate;
+                    }
+                    ctx.Require(seller != null && buyer != null,
+                        "No loaded sand seller/buyer generator in " + name);
+                    ctx.Assert(buyer.HandlesThingDef(sand),
+                        "Actual loaded buyer does not accept sand: " + name);
+                    ctx.Require(seller.countRange.min > 0 &&
+                        seller.countRange.max >= seller.countRange.min,
+                        "Seller quantity must be finite and positive: " + name);
+                    MethodInfo generate = seller.GetType()
+                        .GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                        .Where(method => method.Name == "GenerateThings" &&
+                            typeof(System.Collections.Generic.IEnumerable<Thing>)
+                                .IsAssignableFrom(method.ReturnType))
+                        .OrderBy(method => method.GetParameters().Length)
+                        .FirstOrDefault();
+                    ctx.Require(generate != null, "No native GenerateThings on " + name);
+                    object tile = map.Tile; // int in older versions, PlanetTile in newer.
+                    ParameterInfo[] parameters = generate.GetParameters();
+                    object[] args = new object[parameters.Length];
+                    for (int i = 0; i < parameters.Length; ++i)
+                    {
+                        Type type = parameters[i].ParameterType;
+                        ctx.Require(!type.IsByRef, "Unexpected ref/out stock parameter");
+                        if (type.IsInstanceOfType(tile)) args[i] = tile;
+                        else if (type == typeof(Faction)) args[i] = null;
+                        else if (parameters[i].HasDefaultValue)
+                            args[i] = parameters[i].DefaultValue;
+                        else if (type.IsValueType) args[i] = Activator.CreateInstance(type);
+                        else args[i] = null;
+                    }
+
+                    var generated = new System.Collections.Generic.List<Thing>();
+                    Rand.PushState(1121);
+                    try
+                    {
+                        var stock = generate.Invoke(seller, args) as
+                            System.Collections.Generic.IEnumerable<Thing>;
+                        ctx.Require(stock != null, "Native seller returned null stock: " + name);
+                        generated.AddRange(stock);
+                    }
+                    finally
+                    {
+                        Rand.PopState();
+                    }
+                    try
+                    {
+                        ctx.Assert(generated.All(t => t != null && t.def == sand),
+                            "Sand-specific stock generator emitted other ThingDefs: " + name);
+                        int count = generated.Sum(t => t.stackCount);
+                        ctx.Assert(count >= seller.countRange.min &&
+                            count <= seller.countRange.max,
+                            "Generated sand quantity is outside loaded trader range: " +
+                            name + " count=" + count);
+                    }
+                    finally
+                    {
+                        foreach (Thing thing in generated)
+                            if (thing != null && !thing.Destroyed)
+                                thing.Destroy(DestroyMode.Vanish);
+                    }
+                }
+            });
+        }
+
         [Then("the generated map has accessible natural iron-sand deposits")]
         public Task NaturalDeposits(PickleContext ctx)
         {

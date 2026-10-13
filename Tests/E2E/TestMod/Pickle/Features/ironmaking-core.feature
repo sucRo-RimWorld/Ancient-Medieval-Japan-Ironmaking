@@ -13,6 +13,10 @@ Feature: Ironmaking in a real RimWorld 1.6 or 1.7 session
   Scenario: Loaded sand trade generators distinguish buying and selling
     Then the loaded bulk traders expose bounded sand buying and selling
 
+  @quickstart:IronmakingWorkMap @timeout:180
+  Scenario: Native sand trader generates finite sellable stock
+    Then the loaded sand trader can generate actual stock and accept sand
+
   @quickstart:IronmakingLargeMap @timeout:180
   Scenario: Natural map creation produces finite iron sand
     Then the generated map has accessible natural iron-sand deposits
