@@ -23,26 +23,45 @@ namespace AncientMedievalJapan.Ironmaking.E2E
                 return;
             }
 
-            ctx.Require(Find.TickManager != null, "No TickManager for Pickle fast simulation");
-            int targetTick = checked(Find.TickManager.TicksGame + ticks);
-            while (Find.TickManager.TicksGame < targetTick)
+            int targetTick = 0;
+            await Run(delegate
+            {
+                ctx.Require(Find.TickManager != null, "No TickManager for Pickle fast simulation");
+                targetTick = checked(Find.TickManager.TicksGame + ticks);
+            });
+            bool finished = false;
+            while (!finished)
             {
                 // Yield after bounded batches so Unity/Pickle update, rendering
                 // and scenario timeout handling continue between simulated ticks.
-                for (int batch = 0; batch < 60 && Find.TickManager.TicksGame < targetTick; batch++)
-                    Find.TickManager.DoSingleTick();
-                await ctx.WaitFrames(1);
+                await Run(delegate
+                {
+                    for (int batch = 0; batch < 60 && Find.TickManager.TicksGame < targetTick; batch++)
+                        Find.TickManager.DoSingleTick();
+                    finished = Find.TickManager.TicksGame >= targetTick;
+                });
+                if (!finished) await ctx.WaitFrames(1);
             }
         }
 
         public static Task Run(Action action)
         {
             var done = new TaskCompletionSource<bool>();
-            RimWorks.Pickle.Runtime.PickleDriver.Post(delegate
+            Action dispatch = delegate
             {
                 try { action(); done.SetResult(true); }
                 catch (Exception error) { done.SetException(error); }
-            });
+            };
+#if AMJ_TEST_WAYLITH
+            // The installed 1.6 provider's driver inherits a legacy Unity type.
+            // Resolve the real loaded Post method without a compile-time base-type reference.
+            var driver = typeof(PickleContext).Assembly.GetType("RimWorks.Pickle.Runtime.PickleDriver", true);
+            var post = driver.GetMethod("Post", new[] { typeof(Action) });
+            if (post == null) throw new MissingMethodException(driver.FullName, "Post(Action)");
+            post.Invoke(null, new object[] { dispatch });
+#else
+            RimWorks.Pickle.Runtime.PickleDriver.Post(dispatch);
+#endif
             return done.Task;
         }
     }

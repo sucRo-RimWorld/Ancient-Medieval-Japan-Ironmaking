@@ -18,7 +18,7 @@ $hashes = @{}
 foreach ($name in @('ModsConfig.xml','Prefs.xml')) {
     $hashes[$name] = (Get-FileHash -LiteralPath (Join-Path $normal $name) -Algorithm SHA256).Hash
 }
-[xml]$about = Get-Content -LiteralPath (Join-Path $repo 'About/About.xml') -Raw
+[xml]$about = Read-RimWorldTestXml (Join-Path $repo 'About/About.xml')
 $identity = 'sucro.ancientmedievaljapan.ironmaking'
 if ([string]$about.ModMetaData.packageId -ne $identity) { throw 'Unexpected Ironmaking source packageId.' }
 $source = $repo
@@ -32,7 +32,7 @@ if (-not $actualSourceInMods) {
     foreach ($dir in (Get-ChildItem -LiteralPath $mods -Directory)) {
         $candidate = Join-Path $dir.FullName 'About/About.xml'
         if (Test-Path -LiteralPath $candidate) {
-            try { [xml]$entry = Get-Content -LiteralPath $candidate -Raw }
+            try { [xml]$entry = Read-RimWorldTestXml $candidate }
             catch { continue }
             if ([string]$entry.ModMetaData.packageId -eq $identity) {
                 throw 'Another Ironmaking source is installed. Run from that exact source to avoid duplicate packageIds.'
@@ -55,7 +55,7 @@ try {
             $from = Join-Path $repo $folder
             if (Test-Path -LiteralPath $from) { Copy-Item -LiteralPath $from -Destination $sourceFixture -Recurse }
         }
-        [xml]$sourceAbout = Get-Content -LiteralPath (Join-Path $sourceFixture 'About/About.xml') -Raw
+        [xml]$sourceAbout = Read-RimWorldTestXml (Join-Path $sourceFixture 'About/About.xml')
         $versions = $sourceAbout.SelectSingleNode('/ModMetaData/supportedVersions')
         if ($null -eq $versions) { throw 'Missing source supportedVersions node.' }
         $li = $sourceAbout.CreateElement('li')
@@ -70,7 +70,7 @@ try {
     foreach ($folder in @('About','Assemblies','Pickle/Assemblies','Pickle/Features','Strings')) {
         New-Item -ItemType Directory -Force -Path (Join-Path $testFixture $folder) | Out-Null
     }
-    [xml]$testAbout = Get-Content -LiteralPath (Join-Path $repo 'Tests/E2E/TestMod/About/About.xml') -Raw
+    [xml]$testAbout = Read-RimWorldTestXml (Join-Path $repo 'Tests/E2E/TestMod/About/About.xml')
     $testAbout.ModMetaData.packageId = 'sucro.ancientmedievaljapan.ironmaking.e2e17'
     $versions = $testAbout.SelectSingleNode('/ModMetaData/supportedVersions')
     $li = $testAbout.CreateElement('li'); $li.InnerText = '1.7'; [void]$versions.AppendChild($li)
@@ -79,7 +79,7 @@ try {
     Set-Content -LiteralPath (Join-Path $testFixture 'Strings/AMJI-17.txt') -Value 'Temporary Pickle test marker' -Encoding Ascii
 
     function Get-TestSources([string]$project) {
-        [xml]$doc = Get-Content -LiteralPath $project -Raw
+        [xml]$doc = Read-RimWorldTestXml $project
         $base = Split-Path -Parent $project
         @($doc.SelectNodes('//Compile') | ForEach-Object {
             $file = Join-Path $base ([string]$_.Include)
@@ -98,7 +98,7 @@ try {
         $report = Join-Path $folder 'Reports'
         $configDir = Join-Path $folder 'SaveData/Config'
         New-Item -ItemType Directory -Force -Path $configDir | Out-Null
-        [xml]$config = Get-Content -LiteralPath (Join-Path $normal 'ModsConfig.xml') -Raw
+        [xml]$config = Read-RimWorldTestXml (Join-Path $normal 'ModsConfig.xml')
         $active = $config.SelectSingleNode('/ModsConfigData/activeMods')
         if ($null -eq $active -or $null -eq $config.SelectSingleNode('/ModsConfigData/knownExpansions')) {
             throw 'Normal source config lacks activeMods/knownExpansions; refusing synthetic DLC context.'
@@ -116,7 +116,7 @@ try {
         }
         $config.ModsConfigData.version = $game.Version.Split(' ')[0]
         $config.Save((Join-Path $configDir 'ModsConfig.xml'))
-        [xml]$prefs = Get-Content -LiteralPath (Join-Path $normal 'Prefs.xml') -Raw
+        [xml]$prefs = Read-RimWorldTestXml (Join-Path $normal 'Prefs.xml')
         foreach ($pair in @(@('devMode','True'),@('resetModsConfigOnCrash','False'),@('fullscreen','False'),@('runInBackground','True'))) {
             $node = $prefs.DocumentElement.SelectSingleNode($pair[0])
             if ($null -eq $node) { $node = $prefs.CreateElement($pair[0]); [void]$prefs.DocumentElement.AppendChild($node) }

@@ -12,25 +12,7 @@ balance and accepted textures remain unimplemented/unaccepted. Static checks do
 not establish loaded gameplay. See MVP checklist and Design for scope.
 
 ## IRON-PICKLE-20261010
-**State:** CORE VANILLA/MO 5/5 AUTHOR-REPORTED PASS (PRIOR HARNESS); PRODUCTION VANILLA 4/4 AUTHOR-REPORTED PASS; PRODUCTION MO PENDING.
-Vanilla run `b5a5596f84` and MO run `5127792409` passed five baseline scenarios each;
-MO exit 0 in 51s with zero skipped/flaky/error logs after PR #20 (`93667960ca5901fb03634ec7cd52f5613dc53497`).
-Raw local reports were not independently inspected. Earlier hidden-startup/config
-failures are superseded, with diagnosis/provenance retained in Golden Path and Git history.
-Core covers loaded source/Defs, natural deposit, mining and save/reload only.
-Next profile: `run-pickle-e2e.bat --suite production --profile MO`, four
-scenarios via the same private-desktop runner. Native WorkGiver/Bill jobs, exact input
-and output counts and fueled Vanilla smithy consumption are asserted. Owner kiln/
-furnace Crafting WorkGiver connection added; production XML amounts unchanged.
-After the PR #24 Fast-mode Tick fix, author-run Vanilla Production `240c258399`
-reported 4/4 PASS (16 seconds, exit code 0, zero skipped/flaky/error logs and
-isolated cleanup). Earlier stalled Vanilla Production attempts are superseded.
-Evidence is author console output, not independently inspected raw logs.
-Production MO still needs a fresh game run. The shared Core mining Tick helper
-also changed, so rerun Core Vanilla/MO for current-harness claims. Refuelling jobs, integrated
-chain logistics, trade, research and distribution remain OPEN.
-Canonical procedure/evidence: `Docs/GoldenPaths/IronmakingPickleE2E.md`,
-`Docs/Testing/IronmakingPickleEvidence.md`.
+**State:** 1.7 CORE AND PRODUCTION VANILLA/MO INDEPENDENTLY VERIFIED. Production base `1af461eac9d6b1326975a9866593d694f5d291f5` with final test-only patch: each profile Core 5/5 and Production 4/4 on 1.7.4976 rev1043, no skipped/flaky, complete PID logs, native ERROR0. Test fixes dispatch actual tick batches to main thread and prepare plant-dense Bill fixtures while excluding impassable items. Production input/output/fuel assertions unchanged. Canonical named premises/hashes: `Docs/Testing/IronmakingPickleEvidence.md`, `Docs/Testing/Native17-20261013.json`; procedure `Docs/GoldenPaths/IronmakingPickleE2E.md`. Earlier author-reported 1.6 results remain their own evidence; current 1.6 runtime not rerun. Refuelling, integrated logistics, trader/research/balance, real old-save/add-remove, accepted textures and release remain OPEN.
 
 ## MOJ-IRON-INTERFACE-20261010
 **State:** CONTRACT DELIVERED; Japanization runtime adapter OPEN.
