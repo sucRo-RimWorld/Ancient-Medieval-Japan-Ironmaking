@@ -8,4 +8,4 @@
 
 `test-contracts.yml` tests source and harness contracts separately. Keep game, visual and older-save acceptance separate from static PASS.
 
-- **v1 gap and premise matrix:** `Docs/Testing/IronmakingV1Coverage.md`. The current feature files contain nine Core and seven Production scenarios per profile; pre-research native 1.7 evidence remains five plus four per profile. CI is static-only.
+- **v1 gap and premise matrix:** `Docs/Testing/IronmakingV1Coverage.md`. The current feature files contain ten Core and seven Production scenarios per profile; pre-research native 1.7 evidence remains five plus four per profile. CI is static-only.

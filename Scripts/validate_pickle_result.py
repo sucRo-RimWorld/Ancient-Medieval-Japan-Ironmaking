@@ -11,6 +11,7 @@ EXPECTED = {
     "Processing Defs and Vanilla or MO result resolve",
     "Native initial ironmaking research gate",
     "Loaded sand trade generators distinguish buying and selling",
+    "Native sand trader generates finite sellable stock",
     "Natural map creation produces finite iron sand",
     "Natural iron-sand deposit is actually mineable and finite",
     "Natural iron-sand locations survive save reload unchanged",
