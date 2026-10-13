@@ -19,34 +19,38 @@ coverage: `Docs/Testing/IronmakingV1Coverage.md`. See MVP checklist and Design
 for scope.
 
 ## IRON-PICKLE-20261010
-**State:** CURRENT SOURCE 9 CORE + 7 PRODUCTION PER PROFILE; NATIVE VALIDATION OPEN.
-Historical RimWorld 1.7.4976 rev1043 Vanilla/MO Core **5/5** and Production
-**4/4** per profile were independently verified against *pre-research* source
-`1af461eac9d6b1326975a9866593d694f5d291f5` plus test-only corrections.
-Evidence: `Docs/Testing/Native17-20261013.json`. Those PASS results never
-cover the newer test or research source.
+**State:** CURRENT SOURCE 10 CORE + 7 PRODUCTION PER VANILLA/MO;
+ALL REVISED NATIVE COMPILATION AND REAL-GAME VALIDATION OPEN.
+Historical pre-research RimWorld 1.7.4976 rev1043 source
+`1af461eac9d6b1326975a9866593d694f5d291f5` plus test-only corrections
+passed **5 Core / 4 Production** per Vanilla/MO (PID complete/ERROR0).
+Evidence: `Docs/Testing/Native17-20261013.json`.
+These old passes must NOT be inherited by current research, new map, or
+stock-generation scenarios.
 
-Test-contract cleanup PR #36 merged `eda362ea1f8f2df5e82e54d1c11a1c38bb33527e`.
-New research/trade/one-session retry coverage PR #38 merged
-`22bf454e2a440136006f46302259d70a9ed7aca6`.
-Natural-source Mine WorkGiver / 1,200-tick depletion test PR #40 merged
-`0116b61c110b05dc441d7c4d7a779d6b057590d1`.
-Natural-source exact-location disk save/reload test PR #41 merged
-`1176a8901cd30c6c4ea30ef24d738c5e0fe0f479`. Exact-head PR and post-merge source/runner GitHub CI PASS;
-**this is not an E2E game run or compiled native test DLL**. Current source
-Pickle `ironmaking-core.feature` **9 named cases**, and
-`ironmaking-production.feature` **7 named cases**, each in Vanilla/MO.
-Static named-scenario + C# step binding regression verifies correspondence.
-Final accepted test assumptions, C# source, and pending test gaps:
+Current test source evolved in PRs #36/#38/#40/#41. PR #43 merged
+`2281f2992aa7a62913dd643f36d689592c500e92` adds direct
+loaded `StockGenerator.GenerateThings` assertions: only AMJ sand, positive
+configured stock count and buyer HandlesThingDef. It is NOT an actual spawned
+merchant inventory or trade UI. PR #44 merged
+`733b20f151820232aec3f7aeaaed79f34377db2a` upgrades research
+verification to RimWorld's own furnace `IsResearchFinished` and smelting
+`AvailableNow` gates before Smithing, after Smithing alone and after initial
+AMJ research, preserving charcoal before/after. Exact-head and main-push
+source/runner GitHub CI PASS; no native C# test compilation/game execution.
+The current Gherkin feature files now define **10 named Core and 7 named
+Production** scenarios per Vanilla/MO. The strict Python result gate and
+binding unit tests enforce these definitions, not gameplay correctness.
+Canonical premises/gaps:
 `Docs/Testing/IronmakingV1Coverage.md`.
 
-**Remaining OPEN:** genuinely pre-mod colony save add/remove/re-add; interruption
-crossing a save or refuel interruption; full hauled resource chain; *actual*
-trader-stock generation and iron-sand import; research designator and UI;
-multiple Seed/landform weighting; MO setting variants/Japanization adapter;
-balance; accepted textures; package/release. Chat-local native execution is
-paused under Project `main:Docs/Coordination.md` DEV-PERSISTENT-RIMWORLD-HOST;
-do not dispatch a native game without the separately approved persistent host.
+**Still OPEN:** actual pre-mod save add/remove/re-add, across-save or fuel-loss
+job interruption and full haul/refuel pipeline, actual merchant arrival/
+trade transaction on sand-poor and old maps, Architect/research UI, multiple
+Seed/biome regional weighting, MO configuration and Japanization adapter,
+economic numbers, graphics, release. Shared native game host work is paused
+by Project `main:Docs/Coordination.md` DEV-PERSISTENT-RIMWORLD-HOST;
+do NOT run or represent chat-local game tests as current evidence.
 
 ## MOJ-IRON-INTERFACE-20261010
 **State:** CONTRACT DELIVERED; Japanization runtime adapter OPEN.
