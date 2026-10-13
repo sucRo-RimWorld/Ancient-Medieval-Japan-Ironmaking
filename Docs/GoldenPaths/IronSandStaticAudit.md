@@ -2,6 +2,15 @@
 
 **Scope:** first finite iron-sand ThingDef and map-generation source slice (RimWorld 1.6 developer files). This is a non-interactive static gate, **not a RimWorld loaded-game test**.
 
+**Current test state (2026-10-13):** The current strict Pickle source contains
+**10 Core and 7 Production scenarios per Vanilla/MO profile**; all revised
+native test C# and game-run results are **not yet compiled/executed**. Static
+source and runner CI PASS does not establish an in-game result.
+The numbered 2026-10-10 results below are **historical development snapshots
+only**; never use their old scenario counts, or statements about placeholder
+graphics, as present-day acceptance. Current exact contracts and pending
+items are in [IronmakingV1Coverage](../Testing/IronmakingV1Coverage.md).
+
 ## Repeatable static validation
 
 From the Ironmaking repository root:
@@ -10,7 +19,7 @@ From the Ironmaking repository root:
 python -m unittest discover -s Tests -p "test_*.py" -v
 ```
 
-Six 2026-10-10 fixture/structure tests cover: XML parse/unique DefNames, finite resource yield and no deep/infinite resource supply, independent item category outside `ResourcesRaw` bulk generation, GenStep/MapCommonBase Patch links and cell-safety validators, no hard dependency on MO/Environment/Harmony, and explicit unapproved image status.
+Historical 2026-10-10 fixture/structure tests covered: XML parse/unique DefNames, finite resource yield and no deep/infinite resource supply, independent item category outside `ResourcesRaw` bulk generation, GenStep/MapCommonBase Patch links and cell-safety validators, no hard dependency on MO/Environment/Harmony, and prototype graphics scope. The stale text/placeholder-path checks have been removed from routine tests.
 
 Do not conflate a successful `GenStep_ScatterThings` XML parse with valid RimWorld map spawning. MO 1.6 provided evidence of the same Vanilla class, MapCommonBase injection and scatter validators. The implementation is independently authored and uses development-only Vanilla texture paths.
 
@@ -25,7 +34,7 @@ Do not add repeated automated GitHub Actions that notify for incomplete runtime 
 
 ## First worktable/Recipe slice
 
-Run the same static test command after adding Recipes. Tests no longer assert "no RecipeDefs exist"; instead they reject any Recipe that produces unbounded sand or sand-deposit Things. Additional four tests verify:
+Run the same static test command after adding Recipes. Tests no longer assert "no RecipeDefs exist"; instead they reject any Recipe that produces unbounded sand or sand-deposit Things. Historical source-level processing checks verified:
 - pre-iron construction cost; no `CompProperties_Refuelable` on the AMJ production worktables;
 - three-step material and output references;
 - isolation of all `DankPyon_` symbols in a guarded MO compatibility Patch;
@@ -37,7 +46,7 @@ The local source fixture passed **10 tests** on 2026-10-10. This does **not** pr
 
 `Patches/TradeIronSand.xml` uses an existence-guarded `PatchOperationConditional` on Vanilla bulk caravans. It appends only `AMJ_IronSand` seller and buyer generators; it does not use `StockGenerator_Category(ResourcesRaw)`, remove Steel/IronIngot availability or modify MO-owned merchant Defs.
 
-Two additional static tests check limited trader targets, correct separation of selling from buying, and no unrelated metal rewrites. The 2026-10-10 local suite passed **12 static tests**. Confirm actual Vanilla Core `TraderKindDef` existence, trader visitation/stock/price and save load in the RimWorld runtime before treating this as a reliable rescue route. Sales count 10~30 is a developer placeholder, not an approved balance value.
+Trade source checks validate limited trader targets, correct separation of selling from buying, and no unrelated metal rewrites. The 2026-10-10 local suite passed **12 static tests**. Confirm actual Vanilla Core `TraderKindDef` existence, trader visitation/stock/price and save load in the RimWorld runtime before treating this as a reliable rescue route. Sales count 10~30 is a developer placeholder, not an approved balance value.
 
 ## Optional source-contract check against actual MO 1.6
 
@@ -47,7 +56,7 @@ When an actual MO 1.6 ZIP is available, run from the owner repository root:
 AMJ_MO_ARCHIVE=/absolute/path/to/3219596926.zip python -m unittest discover -s Tests -p "test_*.py" -v
 ```
 
-The three additional tests in `Tests/test_mo_archive_contract.py` read the **supplied external archive**, do not vendor MO assets, and confirm MO package/name, IronIngot/Coal/Anvil upstream ThingDefs, the Ironmaking `loadAfter` soft order and the MO-guarded bloom output. With the author-provided archive on 2026-10-10, **15 tests passed**. Without `AMJ_MO_ARCHIVE`, the same suite runs 12 regular static checks and **skips three** MO-only tests rather than fabricating a MO compatibility PASS.
+The three additional tests in `Tests/Production/test_mo_archive_contract.py` read the **supplied external archive**, do not vendor MO assets, and confirm MO package/name, IronIngot/Coal/Anvil upstream ThingDefs, the Ironmaking `loadAfter` soft order and the MO-guarded bloom output. With the author-provided archive on 2026-10-10, **15 tests passed**. Without `AMJ_MO_ARCHIVE`, the same suite runs 12 regular static checks and **skips three** MO-only tests rather than fabricating a MO compatibility PASS.
 
 An initial local failure resulted from a stale **local verification copy** of Ironmaking `About/About.xml` lacking the current `loadAfter`; refreshing the local test copy to the already merged GitHub About resolved it. Always test the **current same-source tree**, not a previous exported prototype. This validation verifies source contracts only; actual RimWorld PatchOperation, worktable interaction, generation and game ERROR=0 remain unverified.
 
@@ -65,8 +74,8 @@ When a genuine installed RimWorld 1.6 `Data/Core/Defs` is available, run:
 python Tools/check_vanilla_core_defs.py --core-defs "/path/to/RimWorld/Data/Core/Defs"
 ```
 
-This scans the actual Core XML for Vanilla `Root`/`ResourcesRaw`, resource/bench/mineable parent names, `WoodLog`/`Steel`, existing Vanilla smithies, two sand-trade caravan `TraderKindDef`s, `Smithing` and `MapCommonBase`. It compares the Ironmaking category parent to `Root` and exits nonzero for missing references; incomplete or missing Core sources cannot become PASS. `Tests/test_vanilla_core_def_contract.py` provides four independent **synthetic fixture tests** for successful reference lookup, old invalid `Resources` parent, missing trader kind, and empty Core input. All four fixture tests passed on 2026-10-10. **The actual Core source has not been supplied in this environment and no Core/loaded game PASS is claimed.** MO source-contract checks remain separate.
+This scans the actual Core XML for Vanilla `Root`/`ResourcesRaw`, resource/bench/mineable parent names, `WoodLog`/`Steel`, existing Vanilla smithies, two sand-trade caravan `TraderKindDef`s, `Smithing` and `MapCommonBase`. It compares the Ironmaking category parent to `Root` and exits nonzero for missing references; incomplete or missing Core sources cannot become PASS. `Tests/Production/test_vanilla_core_def_contract.py` provides four independent **synthetic fixture tests** for successful reference lookup, old invalid `Resources` parent, missing trader kind, and empty Core input. All four fixture tests passed on 2026-10-10. **The actual Core source has not been supplied in this environment and no Core/loaded game PASS is claimed.** MO source-contract checks remain separate.
 
 ## From static source to loaded-game E2E
 
-Use the owner [Ironmaking Pickle E2E procedure](IronmakingPickleE2E.md) for the two actual game profiles, independent Quickstarts, real mining WorkGiver and Pickle disk save/reload. The static XML/Mock Core tests are **not** a loaded-game gate; only a fresh exact five-scenario Pickle report with zero runtime errors qualifies.
+Use the owner [Ironmaking Pickle E2E procedure](IronmakingPickleE2E.md) for the two actual game profiles, independent Quickstarts, real mining WorkGiver and Pickle disk save/reload. The static XML/Mock Core tests are **not** a loaded-game gate; only fresh exact-name reports for 10 Core and 7 Production scenarios per Vanilla/MO, with zero failures/skips/flaky and complete game logs, qualify.
