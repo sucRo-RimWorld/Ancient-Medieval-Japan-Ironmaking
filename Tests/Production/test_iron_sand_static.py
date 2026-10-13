@@ -68,5 +68,5 @@ class IronSandStatic(unittest.TestCase):
         for forbidden in ('DankPyon_', 'OskarPotocki.', 'brrainz.harmony', 'sucro.ancientmedievaljapan.environment'):
             self.assertNotIn(forbidden, all_defs)
 
- if __name__ == '__main__':
+if __name__ == '__main__':
     unittest.main()

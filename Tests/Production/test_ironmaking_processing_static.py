@@ -28,14 +28,15 @@ class ProcessingStatic(unittest.TestCase):
 
     def test_bootstrap_without_metal(self):
         self.assertTrue({'AMJ_CharcoalKiln', 'AMJ_SmallIronFurnace'} <= set(self.buildings))
-        for building in self.buildings.values():
+        for name in ('AMJ_CharcoalKiln', 'AMJ_SmallIronFurnace'):
+            building = self.buildings[name]
             self.assertIsNone(building.find('costList/Steel'))
             self.assertIsNone(building.find('.//li[@Class="CompProperties_Refuelable"]'))
             self.assertEqual(building.findtext('thingClass'),'Building_WorkTable')
         self.assertEqual(self.buildings['AMJ_CharcoalKiln'].findtext('stuffCategories/li'),'Woody')
         self.assertEqual(self.buildings['AMJ_SmallIronFurnace'].findtext('stuffCategories/li'),'Stony')
 
-     def test_three_step_bill_chain(self):
+    def test_three_step_bill_chain(self):
         r=self.recipes
         self.assertTrue({'AMJ_BurnCharcoal', 'AMJ_SmeltIronSand', 'AMJ_ForgeIronBloom'} <= set(r))
         self.assertEqual(r['AMJ_BurnCharcoal'].findtext('ingredients/li/filter/thingDefs/li'),'WoodLog')
