@@ -220,19 +220,24 @@ namespace AncientMedievalJapan.Ironmaking.E2E
                 // the negative gate, so it could not detect a prematurely
                 // available furnace/recipe.
                 ctx.Require(!amj.IsFinished, "New colony must start without initial ironmaking");
-                ctx.Assert(!furnace.researchPrerequisites.All(r => r.IsFinished),
-                    "Furnace unlock was satisfied before initial research");
-                ctx.Assert(!smelt.researchPrerequisite.IsFinished,
-                    "Smelting recipe was available before initial research");
+                // These are the game's own availability gates, used by the
+                // build designator and recipe listing, not merely XML fields.
+                ctx.Assert(!furnace.IsResearchFinished,
+                    "Furnace is available before initial research");
+                ctx.Assert(!smelt.AvailableNow,
+                    "Smelting recipe is available before initial research");
+                ctx.Assert(kiln.IsResearchFinished && charcoal.AvailableNow,
+                    "Base charcoal must remain available before AMJ research");
                 IronmakingResearchTest.Finish("Smithing", ctx);
                 ctx.Assert(!amj.IsFinished, "Smithing must not auto-finish AMJ research");
-                ctx.Assert(!furnace.researchPrerequisites.All(r => r.IsFinished),
-                    "Furnace unlocked by Smithing alone");
+                ctx.Assert(!furnace.IsResearchFinished && !smelt.AvailableNow,
+                    "Smithing alone unlocked AMJ furnace or smelting recipe");
                 IronmakingResearchTest.Finish("AMJ_InitialIronmaking", ctx);
                 ctx.Assert(amj.IsFinished, "Initial ironmaking cannot be completed");
-                ctx.Assert(furnace.researchPrerequisites.All(r => r.IsFinished) &&
-                    smelt.researchPrerequisite.IsFinished,
-                    "Furnace and smelting recipe were not unlocked by AMJ research");
+                ctx.Assert(furnace.IsResearchFinished && smelt.AvailableNow,
+                    "AMJ research did not enable the native building/recipe availability gates");
+                ctx.Assert(kiln.IsResearchFinished && charcoal.AvailableNow,
+                    "Charcoal wrongly became unavailable after AMJ research");
             });
         }
 
