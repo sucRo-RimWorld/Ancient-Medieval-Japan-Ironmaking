@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- Development-stage values; research cost and view coordinates are not balance/UI accepted. -->
+  <ResearchProjectDef>
+    <defName>AMJ_InitialIronmaking</defName>
+    <label>initial ironmaking (development)</label>
+    <description>Unlocks the small iron furnace for smelting iron sand into blooms.</description>
+    <baseCost>600</baseCost>
+    <techLevel>Medieval</techLevel>
+    <tab>Main</tab>
+    <prerequisites><li>Smithing</li></prerequisites>
+    <researchViewX>9</researchViewX>
+    <researchViewY>9</researchViewY>
+  </ResearchProjectDef>
+</Defs>

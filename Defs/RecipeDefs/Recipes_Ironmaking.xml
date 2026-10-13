@@ -14,6 +14,7 @@
   <RecipeDef>
     <defName>AMJ_SmeltIronSand</defName>
     <label>smelt iron sand (development)</label>
+    <researchPrerequisite>AMJ_InitialIronmaking</researchPrerequisite>
     <jobString>Smelting iron sand.</jobString>
     <workAmount>1600</workAmount><workSpeedStat>GeneralLaborSpeed</workSpeedStat><workSkill>Crafting</workSkill>
     <allowMixingIngredients>false</allowMixingIngredients>

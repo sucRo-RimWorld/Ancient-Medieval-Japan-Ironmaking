@@ -12,7 +12,8 @@
 4. **Static XML added, runtime unverified:** sand + charcoal (or MO Coal) Bill → IronBloom; no Refuelable on AMJ kilns/furnaces. Confirm actual input/yield, work and interrupts in RimWorld.
 5. **Conditional XML implemented, runtime unverified:** Vanilla `FueledSmithy`/`ElectricSmithy` converts IronBloom → Steel; MO-Patch replaces both `recipeUsers` and output with `DankPyon_Anvil` → `DankPyon_IronIngot`. Confirm PatchOperationFindMod activation and metalChain ON/OFF; MO research must not be bypassed.
 6. **Static Patch added, runtime unverified:** two Vanilla bulk caravan TraderKinds get a limited `AMJ_IronSand` `StockGenerator_SingleDef` (seller) and `StockGenerator_BuySingleDef` (buyer), conditional on an existing TraderKind stock list. Vanilla/MO metal goods remain unchanged; visit stock and quantities require loaded-game testing.
-7. Keep higher furnaces, iron sand washing, iron slag/pig iron, special sword steel, full historical waterworks and late tatara out of first executable slice.
+7. **Development research XML implemented, not game-verified:** `AMJ_InitialIronmaking` follows Vanilla `Smithing`; it gates the small furnace and its smelting Recipe, while charcoal production and existing smithing remain unblocked. MO optionally moves only the AMJ research node into MO's tab; the 600-point cost and UI coordinates remain provisional. Verify both research layouts, current and legacy save behavior, and metal-chain setting variants in native E2E before accepting.
+8. Keep higher furnaces, iron sand washing, iron slag/pig iron, special sword steel, full historical waterworks and late tatara out of first executable slice.
 
 ## Resource discovery / map generation prototype
 
