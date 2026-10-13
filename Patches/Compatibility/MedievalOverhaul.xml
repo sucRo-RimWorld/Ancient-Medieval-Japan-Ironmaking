@@ -24,4 +24,12 @@
       </operations>
     </match>
   </Operation>
+  <!-- Keep only AMJ's owned research node with the MO research tab. -->
+  <Operation Class="PatchOperationFindMod">
+    <mods><li>Medieval Overhaul</li></mods>
+    <match Class="PatchOperationReplace">
+      <xpath>Defs/ResearchProjectDef[defName="AMJ_InitialIronmaking"]/tab</xpath>
+      <value><tab>DankPyon_MedievalResearchTab</tab></value>
+    </match>
+  </Operation>
 </Patch>

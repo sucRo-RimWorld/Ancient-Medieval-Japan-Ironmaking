@@ -21,6 +21,7 @@
     <thingClass>Building_WorkTable</thingClass>
     <graphicData><texPath>Things/Building/Production/TableStonecutter</texPath><graphicClass>Graphic_Multi</graphicClass></graphicData>
     <costStuffCount>30</costStuffCount><stuffCategories><li>Stony</li></stuffCategories>
+    <researchPrerequisites><li>AMJ_InitialIronmaking</li></researchPrerequisites>
     <size>(1,1)</size><designationCategory>Production</designationCategory>
     <altitudeLayer>Building</altitudeLayer><fillPercent>0.5</fillPercent>
     <statBases><WorkToBuild>500</WorkToBuild><MaxHitPoints>200</MaxHitPoints><WorkTableWorkSpeedFactor>1</WorkTableWorkSpeedFactor></statBases>
