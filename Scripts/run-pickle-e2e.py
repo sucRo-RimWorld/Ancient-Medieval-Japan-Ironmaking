@@ -264,6 +264,21 @@ def run(game, requested, timeout, suite="core"):
         print("Cleaned owned test folders. Normal ModsConfig, Prefs and saves untouched.")
 
 
+def is_waylith_game(game):
+    """Select the 1.7 native test runner from the actual game build, not user config."""
+    version_file = Path(game) / "Version.txt"
+    return version_file.is_file() and version_file.read_text(
+        encoding="utf-8-sig").strip().startswith("1.7.")
+
+
+def run_waylith_test(game, profile, suite, timeout):
+    command = ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass",
+               "-File", str(REPO / "Scripts/Run-17Tests.ps1"),
+               "-GameRoot", str(game), "-Profile", profile,
+               "-Suite", suite, "-TimeoutSeconds", str(timeout)]
+    subprocess.run(command, cwd=REPO, check=True)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--game", type=Path,
@@ -275,7 +290,11 @@ def main():
                         help="Observe MO baseline vs MO+Pickle on separate hidden desktops; no E2E PASS")
     args = parser.parse_args()
     try:
-        if args.diagnose_mo_startup:
+        if is_waylith_game(args.game):
+            demand(not args.diagnose_mo_startup,
+                   "MO startup diagnostic remains 1.6-only; use the 1.7 Pickle suites.")
+            run_waylith_test(args.game, args.profile, args.suite, args.timeout)
+        elif args.diagnose_mo_startup:
             from diagnose_mo_startup import diagnose
             diagnose(args.game, args.timeout)
         else:
