@@ -17,7 +17,7 @@ class PickleResultGate(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
         self.folder = Path(self.tmp.name)
         self.summary = {
-            "total": 5, "passed": 5, "failed": 0, "skipped": 0,
+            "total": len(gate.EXPECTED), "passed": len(gate.EXPECTED), "failed": 0, "skipped": 0,
             "exitReason": "passed",
             "scenarios": [{"name": name, "outcome": "Passed"}
                           for name in sorted(gate.EXPECTED)]
@@ -28,14 +28,14 @@ class PickleResultGate(unittest.TestCase):
         (self.folder / "summary.json").write_text(json.dumps(self.summary))
         (self.folder / "Player.log").write_text(log)
 
-    def test_passes_only_all_five_named_scenarios(self):
-        self.assertEqual(gate.validate(self.folder), 5)
+    def test_passes_only_current_named_core_scenarios(self):
+        self.assertEqual(gate.validate(self.folder), len(gate.EXPECTED))
 
-    def test_production_requires_exact_four_bill_scenarios(self):
-        self.summary.update(total=4, passed=4, scenarios=[
+    def test_production_requires_all_named_scenarios(self):
+        self.summary.update(total=len(gate.PRODUCTION), passed=len(gate.PRODUCTION), scenarios=[
             {"name": name, "outcome": "Passed"} for name in sorted(gate.PRODUCTION)])
         self.write()
-        self.assertEqual(gate.validate(self.folder, "production"), 4)
+        self.assertEqual(gate.validate(self.folder, "production"), len(gate.PRODUCTION))
         with self.assertRaises(ValueError):
             gate.validate(self.folder)
         self.summary["scenarios"][1]["name"] = "Processing Defs and Vanilla or MO result resolve"
@@ -64,6 +64,15 @@ class PickleResultGate(unittest.TestCase):
         self.write()
         with self.assertRaisesRegex(ValueError, "identity"):
             gate.validate(self.folder)
+
+    def test_feature_files_agree_with_exact_named_result_gate(self):
+        root = SCRIPT.parent.parent / "Tests/E2E/TestMod/Pickle/Features"
+        for name, expected in (("core", gate.EXPECTED), ("production", gate.PRODUCTION)):
+            feature = (root / ("ironmaking-" + name + ".feature")).read_text()
+            import re
+            scenarios = re.findall(r"(?m)^\s*Scenario: (.+?)\s*$", feature)
+            self.assertEqual(set(scenarios), expected, "Pickle gate diverged from " + name)
+            self.assertEqual(len(scenarios), len(expected), "Duplicate scenario names")
 
     def test_player_log_error_fails_even_if_summary_passed(self):
         self.write("[ERROR] Failed to load XML")

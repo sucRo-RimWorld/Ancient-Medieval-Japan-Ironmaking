@@ -9,14 +9,17 @@ import sys
 EXPECTED = {
     "Exact Ironmaking development source and profile are loaded",
     "Processing Defs and Vanilla or MO result resolve",
+    "Native initial ironmaking research gate",
     "Natural map creation produces finite iron sand",
     "Colonist mining job consumes finite deposit and yields sand",
     "Sand deposits survive real game save reload",
 }
 PRODUCTION = {
     "Exact Ironmaking development source and profile are loaded",
+    "Loaded fuel component exclusivity",
     "Charcoal bill consumes wood and produces charcoal",
     "Smelting bill consumes sand and charcoal and produces bloom",
+    "Optional MO coal fuel and Vanilla isolation",
     "Forging bill consumes bloom and produces the profile metal",
 }
 ERRORS = re.compile(

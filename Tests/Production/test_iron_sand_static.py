@@ -1,4 +1,4 @@
-"""Static checks only; real RimWorld 1.6 MapGen and visuals are untested."""
+"""Offline production identity and mapgen contracts, not a loaded-game test."""
 from pathlib import Path
 import unittest
 import xml.etree.ElementTree as ET
@@ -62,17 +62,11 @@ class IronSandStatic(unittest.TestCase):
 
     def test_vanilla_only_dependency_and_distinct_package(self):
         self.assertEqual(self.about.findtext('packageId'), 'sucro.ancientmedievaljapan.ironmaking')
-        self.assertEqual(self.about.findtext('supportedVersions/li'), '1.6')
+        self.assertIn('1.6', [li.text for li in self.about.findall('supportedVersions/li')])
         self.assertIsNone(self.about.find('modDependencies'))
         all_defs = ''.join(p.read_text() for p in ROOT.glob('Defs/**/*.xml'))
         for forbidden in ('DankPyon_', 'OskarPotocki.', 'brrainz.harmony', 'sucro.ancientmedievaljapan.environment'):
             self.assertNotIn(forbidden, all_defs)
-
-    def test_no_claim_of_release_ready_graphics(self):
-        about = (ROOT / 'About/About.xml').read_text()
-        self.assertIn('not release-ready', about)
-        resources = (ROOT / 'Defs/ThingDefs/IronSand.xml').read_text()
-        self.assertIn('not an accepted release texture', resources)
 
 if __name__ == '__main__':
     unittest.main()

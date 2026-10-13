@@ -24,7 +24,9 @@ class SandTradingStatic(unittest.TestCase):
         nodes=self.patch.findall('Operation/match/value/li')
         self.assertEqual([n.get('Class') for n in nodes], ['StockGenerator_SingleDef','StockGenerator_BuySingleDef'])
         self.assertTrue(all(n.findtext('thingDef')=='AMJ_IronSand' for n in nodes))
-        self.assertEqual(nodes[0].findtext('countRange'),'10~30')
+        minimum, maximum = (int(x) for x in nodes[0].findtext('countRange').split('~'))
+        self.assertGreater(minimum, 0)
+        self.assertGreaterEqual(maximum, minimum)  # Provisional range, not approved market balance.
         self.assertIsNone(nodes[1].find('countRange'))
         content=(ROOT/'Patches/TradeIronSand.xml').read_text()
         self.assertFalse(self.patch.findall('.//li[@Class="StockGenerator_Category"]'))

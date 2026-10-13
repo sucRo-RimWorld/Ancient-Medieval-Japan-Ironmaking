@@ -256,7 +256,7 @@ def run(game, requested, timeout, suite="core"):
                    "; inspect launcher.log and Player.log in " + str(report))
             subprocess.run([sys.executable, str(REPO / "Scripts/validate_pickle_result.py"),
                             "--report", str(report), "--suite", suite], check=True, cwd=REPO)
-            print("PICKLE PASS", profile, ("4" if suite == "production" else "5") + " loaded-game scenarios (" + suite + ")", flush=True)
+            print("PICKLE PASS", profile, "6 loaded-game scenarios (" + suite + ")", flush=True)
         print("All requested profiles passed. Reports:", output)
     finally:
         for path, ident in reversed(owned):

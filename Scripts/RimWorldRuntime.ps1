@@ -80,6 +80,7 @@ function Invoke-RimWorldTestCompile([string]$GameRoot, [string]$Output, [string[
 function Assert-RimWorldNativeLog([string]$LogPath,[uint32]$ProcessId) {
     $text=[IO.File]::ReadAllText($LogPath)
     if($text -notmatch ('(?m)^Process:\s+pid '+$ProcessId+'\s*$')) {throw 'Native log belongs to a different process'}
+    if ($text -notmatch '(?m)INFO Log closed\.\s*$') {throw "Native log incomplete: no close marker in $LogPath"}
     if($text -match '(?m)^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d+\s+ERROR\s') {throw "Runtime ERROR found: $LogPath"}
 }
 

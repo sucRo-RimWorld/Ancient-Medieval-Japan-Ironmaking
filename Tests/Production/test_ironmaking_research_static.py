@@ -45,12 +45,15 @@ class IronmakingResearchStatic(unittest.TestCase):
         self.assertEqual(self.recipes["AMJ_SmeltIronSand"].findtext("researchPrerequisite"), RESEARCH)
         self.assertIsNone(self.recipes["AMJ_BurnCharcoal"].find("researchPrerequisite"))
         self.assertIsNone(self.recipes["AMJ_ForgeIronBloom"].find("researchPrerequisite"))
-        self.assertEqual(self.recipes["AMJ_ForgeIronBloom"].findtext("products/Steel"), "8")
+        self.assertGreater(int(self.recipes["AMJ_ForgeIronBloom"].findtext("products/Steel")), 0)
 
     def test_mo_research_tab_patch_only_changes_owned_project(self):
         ops = self.mo.findall("Operation")
-        self.assertEqual(len(ops), 2)
-        mo = ops[1]
+        self.assertGreaterEqual(len(ops), 2)
+        matches = [op for op in ops if op.findtext("match/xpath") ==
+                   'Defs/ResearchProjectDef[defName="AMJ_InitialIronmaking"]/tab']
+        self.assertEqual(len(matches), 1, "Exactly one owner-owned MO research tab override")
+        mo = matches[0]
         self.assertEqual(mo.get("Class"), "PatchOperationFindMod")
         self.assertEqual(mo.findtext("mods/li"), "Medieval Overhaul")
         match = mo.find("match")

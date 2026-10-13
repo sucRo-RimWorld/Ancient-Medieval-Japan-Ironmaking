@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using RimWorks.Pickle;
 using RimWorks.Pickle.Runtime;
@@ -99,6 +100,37 @@ namespace AncientMedievalJapan.Ironmaking.E2E
         }
     }
 
+    internal static class IronmakingResearchTest
+    {
+        // Complete real native research, never simulate an unlocked Bill.
+        public static void Finish(string name, PickleContext ctx)
+        {
+            ResearchProjectDef project = DefDatabase<ResearchProjectDef>.GetNamedSilentFail(name);
+            ctx.Require(project != null, "Missing research " + name);
+            if (project.IsFinished) return;
+            object manager = Find.ResearchManager;
+            ctx.Require(manager != null, "ResearchManager is missing");
+            MethodInfo method = manager.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                .Where(m => m.Name == "FinishProject" && m.GetParameters().Length > 0 &&
+                    m.GetParameters()[0].ParameterType == typeof(ResearchProjectDef))
+                .OrderBy(m => m.GetParameters().Length).FirstOrDefault();
+            ctx.Require(method != null, "Native FinishProject method missing");
+            ParameterInfo[] parameters = method.GetParameters();
+            object[] args = new object[parameters.Length];
+            args[0] = project;
+            for (int i = 1; i < parameters.Length; ++i)
+            {
+                Type parameterType = parameters[i].ParameterType;
+                ctx.Require(!parameterType.IsByRef &&
+                    (parameterType == typeof(bool) || !parameterType.IsValueType),
+                    "Unsupported native FinishProject parameter " + parameterType.FullName);
+                args[i] = parameterType == typeof(bool) ? (object)false : null;
+            }
+            method.Invoke(manager, args);
+            ctx.Assert(project.IsFinished, "Native research did not finish: " + name);
+        }
+    }
+
     [PickleSteps]
     public sealed class IronmakingSteps
     {
@@ -159,6 +191,34 @@ namespace AncientMedievalJapan.Ironmaking.E2E
                 if (mo)
                     ctx.Assert(!finish.products.Any(p => p.thingDef.defName == "Steel"),
                         "MO progression shortcut: bloom still yields Steel");
+            });
+        }
+
+        [Then("the initial ironmaking research gate operates in the loaded game")]
+        public Task ResearchGate(PickleContext ctx)
+        {
+            return IronmakingTestThread.Run(delegate
+            {
+                ResearchProjectDef baseResearch = DefDatabase<ResearchProjectDef>.GetNamedSilentFail("Smithing");
+                ResearchProjectDef amj = DefDatabase<ResearchProjectDef>.GetNamedSilentFail("AMJ_InitialIronmaking");
+                ctx.Require(baseResearch != null && amj != null, "Research graph did not load");
+                ctx.Assert(amj.prerequisites != null && amj.prerequisites.Contains(baseResearch),
+                    "Initial ironmaking must require existing Smithing");
+                ThingDef furnace = IronmakingTestWorld.Thing("AMJ_SmallIronFurnace", ctx);
+                ThingDef kiln = IronmakingTestWorld.Thing("AMJ_CharcoalKiln", ctx);
+                RecipeDef smelt = DefDatabase<RecipeDef>.GetNamedSilentFail("AMJ_SmeltIronSand");
+                RecipeDef charcoal = DefDatabase<RecipeDef>.GetNamedSilentFail("AMJ_BurnCharcoal");
+                ctx.Require(smelt != null && charcoal != null, "Production recipes missing");
+                ctx.Assert(furnace.researchPrerequisites != null &&
+                    furnace.researchPrerequisites.Contains(amj), "Furnace research gate absent");
+                ctx.Assert(smelt.researchPrerequisite == amj, "Smelting research gate absent");
+                ctx.Assert(kiln.researchPrerequisites == null ||
+                    !kiln.researchPrerequisites.Contains(amj), "Charcoal kiln wrongly locked");
+                ctx.Assert(charcoal.researchPrerequisite == null, "Charcoal recipe wrongly locked");
+                ctx.Require(!amj.IsFinished, "New colony must start without initial ironmaking");
+                IronmakingResearchTest.Finish("Smithing", ctx);
+                IronmakingResearchTest.Finish("AMJ_InitialIronmaking", ctx);
+                ctx.Assert(amj.IsFinished, "Initial ironmaking cannot be completed");
             });
         }
 

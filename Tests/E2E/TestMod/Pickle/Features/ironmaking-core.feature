@@ -1,10 +1,14 @@
-Feature: Ironmaking in a real RimWorld 1.6 session
+Feature: Ironmaking in a real RimWorld 1.6 or 1.7 session
 
   Scenario: Exact Ironmaking development source and profile are loaded
     Then the exact Ironmaking source and expected profile are loaded
 
   Scenario: Processing Defs and Vanilla or MO result resolve
     Then the Ironmaking production Defs and final metal chain resolve
+
+  @quickstart:IronmakingWorkMap @timeout:180
+  Scenario: Native initial ironmaking research gate
+    Then the initial ironmaking research gate operates in the loaded game
 
   @quickstart:IronmakingLargeMap @timeout:180
   Scenario: Natural map creation produces finite iron sand

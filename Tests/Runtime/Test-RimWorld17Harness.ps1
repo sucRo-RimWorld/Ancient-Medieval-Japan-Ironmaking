@@ -53,9 +53,9 @@ try {
     Remove-Item -LiteralPath (Join-Path $provider '1.6/Assemblies/Quickstarts.dll')
     MustFail { Find-RimWorldModAssembly $provider 'Quickstarts.dll' '1.7' } 'Missing declared provider was accepted'
     $log = Join-Path $temp 'Player.log'
-    [IO.File]::WriteAllText($log, "Process: pid 123`n2026-10-13 01:02:03.100 INFO [Verse] ERROR count=0`n")
+    [IO.File]::WriteAllText($log, "Process: pid 123`n2026-10-13 01:02:03.100 INFO [Verse] ERROR count=0`n2026-10-13 01:02:04.100 INFO Log closed.`n")
     Assert-RimWorldNativeLog $log 123
-    foreach ($text in @("Process: pid 124`n", "Process: pid 123`n2026-10-13 01:02:03.100 ERROR [Verse] failed`n", '')) {
+    foreach ($text in @("Process: pid 124`n", "Process: pid 123`n2026-10-13 01:02:03.100 ERROR [Verse] failed`n2026-10-13 01:02:04.100 INFO Log closed.`n", "Process: pid 123`n2026-10-13 01:02:03.100 INFO begun`n", '')) {
         [IO.File]::WriteAllText($log, $text)
         MustFail { Assert-RimWorldNativeLog $log 123 } 'Wrong or erroneous native log was accepted'
     }
