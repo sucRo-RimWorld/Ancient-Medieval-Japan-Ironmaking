@@ -14,10 +14,30 @@ layout, completed progress, and old-save behavior remain unverified.
 Entry decision is ready; canonical evidence: `Docs/Research/IronmakingEntryDecision.json`
 and its prior-art note. Improved/medieval furnaces, region weighting,
 balance and accepted textures remain unimplemented/unaccepted. Static checks do
-not establish new loaded-game evidence. See MVP checklist and Design for scope.
+not establish new loaded-game evidence. Updated test contract and pending
+coverage: `Docs/Testing/IronmakingV1Coverage.md`. See MVP checklist and Design
+for scope.
 
 ## IRON-PICKLE-20261010
-**State:** 1.7 CORE AND PRODUCTION VANILLA/MO INDEPENDENTLY VERIFIED. Production base `1af461eac9d6b1326975a9866593d694f5d291f5` with final test-only patch: each profile Core 5/5 and Production 4/4 on 1.7.4976 rev1043, no skipped/flaky, complete PID logs, native ERROR0. Test fixes dispatch actual tick batches to main thread and prepare plant-dense Bill fixtures while excluding impassable items. Production input/output/fuel assertions unchanged. Canonical named premises/hashes: `Docs/Testing/IronmakingPickleEvidence.md`, `Docs/Testing/Native17-20261013.json`; procedure `Docs/GoldenPaths/IronmakingPickleE2E.md`. Earlier author-reported 1.6 results remain their own evidence; current 1.6 runtime not rerun. Refuelling, integrated logistics, trader/research/balance, real old-save/add-remove, accepted textures and release remain OPEN.
+**State:** HISTORICAL 1.7 BASELINE VERIFIED; REVISED CURRENT-SOURCE NATIVE TESTS OPEN.
+RimWorld 1.7.4976 rev1043 *pre-research-gate* production source
+`1af461eac9d6b1326975a9866593d694f5d291f5` with test-only fixes:
+Vanilla and MO Core 5/5 and Production 4/4 per profile, no skips/flaky,
+complete PID logs, ERROR0. Proof: `Docs/Testing/Native17-20261013.json`.
+Earlier author-reported 1.6 runs retain separate, historical evidence.
+
+Test-contract cleanup and extensions merged in PR #36,
+`eda362ea1f8f2df5e82e54d1c11a1c38bb33527e`.
+Static/source and harness-only CI passed on the exact PR head; revised Core **6**
+and Production **6** per profile are **source-only / NOT YET RUN** on 1.6 or
+1.7. New scenarios cover loaded initial research completion/gate, loaded fuel
+component exclusivity and real MO Coal ingredient substitution. Bill fixtures
+now use native research completion, and the 1.7 PID-tied log must close.
+Historical MO-startup differential test moved to opt-in Research.
+Full named premises, explicitly missing coverage and source owners:
+`Docs/Testing/IronmakingV1Coverage.md`. Genuine prior-save addition/removal,
+job interruption/refuelling, hauling, actual traders, research designator UI,
+map region weights, MO setting variants, balance, final art and release OPEN.
 
 ## MOJ-IRON-INTERFACE-20261010
 **State:** CONTRACT DELIVERED; Japanization runtime adapter OPEN.
