@@ -1,10 +1,10 @@
 name: Ironmaking static and runner contracts
 on:
   pull_request:
-    paths: ['Defs/**', 'Patches/**', 'About/**', 'Tools/**', 'Scripts/**', 'Tests/Production/**', 'Tests/Runtime/**', 'Tests/E2E/**', '.github/workflows/test-contracts.yml']
+    paths: ['Defs/**', 'Patches/**', 'About/**', 'Languages/**', 'Tools/**', 'Scripts/**', 'Tests/Production/**', 'Tests/Runtime/**', 'Tests/E2E/**', '.github/workflows/test-contracts.yml']
   push:
     branches: [main]
-    paths: ['Defs/**', 'Patches/**', 'About/**', 'Tools/**', 'Scripts/**', 'Tests/Production/**', 'Tests/Runtime/**', 'Tests/E2E/**', '.github/workflows/test-contracts.yml']
+    paths: ['Defs/**', 'Patches/**', 'About/**', 'Languages/**', 'Tools/**', 'Scripts/**', 'Tests/Production/**', 'Tests/Runtime/**', 'Tests/E2E/**', '.github/workflows/test-contracts.yml']
 concurrency:
   group: ironmaking-contracts-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true

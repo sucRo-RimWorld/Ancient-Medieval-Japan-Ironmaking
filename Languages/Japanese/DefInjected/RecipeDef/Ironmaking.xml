@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <AMJ_BurnCharcoal.label>木炭を作る</AMJ_BurnCharcoal.label>
+  <AMJ_BurnCharcoal.jobString>木炭を作っている。</AMJ_BurnCharcoal.jobString>
+  <AMJ_SmeltIronSand.label>砂鉄を製錬する</AMJ_SmeltIronSand.label>
+  <AMJ_SmeltIronSand.jobString>砂鉄を製錬している。</AMJ_SmeltIronSand.jobString>
+  <AMJ_ForgeIronBloom.label>鉄塊を鍛錬する</AMJ_ForgeIronBloom.label>
+  <AMJ_ForgeIronBloom.jobString>鉄塊を鍛錬している。</AMJ_ForgeIronBloom.jobString>
+</LanguageData>

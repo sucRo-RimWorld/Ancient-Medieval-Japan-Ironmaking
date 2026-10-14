@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <AMJ_IronSand.label>砂鉄</AMJ_IronSand.label>
+  <AMJ_IronSand.description>鉄分を含む砂。地表の砂鉄採取地点から採掘して得る。小型製鉄炉で鉄塊を作るための原料となる。</AMJ_IronSand.description>
+  <AMJ_IronSandDeposit.label>砂鉄採取地点</AMJ_IronSandDeposit.label>
+  <AMJ_IronSandDeposit.description>砂鉄を含む地表の採取地点。採掘すると砂鉄を得られるが、採り尽くすと消滅する。</AMJ_IronSandDeposit.description>
+  <AMJ_Charcoal.label>木炭</AMJ_Charcoal.label>
+  <AMJ_Charcoal.description>木材を炭焼き窯で炭化した燃料。砂鉄の製錬に使用する。</AMJ_Charcoal.description>
+  <AMJ_IronBloom.label>鉄塊</AMJ_IronBloom.label>
+  <AMJ_IronBloom.description>砂鉄を製錬して得た未鍛錬の鉄の塊。鍛冶設備で鍛錬すると一般鉄材になる。</AMJ_IronBloom.description>
+  <AMJ_CharcoalKiln.label>炭焼き窯</AMJ_CharcoalKiln.label>
+  <AMJ_CharcoalKiln.description>木材を炭化して製鉄用の木炭を作る設備。初期製鉄の研究を終える前から利用できる。</AMJ_CharcoalKiln.description>
+  <AMJ_SmallIronFurnace.label>小型製鉄炉</AMJ_SmallIronFurnace.label>
+  <AMJ_SmallIronFurnace.description>砂鉄と木炭などの燃料を使い、少量の鉄塊を作る炉。初期製鉄の研究で建設と製錬が可能になる。</AMJ_SmallIronFurnace.description>
+</LanguageData>
