@@ -1,5 +1,58 @@
 # Ironmaking — actual Pickle run evidence
 
+## Current Linux 1.6 native evidence — 2026-10-14
+
+**Source:** Ironmaking main `5154eb140e1d3b747cabea8cdc3abe4b42b7729e`.
+**Execution:** Project persistent WSL2/Linux host, RimWorldLinux **1.6.4871 rev598**,
+Xvfb, installed native Pickle/Quickstarts, no local chat game execution.
+Project workflow source: `18b4c786d1d823d29d04872a3f2ece7eccc06dda`.
+[Complete four-profile run #38513445677](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38513445677),
+[7-day raw artifact](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38513445677/artifacts/11871295187).
+The actual `summary.json` and `Player.log` from the artifact have been
+independently opened, not merely inferred from workflow green/red.
+
+| Suite | Profile | Pickle scenarios | Process | Player.log ERROR | Strict verdict |
+|---|---|---:|---|---:|---|
+| Production | Vanilla | **7/7 passed**; 0 failed/skipped/flaky | exit 0, 42.5 s | **0** | **PASS** |
+| Production | MO | **7/7 passed**; 0 failed/skipped/flaky | exit 0, 115.4 s | **2** | **FAIL (runtime ERROR)** |
+| Core | Vanilla | **10/10 passed**; 0 failed/skipped/flaky | exit 0, 64.3 s | **0** | **PASS** |
+| Core | MO | **10/10 passed**; 0 failed/skipped/flaky | exit 0, 122.9 s | **2** | **FAIL (runtime ERROR)** |
+
+All four Pickle summaries have `exitReason=passed`, the expected exact
+scenario identities and zero skipped/flaky/retry failures. Both MO runs have
+two startup/load-stage Unity FMOD errors:
+`Cannot create FMOD::Sound instance for clip "" (FMOD error: Unsupported file or audio format.)`.
+The errors occur before the native owner scenario sequence and do not prove
+an Ironmaking production-job defect; their attribution is **unresolved**.
+Do not suppress them or report the full MO profile as strict PASS. The
+complete four-profile matrix is **FAIL** because of this error gate.
+
+Source provenance limitation: this Linux harness stages an **isolated,
+test-only** copy of the actual pinned production Defs/Patches/assets under
+a separate package ID `sucro.ancientmedievaljapan.ironmaking.linuxfixture`,
+and adapts the source-root identity probe to that test-only ID. No
+production gameplay values are changed. The exact published package ID,
+original end-user folder and distribution payload are **not** independently
+validated by this renamed-copy run. All other native Def, Job, research,
+mineability, save/reload, and stock-generator assertions run in the real game.
+
+**Test coverage:** 10 Core and 7 Production named scenarios per profile.
+See `Docs/Testing/IronmakingV1Coverage.md` for each exact tested premise.
+Research gate is checked through loaded def methods, not an Architect or
+Research UI screenshot. The actual `StockGenerator.GenerateThings` method
+is exercised; actual merchant arrival and trade transactions are not.
+Production covers actual work Bill execution/interrupt/retry and output,
+but not interruption across real save/reload or fully hauled logistics.
+Old colony add/remove/re-add, MO configuration variants, 1.7 **current
+source** runtime, regional statistical distribution, accepted graphics
+and release remain outside this run.
+
+A prior attempt, [#38512611919](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38512611919),
+also returned 7/7 Vanilla Production strict PASS and 7/7 MO Production
+with two FMOD ERRORs; it stopped before Core. Run #38513445677
+completed all four independent suites without weakening any failure gate.
+
+
 ## Latest independently inspected native game evidence — 2026-10-13 (superseded for changed features)
 
 RimWorld 1.7.4976 rev1043: Vanilla and MO **Core 5/5**, **Production 4/4** per
