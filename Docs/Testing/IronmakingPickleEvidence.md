@@ -234,3 +234,38 @@ MO's dense plants prevented the old completely-empty-area search. The disposable
 Reusable procedure: execute `Scripts/Run-17Tests.ps1 -GameRoot <verified-1.7-root> -Profile All -Suite core`, then `-Suite production`; retain summaries/logs, inspect PID and ERROR gates, preserve normal config and hash-check source. BOM-free XML metadata is loaded through its declared encoding. Harness regressions passed Windows PowerShell 5.1 and PowerShell 7. Legacy 1.6 test assemblies also compile against actual installed 1.6 assemblies without the native define; this is compile evidence, not a fresh 1.6 runtime result.
 
 Unverified: refuelling jobs, full chain logistics, trade inventories, research/balance, diverse maps/climates, MO setting variants, actual legacy colony add/remove, accepted art/UI and Workshop distribution. Production C#/XML/art/metadata and normal settings were not changed.
+
+
+## Converted-source-audio Linux 1.6 owner functional matrix — 2026-10-14
+
+Project [actual run #38566687705](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38566687705)
+ran the **same original pinned** Ironmaking owner source
+`5154eb140e1d3b747cabea8cdc3abe4b42b7729e`, test DLL sources
+and strict production/core Pickle assertions in a disposable cloned,
+render-capable Linux RimWorld 1.6.4871 game, with the original staged
+VEF/SYR/MO providers' **two** known FMOD-incompatible MP3 files
+converted to 44.1kHz stereo 16-bit PCM WAV only within the clone.
+
+| Source-owned suite | Expected | Actual | Native exit | Unity ERROR |
+|---|---:|---:|---:|---:|
+| Vanilla production | 7 | 7 | 0 | 0 |
+| MO production | 7 | 7 | 0 | 0 |
+| Vanilla core | 10 | 10 | 0 | 0 |
+| MO core | 10 | 10 | 0 | 0 |
+
+All four exitReason values were `passed`, and no original source
+sound, XML, release asset or gameplay Def was modified. In that
+**explicitly converted-media functional configuration**, `matrix_pass=true`
+and all **34/34** owner scenario assertions passed, including existing
+native mining, real Bills and source-accurate 20 Wood → 10 Charcoal,
+40 IronSand + 60 Charcoal → 10 Bloom and 10 Bloom → 8 Steel/MO IronIngot
+test premises.
+
+This **does not supersede** the original-medium MO 1.6 **strict FAIL**
+due to the two FMOD Unity ERRORs on unchanged SYR/MO MP3s. The fixed
+PCM WAV files were generated and consumed in one ephemeral game clone.
+Actual audible effects playback, legitimate distributed-source
+compatibility, new saves, UI, long-play and 1.7 owner gates were not
+proven. Project source and procedure:
+`Tools/PersistentHost/mo_wav_owner16.py`,
+`Docs/GoldenPaths/PersistentHostIntegrations.md`.
