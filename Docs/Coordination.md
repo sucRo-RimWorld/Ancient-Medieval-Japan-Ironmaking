@@ -19,38 +19,32 @@ coverage: `Docs/Testing/IronmakingV1Coverage.md`. See MVP checklist and Design
 for scope.
 
 ## IRON-PICKLE-20261010
-**State:** CURRENT SOURCE 10 CORE + 7 PRODUCTION PER VANILLA/MO;
-ALL REVISED NATIVE COMPILATION AND REAL-GAME VALIDATION OPEN.
-Historical pre-research RimWorld 1.7.4976 rev1043 source
-`1af461eac9d6b1326975a9866593d694f5d291f5` plus test-only corrections
-passed **5 Core / 4 Production** per Vanilla/MO (PID complete/ERROR0).
-Evidence: `Docs/Testing/Native17-20261013.json`.
-These old passes must NOT be inherited by current research, new map, or
-stock-generation scenarios.
+**State:** SOURCE-PINNED LINUX 1.6 VANILLA CORE 10/10 + PRODUCTION 7/7
+STRICT PASS; MO CORE 10/10 + PRODUCTION 7/7 SCENARIO PASS BUT
+TWO FMOD UNITY ERRORS PER SUITE — STRICT FAIL.
 
-Current test source evolved in PRs #36/#38/#40/#41. PR #43 merged
-`2281f2992aa7a62913dd643f36d689592c500e92` adds direct
-loaded `StockGenerator.GenerateThings` assertions: only AMJ sand, positive
-configured stock count and buyer HandlesThingDef. It is NOT an actual spawned
-merchant inventory or trade UI. PR #44 merged
-`733b20f151820232aec3f7aeaaed79f34377db2a` upgrades research
-verification to RimWorld's own furnace `IsResearchFinished` and smelting
-`AvailableNow` gates before Smithing, after Smithing alone and after initial
-AMJ research, preserving charcoal before/after. Exact-head and main-push
-source/runner GitHub CI PASS; no native C# test compilation/game execution.
-The current Gherkin feature files now define **10 named Core and 7 named
-Production** scenarios per Vanilla/MO. The strict Python result gate and
-binding unit tests enforce these definitions, not gameplay correctness.
-Canonical premises/gaps:
-`Docs/Testing/IronmakingV1Coverage.md`.
+Project persistent Linux host on 2026-10-14 ran current Ironmaking main
+`5154eb140e1d3b747cabea8cdc3abe4b42b7729e` against real
+RimWorldLinux 1.6.4871 rev598. Native job, research, stock generator, mining,
+map and save tests all executed. Full four-suite GitHub Actions execution
+[#38513445677](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38513445677),
+artifact `11871295187`; original summary/Player logs independently checked.
+All game processes exit code 0, zero skipped/flaky. MO FMOD invalid empty-clip
+ERROR occurs during loading; root owner unresolved. No ERROR waiver or broad
+MO compatibility PASS. Native 1.7 CURRENT-SOURCE run remains OPEN.
 
-**Still OPEN:** actual pre-mod save add/remove/re-add, across-save or fuel-loss
-job interruption and full haul/refuel pipeline, actual merchant arrival/
-trade transaction on sand-poor and old maps, Architect/research UI, multiple
-Seed/biome regional weighting, MO configuration and Japanization adapter,
-economic numbers, graphics, release. Shared native game host work is paused
-by Project `main:Docs/Coordination.md` DEV-PERSISTENT-RIMWORLD-HOST;
-do NOT run or represent chat-local game tests as current evidence.
+The Linux runner uses a **test-only renamed Mod copy** and adjusted exact-source
+probe, NOT the original subscriber package ID; gameplay XML/values unchanged.
+See formal `Docs/Testing/IronmakingPickleEvidence.md` and exact 17-per-profile
+premises `Docs/Testing/IronmakingV1Coverage.md`. Historical pre-research
+1.7 runs remain valid only for their historical source revision.
+Follow-up is isolated MO FMOD attribution and native 1.7 current-source
+coverage; do not alter Ironmaking gameplay to mask MO provider audio failure.
+
+**Still OPEN:** real old-save add/remove/re-add, interrupted job save/reload,
+full haul/refuel pipeline, actual merchant arrival/trade, Architect/research
+UI, multi-seed biome weighting, MO configuration / Japanization adapter,
+economic calibration, graphics and release.
 
 ## MOJ-IRON-INTERFACE-20261010
 **State:** CONTRACT DELIVERED; Japanization runtime adapter OPEN.

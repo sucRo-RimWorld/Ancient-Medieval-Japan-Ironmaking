@@ -4,30 +4,35 @@
 **Current source:** the feature files and production XML, not historical run counts.  
 **Evidence:** [Native17-20261013.json](Native17-20261013.json) (pre-research baseline);
 [IronmakingPickleEvidence.md](IronmakingPickleEvidence.md).  
-**Maturity:** revised source/Pickle tests require *new* loaded-game runs; no
-2026-10-13 old PASS is inherited after the research implementation or this test change.
+**Maturity (source 5154eb14):** real Linux RimWorld 1.6.4871 native tests
+have now executed all ten Core and seven Production scenarios per Vanilla/MO.
+Vanilla is strict PASS on all 17; MO has 17/17 scenario outcomes passed but
+**two FMOD Unity ERRORs per suite**, so full MO runtime stays FAIL. The
+renamed test fixture and other limits are documented in
+[IronmakingPickleEvidence.md](IronmakingPickleEvidence.md); current-source
+1.7 remains untested.
 
 ## Routine runtime scenarios (ten Core + seven Production per profile)
 
 | Suite | Named scenario | Contract / exact assumption | Evidence |
 |---|---|---|---|
-| Core | Exact Ironmaking development source and profile are loaded | One loaded Ironmaking package at the expected source root, correct MO profile; **root identity, not content-hash equality** | Old 1.7 passed; revised pending |
-| Core | Processing Defs and Vanilla or MO result resolve | Finite mineable Def and three basic process Defs; Vanilla bloom→Steel, MO bloom→IronIngot via Anvil, no MO direct Steel shortcut | Old 1.7 passed; revised pending |
-| Core | Native initial ironmaking research gate | Smithing precedes AMJ research. Actual game availability gates `BuildableDef.IsResearchFinished` for the furnace and `RecipeDef.AvailableNow` for smelting must be false initially and after Smithing alone, then true after AMJ research; kiln and charcoal recipe remain available throughout. **Architect menu display/research-screen placement still needs separate UI validation.** | New, native pending |
-| Core | Loaded sand trade generators distinguish buying and selling | After XML Patch execution, Vanilla Tribal/Outlander bulk traders each contain exactly one sand `StockGenerator_SingleDef` seller and `StockGenerator_BuySingleDef` buyer; generator registration alone does not prove real stock | New, native pending |
-| Core | Native sand trader generates finite sellable stock | Loaded Tribal/Outlander sand seller uses its native `GenerateThings` method to produce only AMJ_IronSand with total count inside its positive configured range; buyer recognizes the sand Def. Uses a fixed test RNG state. **This is not a spawned merchant or trade UI.** | New, native pending |
-| Core | Natural map creation produces finite iron sand | One naturally generated deposit exists and is revealed; this is a prerequisite for, not a substitute for, native mining | Old 1.7 passed; revised pending |
-| Core | Natural iron-sand deposit is actually mineable and finite | A native Mining WorkGiver can designate, mine and destroy a **naturally placed** deposit next to a standable revealed cell; IronSand increases; the consumed node does not spontaneously reappear after 1,200 ticks on that map | New, native pending |
-| Core | Colonist mining job consumes finite deposit and yields sand | Mine WorkGiver depletes a **fixture-spawned** deposit; sand quantity rises | Old 1.7 passed; revised pending |
-| Core | Sand deposits survive real game save reload | Genuine disk save/reload persists a fixture deposit on a map | Old 1.7 passed; revised pending |
-| Core | Natural iron-sand locations survive save reload unchanged | A genuine Pickle disk reload preserves the full sorted list of **naturally generated** deposit cell positions, without regeneration, duplication or silent deletion | New, native pending |
-| Production | Exact Ironmaking development source and profile are loaded | Same source/profile identity, independent run | Old 1.7 passed; revised pending |
-| Production | Loaded fuel component exclusivity | AMJ kiln and furnace have no Refuelable comp after actual Def inheritance/patching | New, native pending |
-| Production | Charcoal bill consumes wood and produces charcoal | Native crafting pawn Bill; currently **20 WoodLog → 10 AMJ_Charcoal**; resource conservation | Old 1.7 passed; revised pending |
-| Production | Smelting bill consumes sand and charcoal and produces bloom | Research completed first through native manager; Bill consumes **40 sand + 60 AMJ charcoal → 10 bloom** | Old 1.7 passed; revised pending |
-| Production | Optional MO coal fuel and Vanilla isolation | Vanilla has no loaded MO coal ThingDef; MO actually consumes **60 DankPyon_Coal** instead of AMJ charcoal, produces 10 bloom | New, native pending |
-| Production | Interrupted smelting conserves resources | Start a native smelting job, advance 20 game ticks, force-interrupt before completion, obtain the next Bill from a genuine loaded WorkGiver and complete once; no early output; final **40 sand + 60 AMJ charcoal → 10 bloom**, no duplicate material consumed or produced. **This does not yet include interruption across disk save/reload.** | New, native pending |
-| Production | Forging bill consumes bloom and produces the profile metal | Native Bill after research; **10 bloom → 8 Steel** Vanilla, **8 MO IronIngot** MO; fueled vanilla smithy consumes fuel | Old 1.7 passed; revised pending |
+| Core | Exact Ironmaking development source and profile are loaded | One loaded Ironmaking package at the expected source root, correct MO profile; **root identity, not content-hash equality** | Linux 1.6 Vanilla PASS; MO scenario PASS / FMOD ERROR gate FAIL |
+| Core | Processing Defs and Vanilla or MO result resolve | Finite mineable Def and three basic process Defs; Vanilla bloom→Steel, MO bloom→IronIngot via Anvil, no MO direct Steel shortcut | Linux 1.6 Vanilla PASS; MO scenario PASS / FMOD ERROR gate FAIL |
+| Core | Native initial ironmaking research gate | Smithing precedes AMJ research. Actual game availability gates `BuildableDef.IsResearchFinished` for the furnace and `RecipeDef.AvailableNow` for smelting must be false initially and after Smithing alone, then true after AMJ research; kiln and charcoal recipe remain available throughout. **Architect menu display/research-screen placement still needs separate UI validation.** | Linux 1.6 Vanilla PASS; MO scenario PASS / FMOD ERROR gate FAIL |
+| Core | Loaded sand trade generators distinguish buying and selling | After XML Patch execution, Vanilla Tribal/Outlander bulk traders each contain exactly one sand `StockGenerator_SingleDef` seller and `StockGenerator_BuySingleDef` buyer; generator registration alone does not prove real stock | Linux 1.6 Vanilla PASS; MO scenario PASS / FMOD ERROR gate FAIL |
+| Core | Native sand trader generates finite sellable stock | Loaded Tribal/Outlander sand seller uses its native `GenerateThings` method to produce only AMJ_IronSand with total count inside its positive configured range; buyer recognizes the sand Def. Uses a fixed test RNG state. **This is not a spawned merchant or trade UI.** | Linux 1.6 Vanilla PASS; MO scenario PASS / FMOD ERROR gate FAIL |
+| Core | Natural map creation produces finite iron sand | One naturally generated deposit exists and is revealed; this is a prerequisite for, not a substitute for, native mining | Linux 1.6 Vanilla PASS; MO scenario PASS / FMOD ERROR gate FAIL |
+| Core | Natural iron-sand deposit is actually mineable and finite | A native Mining WorkGiver can designate, mine and destroy a **naturally placed** deposit next to a standable revealed cell; IronSand increases; the consumed node does not spontaneously reappear after 1,200 ticks on that map | Linux 1.6 Vanilla PASS; MO scenario PASS / FMOD ERROR gate FAIL |
+| Core | Colonist mining job consumes finite deposit and yields sand | Mine WorkGiver depletes a **fixture-spawned** deposit; sand quantity rises | Linux 1.6 Vanilla PASS; MO scenario PASS / FMOD ERROR gate FAIL |
+| Core | Sand deposits survive real game save reload | Genuine disk save/reload persists a fixture deposit on a map | Linux 1.6 Vanilla PASS; MO scenario PASS / FMOD ERROR gate FAIL |
+| Core | Natural iron-sand locations survive save reload unchanged | A genuine Pickle disk reload preserves the full sorted list of **naturally generated** deposit cell positions, without regeneration, duplication or silent deletion | Linux 1.6 Vanilla PASS; MO scenario PASS / FMOD ERROR gate FAIL |
+| Production | Exact Ironmaking development source and profile are loaded | Same source/profile identity, independent run | Linux 1.6 Vanilla PASS; MO scenario PASS / FMOD ERROR gate FAIL |
+| Production | Loaded fuel component exclusivity | AMJ kiln and furnace have no Refuelable comp after actual Def inheritance/patching | Linux 1.6 Vanilla PASS; MO scenario PASS / FMOD ERROR gate FAIL |
+| Production | Charcoal bill consumes wood and produces charcoal | Native crafting pawn Bill; currently **20 WoodLog → 10 AMJ_Charcoal**; resource conservation | Linux 1.6 Vanilla PASS; MO scenario PASS / FMOD ERROR gate FAIL |
+| Production | Smelting bill consumes sand and charcoal and produces bloom | Research completed first through native manager; Bill consumes **40 sand + 60 AMJ charcoal → 10 bloom** | Linux 1.6 Vanilla PASS; MO scenario PASS / FMOD ERROR gate FAIL |
+| Production | Optional MO coal fuel and Vanilla isolation | Vanilla has no loaded MO coal ThingDef; MO actually consumes **60 DankPyon_Coal** instead of AMJ charcoal, produces 10 bloom | Linux 1.6 Vanilla PASS; MO scenario PASS / FMOD ERROR gate FAIL |
+| Production | Interrupted smelting conserves resources | Start a native smelting job, advance 20 game ticks, force-interrupt before completion, obtain the next Bill from a genuine loaded WorkGiver and complete once; no early output; final **40 sand + 60 AMJ charcoal → 10 bloom**, no duplicate material consumed or produced. **This does not yet include interruption across disk save/reload.** | Linux 1.6 Vanilla PASS; MO scenario PASS / FMOD ERROR gate FAIL |
+| Production | Forging bill consumes bloom and produces the profile metal | Native Bill after research; **10 bloom → 8 Steel** Vanilla, **8 MO IronIngot** MO; fueled vanilla smithy consumes fuel | Linux 1.6 Vanilla PASS; MO scenario PASS / FMOD ERROR gate FAIL |
 
 The two scenarios named 'Exact Ironmaking development source and profile' are
 distinct execution safety checks, not duplicated gameplay proof. The MO-fuel
