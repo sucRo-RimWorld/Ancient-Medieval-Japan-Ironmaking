@@ -61,6 +61,34 @@ The original full 4-suite Ironmaking gameplay outcome is unchanged.
 The GitHub diagnostic job's green status means the **diagnostic completed**,
 not the SYR profile passed zero-runtime-ERROR.
 
+#### PF_Honk sound-Def removal control (2026-10-14)
+
+Project's read-only source inventory [#38520381965](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38520381965)
+found one staged SYR sound file `Sounds/UI/DebugGoose/Honk.mp3`,
+one SoundDef `PF_Honk` and clip path `UI/DebugGoose/Honk`. A first
+actual [removal trial #38525011385](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38525011385)
+loaded a *developer-only temporary* `PatchOperationRemove` for that
+SoundDef after SYR, executed Pickle 1/1, exited 0 and still emitted one
+distinct empty-clip FMOD Unity ERROR. The first trial **did not yet
+independently check loaded-Def absence** and is therefore only evidence
+that the injected test-patch profile still produced the error.
+
+The corrected native [trial #38526672460](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38526672460)
+([seven-day artifact #11876122328](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38526672460/artifacts/11876122328))
+also ran Linux 1.6 Pickle **1/1**, game exit **0**, and independently
+proved both built-in assertions: the disposable test Mod **loaded after
+SYR** and `no def "PF_Honk" exists` in the live, fully loaded Def
+database. The original SYR Mod was neither edited nor repackaged, and
+the temporary test patch was removed after the run. Despite verified
+`PF_Honk` absence, the same `Cannot create FMOD::Sound instance for
+clip ""` error remained **1 distinct Unity ERROR**. **Strict zero-ERROR
+acceptance remains FAIL**. This establishes that removing this one
+SoundDef is **not sufficient** to remove the observed startup symptom
+under the tested Linux headless configuration. It does not independently
+prove an exact sound-file cause or rule out Linux FMOD/audio-device
+initialization or other sounds. The separate second error in
+VEF+SYR+MO remains unidentified.
+
 At least one FMOD
 invalid-empty-clip audio error occurs with VEF + SYR **without Ironmaking**,
 and full MO produces two. This rules out Ironmaking as a **necessary condition**
