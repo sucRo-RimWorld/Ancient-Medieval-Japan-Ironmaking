@@ -10,3 +10,5 @@ Tests are owned by their purpose and acceptance state.
 | Research | `Tests/Research/` | Opt-in probes only, **not** included in default CI or standard tests. |
 
 **Migration:** Existing tests stay in place until all callers, relative paths, CI jobs and docs can be changed and passed together. Research probes must have a question, owner, evidence destination and retirement condition, and be removed with their references once evidence is archived. Do not migrate by weakening existing gates or adding cosmetic/no-op checks. A separate research directory does not imply production readiness or approval of provisional values. This is a test ownership policy, not a gameplay change.
+
+**Migration status (2026-10-12):** Production contains five source contracts; Runtime contains four isolated harness fixture tests; a dedicated CI executes both (PR #28). Real RimWorld E2E remains at Tests/E2E and is not represented by CI static success.
