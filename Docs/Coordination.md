@@ -41,7 +41,16 @@ native exit 0 (25.9 s), and **one** distinct FMOD Unity ERROR. Thus
 Ironmaking, VEF and MO are not necessary for at least one startup audio
 symptom; exact clip/call origin or Linux-specific incompatibility remains
 unidentified. The green diagnostic workflow is not zero-ERROR compatibility
-PASS. Formal counts/limitations: `Docs/Testing/IronmakingPickleEvidence.md`.
+PASS. A staged-SYR-only sound inventory identified the sole `PF_Honk`
+SoundDef / `Sounds/UI/DebugGoose/Honk.mp3` candidate. In
+[actual native PF_Honk control #38526672460](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38526672460),
+a disposable patch Mod loaded after SYR and the live Pickle Def database
+confirmed `PF_Honk` absent; despite the verified removal, 1/1 Pickle
+finished with game exit0 and the same **one** Unity FMOD ERROR. Removal
+of that SoundDef does **not** resolve the startup symptom under this
+isolated Linux run. Sound clip origin, other audio assets, host device and
+the extra full-MO error remain unresolved; do not waive ERROR-zero.
+Formal counts/limitations: `Docs/Testing/IronmakingPickleEvidence.md`.
 No ERROR waiver or broad MO compatibility PASS. Native 1.7 CURRENT-SOURCE
 run remains OPEN.
 
