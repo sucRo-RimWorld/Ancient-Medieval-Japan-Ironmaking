@@ -3,7 +3,8 @@
 ## Current Linux 1.6 native evidence — 2026-10-14
 
 **Source:** Ironmaking main `5154eb140e1d3b747cabea8cdc3abe4b42b7729e`.
-**Execution:** Project persistent WSL2/Linux host, RimWorldLinux **1.6.4871 rev598**,
+**Execution:** Project persistent WSL2/Linux host, RimWorldLinux **1.6.4871**
+(`Version.txt` says rev598; actual native `Player.log` says **rev600**),
 Xvfb, installed native Pickle/Quickstarts, no local chat game execution.
 Project workflow source: `18b4c786d1d823d29d04872a3f2ece7eccc06dda`.
 [Complete four-profile run #38513445677](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38513445677),
@@ -23,9 +24,41 @@ scenario identities and zero skipped/flaky/retry failures. Both MO runs have
 two startup/load-stage Unity FMOD errors:
 `Cannot create FMOD::Sound instance for clip "" (FMOD error: Unsupported file or audio format.)`.
 The errors occur before the native owner scenario sequence and do not prove
-an Ironmaking production-job defect; their attribution is **unresolved**.
+an Ironmaking production-job defect. A later **without-Ironmaking** control
+reproduces the FMOD ERROR; the implicated provider configuration is detailed
+below. The specific audio file and code origin remain unidentified.
 Do not suppress them or report the full MO profile as strict PASS. The
 complete four-profile matrix is **FAIL** because of this error gate.
+
+### FMOD startup isolation, native Linux 1.6 (2026-10-14)
+
+[Project diagnostic run #38514870015](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38514870015),
+[raw-artifact #11872275254](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38514870015/artifacts/11872275254).
+Three independent Xvfb/RimWorld 1.6/Pickle one-scenario startup profiles used
+the installed native providers, isolated savedata, **no Ironmaking Mod**;
+the submitted `summary.json` and Unity `Player.log` were inspected.
+
+| Loaded Mod stack (plus Harmony/Pickle/Logging/Core) | Pickle outcome | Distinct `[ERROR] [Unity]` FMOD events |
+|---|---|---:|
+| Vanilla Expanded Framework (VEF) | 1/1 passed | **0** |
+| VEF + [SYR] Processor Framework | 1/1 passed | **1** |
+| VEF + SYR + Medieval Overhaul | 1/1 passed | **2** |
+
+The early raw Unity output and later RimLogging-formatted `[ERROR] [Unity]`
+copy are **duplicate log entries of the same events**; the initial diagnostic
+counts 2 and 4 raw string occurrences, respectively. The distinct-event
+counts above use only formatted `[ERROR] [Unity]` lines. At least one FMOD
+invalid-empty-clip audio error occurs with VEF + SYR **without Ironmaking**,
+and full MO produces two. This rules out Ironmaking as a **necessary condition**
+for this startup symptom, but does not independently identify an exact
+sound asset, C# call, or prove Ironmaking never contributes under other profiles.
+SYR alone was not tested, so this is a configuration-level association, not
+exclusive attribution to the SYR assembly.
+
+The control Pickle assertions pass, but the two profiles containing SYR **do
+not** satisfy the strict zero-runtime-ERROR gate. The original Ironmaking
+Vanilla/MO results and zero-error requirements are unchanged. No suppression
+or gameplay patch is authorized by the comparison.
 
 Source provenance limitation: this Linux harness stages an **isolated,
 test-only** copy of the actual pinned production Defs/Patches/assets under

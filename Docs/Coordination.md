@@ -25,21 +25,29 @@ TWO FMOD UNITY ERRORS PER SUITE — STRICT FAIL.
 
 Project persistent Linux host on 2026-10-14 ran current Ironmaking main
 `5154eb140e1d3b747cabea8cdc3abe4b42b7729e` against real
-RimWorldLinux 1.6.4871 rev598. Native job, research, stock generator, mining,
+RimWorldLinux 1.6.4871 (Version.txt rev598; runtime log rev600). Native job,
+research, stock generator, mining,
 map and save tests all executed. Full four-suite GitHub Actions execution
 [#38513445677](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38513445677),
 artifact `11871295187`; original summary/Player logs independently checked.
 All game processes exit code 0, zero skipped/flaky. MO FMOD invalid empty-clip
-ERROR occurs during loading; root owner unresolved. No ERROR waiver or broad
-MO compatibility PASS. Native 1.7 CURRENT-SOURCE run remains OPEN.
+ERROR occurs during startup. Independent without-Ironmaking Linux control
+[#38514870015](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38514870015)
+demonstrates 0 distinct Unity FMOD ERROR events with VEF alone, 1 with
+VEF+SYR, 2 with VEF+SYR+MO (each Pickle 1/1). Thus Ironmaking is **not
+required** to reproduce the symptom; exact offending sound asset remains
+unknown, and SYR alone has not been checked. No ERROR waiver or broad MO
+compatibility PASS. Native 1.7 CURRENT-SOURCE run remains OPEN.
 
 The Linux runner uses a **test-only renamed Mod copy** and adjusted exact-source
 probe, NOT the original subscriber package ID; gameplay XML/values unchanged.
 See formal `Docs/Testing/IronmakingPickleEvidence.md` and exact 17-per-profile
 premises `Docs/Testing/IronmakingV1Coverage.md`. Historical pre-research
 1.7 runs remain valid only for their historical source revision.
-Follow-up is isolated MO FMOD attribution and native 1.7 current-source
-coverage; do not alter Ironmaking gameplay to mask MO provider audio failure.
+Next: identify the exact MO/SYR startup sound-asset cause (or resolve it in
+the provider/isolated host), then rerun the strict MO gate; native 1.7
+current-source testing waits for a verified separate 1.7 game installation.
+Do not alter Ironmaking gameplay or relax ERROR checks to mask this symptom.
 
 **Still OPEN:** real old-save add/remove/re-add, interrupted job save/reload,
 full haul/refuel pipeline, actual merchant arrival/trade, Architect/research
