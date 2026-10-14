@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <AMJ_InitialIronmaking.label>初期製鉄</AMJ_InitialIronmaking.label>
+  <AMJ_InitialIronmaking.description>鍛冶の研究後、小型製鉄炉の建設と砂鉄から鉄塊を作る製錬工程を解禁する。木炭はこの研究より前から生産できる。</AMJ_InitialIronmaking.description>
+</LanguageData>

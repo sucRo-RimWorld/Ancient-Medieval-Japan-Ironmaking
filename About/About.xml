@@ -6,7 +6,7 @@
   <supportedVersions><li>1.6</li></supportedVersions>
   <modVersion>0.1.0-dev</modVersion>
   <loadAfter><li>DankPyon.Medieval.Overhaul</li></loadAfter>
-  <description>Developer XML slice for finite iron sand, charcoal, bloom and a small furnace. RimWorld loaded-game mining, worktable Bills and optional Medieval Overhaul output are not yet runtime validated. Graphics, balance, research and trade are not release-ready.
+  <description>有限の砂鉄採取地点、炭焼き窯、小型製鉄炉、鉄塊の鍛錬を追加する。Vanillaでは一般鉄材に、Medieval Overhaul導入時は鉄インゴットの製造工程に接続する。日本語表示に対応。非公開試遊向けの開発版であり、画像は暫定、資源量・経済バランス・長期セーブ互換は未完成。
 
-有限の鉄砂、木炭、鉄塊、小型製鉄炉を扱う開発者向けXML実装段階。RimWorld実行環境での採掘、作業台の製造指示、任意導入のMedieval Overhaul向け出力は、まだ実行時検証が完了していない。画像、バランス、研究、交易も公開準備が完了していない。</description>
+Adds finite iron-sand deposits, charcoal production, a small smelting furnace, and iron-bloom forging into Vanilla Steel or Medieval Overhaul iron ingots. Japanese interface text included. Private playtest build: graphics are placeholders, and resource/economy balance and long-term save compatibility remain unfinished.</description>
 </ModMetaData>
