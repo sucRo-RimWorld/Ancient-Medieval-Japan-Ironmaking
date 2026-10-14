@@ -48,8 +48,23 @@ a disposable patch Mod loaded after SYR and the live Pickle Def database
 confirmed `PF_Honk` absent; despite the verified removal, 1/1 Pickle
 finished with game exit0 and the same **one** Unity FMOD ERROR. Removal
 of that SoundDef does **not** resolve the startup symptom under this
-isolated Linux run. Sound clip origin, other audio assets, host device and
-the extra full-MO error remain unresolved; do not waive ERROR-zero.
+isolated Linux run. Later, actual native Project [source isolation #38561684353](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38561684353)
+attributed the **two** inherited FMOD errors to the exact staged
+`MO_SYR/Sounds/UI/DebugGoose/Honk.mp3` and
+`MO_MedievalOverhaul/Sounds/DankPyon_FlaskBreak.mp3` files. A
+**nonshipping, converted-audio** Linux clone replacing both with PCM WAV
+verified native ERROR0 on the same loaded providers
+([#38564225119](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38564225119)).
+The original unmodified audio remains strictly FAIL; no release waiver.
+Most recently, original Ironmaking core and production owner Pickle
+scenarios were rerun under the independently labeled converted-media
+functional lane on [native #38566687705](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38566687705):
+Vanilla production 7/7, MO production 7/7, Vanilla core 10/10,
+MO core 10/10; all four native processes exit0, no Unity ERROR,
+and full original scenario gates satisfied. **34/34 functional PASS
+under converted audio only.** Production source/pinned gameplay unchanged.
+This does not establish audible playback, original-MP3 acceptance,
+full UI or 1.7.
 Formal counts/limitations: `Docs/Testing/IronmakingPickleEvidence.md`.
 No ERROR waiver or broad MO compatibility PASS. Native 1.7 CURRENT-SOURCE
 run remains OPEN.
@@ -59,8 +74,8 @@ probe, NOT the original subscriber package ID; gameplay XML/values unchanged.
 See formal `Docs/Testing/IronmakingPickleEvidence.md` and exact 17-per-profile
 premises `Docs/Testing/IronmakingV1Coverage.md`. Historical pre-research
 1.7 runs remain valid only for their historical source revision.
-Next: identify the exact MO/SYR startup sound-asset cause (or resolve it in
-the provider/isolated host), then rerun the strict MO gate; native 1.7
+Next: validate actual audio playback and original distribution compatibility
+separately from the successful converted-media functional gate; native 1.7
 current-source testing waits for a verified separate 1.7 game installation.
 Do not alter Ironmaking gameplay or relax ERROR checks to mask this symptom.
 
