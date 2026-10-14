@@ -34,10 +34,16 @@ All game processes exit code 0, zero skipped/flaky. MO FMOD invalid empty-clip
 ERROR occurs during startup. Independent without-Ironmaking Linux control
 [#38514870015](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38514870015)
 demonstrates 0 distinct Unity FMOD ERROR events with VEF alone, 1 with
-VEF+SYR, 2 with VEF+SYR+MO (each Pickle 1/1). Thus Ironmaking is **not
-required** to reproduce the symptom; exact offending sound asset remains
-unknown, and SYR alone has not been checked. No ERROR waiver or broad MO
-compatibility PASS. Native 1.7 CURRENT-SOURCE run remains OPEN.
+VEF+SYR, 2 with VEF+SYR+MO (each Pickle 1/1). Follow-up [SYR-only
+run #38517611682](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38517611682)
+independently loaded SYR without VEF/MO/Ironmaking, exact Pickle 1/1,
+native exit 0 (25.9 s), and **one** distinct FMOD Unity ERROR. Thus
+Ironmaking, VEF and MO are not necessary for at least one startup audio
+symptom; exact clip/call origin or Linux-specific incompatibility remains
+unidentified. The green diagnostic workflow is not zero-ERROR compatibility
+PASS. Formal counts/limitations: `Docs/Testing/IronmakingPickleEvidence.md`.
+No ERROR waiver or broad MO compatibility PASS. Native 1.7 CURRENT-SOURCE
+run remains OPEN.
 
 The Linux runner uses a **test-only renamed Mod copy** and adjusted exact-source
 probe, NOT the original subscriber package ID; gameplay XML/values unchanged.
