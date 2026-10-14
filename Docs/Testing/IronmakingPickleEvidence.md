@@ -41,22 +41,39 @@ the submitted `summary.json` and Unity `Player.log` were inspected.
 | Loaded Mod stack (plus Harmony/Pickle/Logging/Core) | Pickle outcome | Distinct `[ERROR] [Unity]` FMOD events |
 |---|---|---:|
 | Vanilla Expanded Framework (VEF) | 1/1 passed | **0** |
+| [SYR] Processor Framework **alone**, no VEF/MO/Ironmaking | **1/1 passed**, native exit 0 (25.9 s) | **1** |
 | VEF + [SYR] Processor Framework | 1/1 passed | **1** |
 | VEF + SYR + Medieval Overhaul | 1/1 passed | **2** |
 
 The early raw Unity output and later RimLogging-formatted `[ERROR] [Unity]`
 copy are **duplicate log entries of the same events**; the initial diagnostic
 counts 2 and 4 raw string occurrences, respectively. The distinct-event
-counts above use only formatted `[ERROR] [Unity]` lines. At least one FMOD
+counts above use only formatted `[ERROR] [Unity]` lines.
+
+The additional independent [SYR-only native run #38517611682](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38517611682)
+([artifact #11871754219](https://github.com/sucRo-RimWorld/Ancient-Medieval-Japan-Project/actions/runs/38517611682/artifacts/11871754219))
+loaded **SYR without VEF, Medieval Overhaul or Ironmaking**; GitHub job log
+confirmed actual `AMJ_PICKLE16_END profile=fmod-syr stage=exited exit=0
+elapsed=25.9s`, 1/1 expected Pickle scenario, one distinct Unity FMOD ERROR,
+and `PRESENT_WITH_SYR_ALONE`. The Project's hardened diagnostic-completion
+gate checked the exact scenario name, full Pickle result and zero native exit.
+The original full 4-suite Ironmaking gameplay outcome is unchanged.
+The GitHub diagnostic job's green status means the **diagnostic completed**,
+not the SYR profile passed zero-runtime-ERROR.
+
+At least one FMOD
 invalid-empty-clip audio error occurs with VEF + SYR **without Ironmaking**,
 and full MO produces two. This rules out Ironmaking as a **necessary condition**
 for this startup symptom, but does not independently identify an exact
 sound asset, C# call, or prove Ironmaking never contributes under other profiles.
-SYR alone was not tested, so this is a configuration-level association, not
-exclusive attribution to the SYR assembly.
+SYR alone now reproduces one error, so **VEF and Medieval Overhaul are not
+necessary to reproduce at least that event**. This narrows the loaded-provider
+association to SYR alone, but does not prove the error originates in its DLL:
+one of its assets or code, or the Linux FMOD/runtime environment could be
+responsible. The extra event in the full MO stack remains separately unlocated.
 
-The control Pickle assertions pass, but the two profiles containing SYR **do
-not** satisfy the strict zero-runtime-ERROR gate. The original Ironmaking
+The control Pickle assertions pass, but the **three** tested profiles
+containing SYR **do not** satisfy the strict zero-runtime-ERROR gate. The original Ironmaking
 Vanilla/MO results and zero-error requirements are unchanged. No suppression
 or gameplay patch is authorized by the comparison.
 
