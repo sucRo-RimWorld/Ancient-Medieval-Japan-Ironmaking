@@ -1,5 +1,10 @@
 # Ironmaking Coordination
 
+## IRON-DISTRIBUTED-MO-OWNER-20261025 — no Japanization dependency, future iron adapters owner assigned
+
+**Author/Project architecture change:** centralized MO Japanization development and independent publication are being retired. Ironmaking alone owns its optional MO metal and research compatibility (including potential, **not yet implemented/authorized**, MO original iron deposits/Mine Shaft/metalChain and MO-owned iron-ingot trader stock integration). Existing `Patches/Compatibility/MedievalOverhaul.xml` output/anvil/fuel/research tab remains unchanged and vanilla-only profile intact. No speculative mine/merchant numeric patch, dependency, test, release, or DLC change. Superseding formal design text at `Docs/Design.md`; Project Architecture / Roadmap contain cross-owner routing. Prior Japanization-owned MO metal adapter handoffs below are history, not current production authority. Waiting for bounded full-supply economic acceptance and real source inspection before production XML changes. No user-as-courier handoff.
+
+
 **Authoritative branch:** `main` only. Specifications: `Docs/Design.md`.
 
 ## IRON-MVP-20261010
