@@ -6,6 +6,8 @@
 設計正本移管: 2026-10-10 JST  
 状態: 作者確定コンセプト + 詳細設計案。最小開発用XML実装済み。Vanillaの限定5項目Pickle実機E2EはPASSしたが、製錬Bill実行・実機バランス・MO互換・正式配布は未検証。
 
+**2026-10-25 作者決定 — Japanization独立Modの段階的廃止とMO製鉄互換の統一所有（本節が旧Japanization側Adapter契約より優先）:** MO研究・採掘・交易・鉄材供給の日本化について、Ironmaking固有の製鉄・資源バランスに関わる範囲は、**Ironmaking自身が任意MO互換として正式に所有**する。現行`Patches/Compatibility/MedievalOverhaul.xml`の砂鉄→MO鉄インゴット、MO金床、MO石炭燃料、AMJ初期製鉄研究タブの接続はそのまま維持し、**MO非導入のVanilla経路を変えない**。MOの地表鉄鉱床・Mine Shaft／深部採掘・MO金属チェーンON/OFF・研究接続・MO側鉄材TraderKindDef/StockGeneratorは、全鉄経済への影響を評価してから必要な範囲に限りIronmakingの条件付きXMLを設計する。以前の「MO＋Japanization＋Ironmaking限定でJapanizationがこれらを所有」「Japanizationを導入した場合のみ研究ツリー変更」という本書各節の記述は、**履歴上の旧構成であり、以後の実装／テスト対象としない**。独立Japanization本体のMO+全AMJ必須構成は廃止方向で、Ironmakingはこれを**任意互換やhard dependencyとして要求しない**。特に鉄鉱床数・インゴットの商人在庫・採掘作業量・製鉄資材価格などの値は未承認であり、砂鉄を追加したからと機械的にMO鉄を弱体化しない。複数設定・低砂鉄地域・輸入救済・中期以降の採掘・Player負荷・他Mod交易も考慮し、矛盾を解消してから本番数値へ反映する。旧`MedievalOverhaulJapanizationIronSupplyAudit.md`は証拠・参考文献として読めるが、最終仕様と実装責務は今後本リポジトリの設計・XMLへ移す。本件は**所有者・設計方針のみ**で、MO鉄鉱床・Mine Shaft・TraderKindの実装値、画像・テスト・既存セーブの本番パッチは変更しない。
+
 ## 1. 確定コンセプト
 
 独立Modとして古代から中世の製鉄を扱う。仮称は **Ancient & Medieval Japan - Ironmaking**。江戸・近世の完成型は実装しない。既存の鍛冶・鉄器加工を置き換えるModではなく、**既存の鍛冶へ、日本式の鉄自給ルートを追加するMod**とする。鍛冶技術の成立を前段階に置き、初期製鉄から炉の改良を経て、中世段階のたたらを上位研究に置く。
