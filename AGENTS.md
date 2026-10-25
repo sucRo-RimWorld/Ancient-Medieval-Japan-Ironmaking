@@ -8,7 +8,7 @@
 ## Scope
 - Own standalone finite Japanese iron sand/deposits, extraction, charcoal, furnaces, bloom refining into Vanilla Steel or optional MO IronIngot, and limited iron-sand trade.
 - Support Vanilla RimWorld alone. MO, Environment, Grains, Waterworks, World Tech Level, and Japanization are optional; never introduce a hard dependency without design authorization.
-- No blanket changes to Vanilla Steel mines/traders or MO iron ore, Mine Shaft, deep deposits, golems, or iron ingot sellers. MO's Japanized rebalancing and research connections are the **Japanization owner's** additional conditional responsibility.
+- No blanket changes to Vanilla Steel mines/traders or unreviewed MO iron ore, Mine Shaft, deep deposits, golems or iron ingot sellers. **2026-10-25 author policy supersedes the former Japanization-owned adapter:** Ironmaking itself owns potential additional **optional MO-only** iron-source, Mine Shaft, research and stock-generator integration. Those changes require independent scenario/economic audit and separately accepted coefficients; the old centralized Japanization repo is not a required gameplay owner or dependency.
 - No Edo completed tatara, unrelated weapons/armor, fantasy sword upgrades or global metallurgy replacement.
 
 ## Gates and communication
